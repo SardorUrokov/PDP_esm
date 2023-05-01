@@ -28,7 +28,6 @@ public class ExamResult {
 
 //    @ManyToMany(mappedBy = "question")
     @ManyToMany
-    //    @ManyToOne
     private List<Question> questionList;
 
     public ExamResult(float score, Student student, ResultType resultType, List<Question> questionList) {

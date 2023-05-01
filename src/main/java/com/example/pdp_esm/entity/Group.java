@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity(name = "groups")
 @AllArgsConstructor
@@ -22,10 +24,10 @@ public class Group {
     @OneToOne
     private Course course;
 
-    @ManyToOne
-    private Teacher teacher;
+    @ManyToMany
+    private List<Teacher> teacher;
 
-    public Group(String groupName, Course course, Teacher teacher) {
+    public Group(String groupName, Course course, List<Teacher> teacher) {
         this.groupName = groupName;
         this.course = course;
         this.teacher = teacher;

@@ -16,8 +16,8 @@ public class Student{
     private Long id;
 
     private String fullName, phone;
-    private Double balance;
-    private boolean gender;
+    private double balance = 0.0;
+    private char gender;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAITING;
@@ -25,7 +25,7 @@ public class Student{
     @ManyToOne
     private Group group;
 
-    public Student(String fullName, String phone, Double balance, boolean gender, Status status, Group group) {
+    public Student(String fullName, String phone, Double balance, char gender, Status status, Group group) {
         this.fullName = fullName;
         this.phone = phone;
         this.balance = balance;
