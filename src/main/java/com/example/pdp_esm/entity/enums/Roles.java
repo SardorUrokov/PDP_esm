@@ -1,5 +1,5 @@
 package com.example.pdp_esm.entity.enums;
 
-public enum Role {
+public enum Roles {
     ADMIN, USER
 }

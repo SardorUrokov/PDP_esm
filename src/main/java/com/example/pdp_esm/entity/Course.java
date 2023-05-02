@@ -1,9 +1,7 @@
 package com.example.pdp_esm.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.pdp_esm.entity.enums.CourseType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,9 +20,20 @@ public class Course {
 
     private String name;
     private double price;
+    private boolean active;
 
-    public Course(String name, double price) {
+    @Enumerated(value = EnumType.STRING)
+    private CourseType courseType;
+
+    public Course(String name, double price, CourseType courseType, boolean active) {
         this.name = name;
         this.price = price;
+        this.courseType = courseType;
+        this.active = active;
+    }
+    public Course(String name, double price, CourseType courseType) {
+        this.name = name;
+        this.price = price;
+        this.courseType = courseType;
     }
 }

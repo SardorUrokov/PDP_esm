@@ -1,40 +1,34 @@
 package com.example.pdp_esm.entity;
 
-import com.example.pdp_esm.entity.template.AbsEntity;
+import com.example.pdp_esm.entity.enums.Roles;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-public class User extends AbsEntity
-//        implements UserDetails
-{
+public class User {
 
-    @ManyToOne
-    private Position position;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(unique = true)
+//    @Column(unique = true)
+    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @Enumerated(EnumType.STRING)
+    private Roles roles = Roles.USER;
 
-    private String fullName, phoneNumber, password, code;
+    private String fullName, phoneNumber, password;
     private boolean active = true;
+    private char gender;
 
     //bot uchun
 //    private String chatId;
@@ -85,12 +79,22 @@ public class User extends AbsEntity
 //        return this.enabled;
 //    }
 
-    public User(String fullName, String phone, String email, String password, Set<Role> roles, boolean enabled) {
+    public User(String fullName, String phoneNumber, String email, String password, char gender, Roles roles, boolean active) {
         this.fullName = fullName;
-        this.phoneNumber = phone;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.password = password;
+        this.gender = gender;
         this.roles = roles;
-//        this.enabled = enabled;
+        this.active = active;
+    }
+
+    public User(String fullName, String phoneNumber, String email, String password, char gender, boolean active) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.active = active;
     }
 }
