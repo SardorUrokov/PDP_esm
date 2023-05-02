@@ -26,7 +26,6 @@ public class ExamResult {
     @Enumerated(value = EnumType.STRING)
     private ResultType resultType;
 
-//    @ManyToMany(mappedBy = "question")
     @ManyToMany
     private List<Question> questionList;
 
