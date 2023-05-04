@@ -20,7 +20,7 @@ public class Student extends User{
     @ManyToOne
     private Group group;
 
-    public Student(String fullName, String phoneNumber, String email, String password, char gender, Roles roles, boolean active, double balance, Status status, Group group) {
+    public Student(String fullName, String phoneNumber, String email, String password, String gender, Roles roles, boolean active, double balance, Status status, Group group) {
         super(fullName, phoneNumber, email, password, gender, roles, active);
         this.balance = balance;
         this.status = status;

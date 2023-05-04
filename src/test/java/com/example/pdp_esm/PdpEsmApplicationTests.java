@@ -34,7 +34,7 @@ class PdpEsmApplicationTests {
         HttpEntity<String> entity = new HttpEntity<>(json, httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
         Object exchange = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
-        System.out.printf(String.valueOf(exchange));
+        System.out.println(exchange);
     }
 
     @Test
@@ -47,7 +47,7 @@ class PdpEsmApplicationTests {
         HttpEntity<String> entity = new HttpEntity<>("", httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
         Object exchange = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
-        System.out.printf(String.valueOf(exchange));
+        System.out.println(exchange);
 
     }
 
@@ -72,7 +72,7 @@ class PdpEsmApplicationTests {
         HttpEntity<String> entity = new HttpEntity<>(json, httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
         Object exchange = restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
-        System.out.printf(String.valueOf(exchange));
+        System.out.println(exchange);
     }
 
     @Test
@@ -85,6 +85,6 @@ class PdpEsmApplicationTests {
         HttpEntity<String> entity = new HttpEntity<>("", httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
         Object exchange = restTemplate.exchange(url, HttpMethod.DELETE, entity, Object.class);
-        System.out.printf(String.valueOf(exchange));
+        System.out.println(exchange);
     }
 }

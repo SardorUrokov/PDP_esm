@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     boolean existsByNameAndCourseType (String name, CourseType courseType);
+    Optional<Course> findByNameAndCourseType (String name, CourseType courseType);
     boolean existsByIdAndActiveTrue (Long id);
     Optional<Course> findByIdAndActiveTrue (Long id);
     Optional<Course> findByIdAndActiveFalse (Long id);

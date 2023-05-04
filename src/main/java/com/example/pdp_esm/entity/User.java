@@ -3,13 +3,12 @@ package com.example.pdp_esm.entity;
 import com.example.pdp_esm.entity.enums.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
@@ -28,7 +27,7 @@ public class User {
 
     private String fullName, phoneNumber, password;
     private boolean active = true;
-    private char gender;
+    private String gender;
 
     //bot uchun
 //    private String chatId;
@@ -79,7 +78,7 @@ public class User {
 //        return this.enabled;
 //    }
 
-    public User(String fullName, String phoneNumber, String email, String password, char gender, Roles roles, boolean active) {
+    public User(String fullName, String phoneNumber, String email, String password, String  gender, Roles roles, boolean active) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -89,7 +88,7 @@ public class User {
         this.active = active;
     }
 
-    public User(String fullName, String phoneNumber, String email, String password, char gender, boolean active) {
+    public User(String fullName, String phoneNumber, String email, String password, String  gender, boolean active) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;

@@ -7,7 +7,7 @@ public interface GroupService {
 
     ApiResponse<?> createGroup(GroupDTO groupDTO);
 
-    ApiResponse<?> getAllGroups();
+    ApiResponse<?> getAllGroups(String search, String courseName);
 
     ApiResponse<?> getOneGroup(Long group_id);
 

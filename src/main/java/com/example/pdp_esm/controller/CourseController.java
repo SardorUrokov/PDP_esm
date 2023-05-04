@@ -20,8 +20,8 @@ public class CourseController {
     public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.createCourse(courseDTO);
 
-        if (response.isSuccess()) log.warn("Creating Course! -> {}", response);
-        else log.error("Such a course is already saved! -> {}", response);
+        if (response.isSuccess()) log.warn("Creating Course! -> {}", response.getData());
+        else log.error(response.getMessage());
 
         return ResponseEntity
                 .status(response.isSuccess() ? 200 : 409)
@@ -31,7 +31,7 @@ public class CourseController {
     @GetMapping("/course")
     public ResponseEntity<?> getAllCourses() {
         ApiResponse<?> response = courseService.getAllCourses();
-        log.warn("Getting All Courses List! -> {}", response);
+        log.warn("Getting All Courses List! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
@@ -39,8 +39,8 @@ public class CourseController {
     public ResponseEntity<?> getOneCourse(@PathVariable Long id) {
         ApiResponse<?> response = courseService.getOneCourse(id);
 
-        if (response.isSuccess()) log.info("Getting Course {} with id! -> {}", response, id);
-        else log.error("Course not found {} with id! -> {}", response, id);
+        if (response.isSuccess()) log.info("Getting Course {} with id! -> {}", response.getData(), id);
+        else log.error("Course not found {} with id! -> {}", response.getData(), id);
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
@@ -48,28 +48,28 @@ public class CourseController {
     @PutMapping("/course/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.updateCourse(id, courseDTO);
-        log.warn("Course with id {} is updated! -> {}", id, response);
+        log.warn("Course with id {} is updated! -> {}", id, response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 400 ).body(response);
     }
 
     @DeleteMapping("/course/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ApiResponse<?> response = courseService.deleteCourse(id);
-        log.warn("Course with id {} is terminated! -> {}", id, response);
+        log.warn("Course with id {} is terminated! -> {}", id, response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @GetMapping("/deletedCourses")
     public ResponseEntity<?> getAllActiveFalseCourses(){
         ApiResponse<?> response = courseService.getAllActiveFalseCourses();
-        log.warn("Getting All Deleted Courses List! -> {}", response);
+        log.warn("Getting All Terminated Courses List! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
     @GetMapping("/deletedCourses/{id}")
     public ResponseEntity<?> getOneActiveFalseCourse(@PathVariable Long id){
         ApiResponse<?> response = courseService.getOneActiveFalseCourse(id);
-        log.warn("Getting One Deleted Course! -> {}", response);
+        log.warn("Getting One Terminated Course! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 }

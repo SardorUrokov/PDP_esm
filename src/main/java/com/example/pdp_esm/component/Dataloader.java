@@ -31,9 +31,6 @@ public class Dataloader implements CommandLineRunner {
     public void run(String... args) {
         if (mode.equals("always")) {
 
-            User admin_A = userRepository.save(new User("AAA", "91504235", "1@gmail.com", "123", 'M', Roles.ADMIN, true));
-            User admin_B = userRepository.save(new User("BBB", "91504235", "2@gmail.com", "123", 'F', Roles.ADMIN, true));
-
             Course java_backend_course = courseRepository.save(new Course("Java Backend Development", 120000, CourseType.OFFLINE, true));
             Course android_course = courseRepository.save(new Course("Android Development", 110000, CourseType.HYBRID, true));
             Course frontEnd_course = courseRepository.save(new Course("Front-End Development", 100000, CourseType.ONLINE, true));
@@ -41,19 +38,19 @@ public class Dataloader implements CommandLineRunner {
             Position mentor = positionRepository.save(new Position("Mentor"));
             Position mentor_assistant = positionRepository.save(new Position("Mentor Assistant"));
 
-            Teacher java_teacher = teacherRepository.save(new Teacher("java_teacher Teacherov", "1234567", "1@gmail.com", "password123", 'M', Roles.USER, true, mentor, List.of(java_backend_course)));
-            Teacher android_teacher = teacherRepository.save(new Teacher("android_teacher Teacherov", "1234567", "1@gmail.com", "password123", 'M', Roles.USER, true, mentor, List.of(android_course, java_backend_course)));
-            Teacher front_end_teacher = teacherRepository.save(new Teacher("front_end_teacher Teacherov", "1234567", "1@gmail.com", "password123", 'M', Roles.USER, true, mentor, List.of(frontEnd_course)));
-            Teacher teacher_assistant = teacherRepository.save(new Teacher("teacher_assistant Teacherov", "1234567", "1@gmail.com", "password123", 'M', Roles.USER, true, mentor_assistant, List.of(java_backend_course)));
+            Teacher java_teacher = teacherRepository.save(new Teacher("java_teacher Teacherov", "1234567", "1@gmail.com", "password123", "Male", Roles.USER, true, mentor, List.of(java_backend_course)));
+            Teacher android_teacher = teacherRepository.save(new Teacher("android_teacher Teacherov", "1234567", "1@gmail.com", "password123", "Male", Roles.USER, true, mentor, List.of(android_course, java_backend_course)));
+            Teacher front_end_teacher = teacherRepository.save(new Teacher("front_end_teacher Teacherov", "1234567", "1@gmail.com", "password123", "Male", Roles.USER, true, mentor, List.of(frontEnd_course)));
+            Teacher teacher_assistant = teacherRepository.save(new Teacher("teacher_assistant Teacherov", "1234567", "1@gmail.com", "password123", "Female", Roles.USER, true, mentor_assistant, List.of(java_backend_course)));
 
             Group J1 = groupRepository.save(new Group("J1", java_backend_course, true, List.of(java_teacher, teacher_assistant)));
             Group A1 = groupRepository.save(new Group("A1", android_course, true, List.of(android_teacher, teacher_assistant)));
             Group F1 = groupRepository.save(new Group("F1", frontEnd_course, true, List.of(front_end_teacher)));
 
-            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "1@gmail.com", "password123", 'M', Roles.USER, true, 1200000d, Status.STUDYING, J1));
-            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "111111111", "1@gmail.com", "password123", 'M', Roles.USER, true, 1100000d, Status.STUDYING, A1));
-            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "977777777", "1@gmail.com", "password123", 'M', Roles.USER, true, 1100000d, Status.STUDYING, A1));
-            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998998998999", "1@gmail.com", "password123", 'M', Roles.USER, true, 1000000d, Status.STUDYING, F1));
+            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "1@gmail.com", "password123", "Male", Roles.USER, true, 1200000d, Status.STUDYING, J1));
+            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "111111111", "1@gmail.com", "password123", "Male", Roles.USER, true, 1100000d, Status.STUDYING, A1));
+            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "977777777", "1@gmail.com", "password123", "Male", Roles.USER, true, 1100000d, Status.STUDYING, A1));
+            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998998998999", "1@gmail.com", "password123", "Male", Roles.USER, true, 1000000d, Status.STUDYING, F1));
 
             Question question1 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
             Question question2 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
@@ -61,6 +58,9 @@ public class Dataloader implements CommandLineRunner {
             Question question4 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
             Question question5 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
             Question question6 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
+
+            User admin_A = userRepository.save(new User("AAA", "91504235", "1@gmail.com", "123", "Male", Roles.ADMIN, true));
+            User admin_B = userRepository.save(new User("BBB", "91504235", "2@gmail.com", "123", "Female", Roles.ADMIN, true));
 
             Payment payment1 = paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH));
             Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP));

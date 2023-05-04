@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -126,7 +125,7 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courseList = courseRepository.findAllByActiveFalse();
 
         return ApiResponse.builder()
-                .message("Deleted Courses List")
+                .message("Terminated Courses List")
                 .success(true)
                 .data(toDTOList(courseList))
                 .build();
@@ -139,10 +138,9 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Deleted Course", "id", course_id)));
 
         Course course = courseById.get();
-        String message = "Deleted Course with " + course_id + " id";
 
         return ApiResponse.builder()
-                .message(message)
+                .message("Terminated Course with " + course_id + " id")
                 .success(true)
                 .data(toDTO(course))
                 .build();
