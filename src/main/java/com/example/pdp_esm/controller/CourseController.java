@@ -1,6 +1,6 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.ApiResponse;
+import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.CourseDTO;
 import com.example.pdp_esm.service.Implements.CourseServiceImpl;
 import lombok.RequiredArgsConstructor;

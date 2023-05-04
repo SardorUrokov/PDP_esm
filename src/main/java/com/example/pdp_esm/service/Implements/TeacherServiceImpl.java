@@ -1,12 +1,11 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.ApiResponse;
-import com.example.pdp_esm.dto.ResTeacherDTO;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.dto.result.ResTeacherDTO;
 import com.example.pdp_esm.dto.TeacherDTO;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Position;
 import com.example.pdp_esm.entity.Teacher;
-import com.example.pdp_esm.entity.enums.Roles;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.PositionRepository;
@@ -15,9 +14,9 @@ import com.example.pdp_esm.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.pdp_esm.entity.enums.Roles.*;
@@ -31,16 +30,80 @@ public class TeacherServiceImpl implements TeacherService {
     private final PositionRepository positionRepository;
 
     @Override
-    public ApiResponse<?> create(TeacherDTO teacherDTO) {
+    public ApiResponse<?> createTeacher(TeacherDTO teacherDTO) {
+
+        boolean exists = teacherRepository.existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
+
+        if (exists) {
+            return ApiResponse.builder()
+                    .message("Such a Teacher is already created!")
+                    .success(false)
+                    .build();
+        } else {
+
+            Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
+            Position position = optionalPosition.get();
+
+            List<Long> coursesIds = teacherDTO.getCoursesIds();
+            List<Course> courses = coursesIds.stream().map(courseRepository::getById).toList();
+
+            Teacher teacher = new Teacher();
+            teacher.setFullName(teacherDTO.getFullName());
+            teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
+            teacher.setEmail(teacherDTO.getEmail());
+            teacher.setPassword(teacherDTO.getPassword());
+            teacher.setPosition(position);
+            teacher.setCourse(courses);
+            teacher.setGender(teacherDTO.getGender());
+            teacher.setRoles(USER);
+            teacher.setActive(true);
+            Teacher save = teacherRepository.save(teacher);
+
+            return ApiResponse.builder()
+                    .message("Teacher Created!")
+                    .success(true)
+                    .data(save)
+                    .build();
+        }
+    }
+
+    @Override
+    public ApiResponse<?> getAllTeachers() {
+        List<Teacher> teachers = teacherRepository.findAll();
+        return ApiResponse.builder()
+                .message("All Teachers List")
+                .success(true)
+                .data(toResTeacherDTO(teachers))
+                .build();
+    }
+
+    public ApiResponse<?> getOneTeacher(Long teacher_id){
+        Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findById(teacher_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacher_id)));
+        Teacher teacher = optionalTeacher.get();
+
+        return ApiResponse.builder()
+                .message("Teacher with " + teacher_id + " id")
+                .success(true)
+                .data(toResTeacherDTO(Collections.singletonList(teacher)))
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> updateTeacher(Long teacher_id, TeacherDTO teacherDTO) {
+
+        Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findById(teacher_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacher_id)));
+        Teacher teacher = optionalTeacher.get();
 
         Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
         Position position = optionalPosition.get();
 
         List<Long> coursesIds = teacherDTO.getCoursesIds();
-        List<Course> courses = coursesIds.stream().map(courseRepository::getById).toList();
+        List<Course> courses = coursesIds.stream().map(courseRepository::getById).collect(Collectors.toList());
 
-        Teacher teacher = new Teacher();
         teacher.setFullName(teacherDTO.getFullName());
         teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
         teacher.setEmail(teacherDTO.getEmail());
@@ -53,19 +116,61 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher save = teacherRepository.save(teacher);
 
         return ApiResponse.builder()
-                .message("Teacher Created!")
+                .message("Teacher Updated!")
                 .success(true)
-                .data(save)
+                .data(toResTeacherDTO(Collections.singletonList(save)))
                 .build();
     }
 
     @Override
-    public ApiResponse<?> getAll() {
-        List<Teacher> teachers = teacherRepository.findAll();
-        return ApiResponse.builder()
-                .message("All Teachers List")
+    public ApiResponse<?> deleteTeacher(Long teacher_id) {
+
+        boolean exists = teacherRepository.existsByIdAndActiveTrue(teacher_id);
+
+        if (!exists) return ApiResponse.builder()
+                .message("Teacher not found!")
+                .success(false)
+                .build();
+        else {
+            Optional<Teacher> optionalTeacher = teacherRepository.findById(teacher_id);
+            Teacher teacher = optionalTeacher.get();
+            teacher.setActive(false);
+            teacherRepository.save(teacher);
+
+            return ApiResponse.builder()
+                    .message("Teacher Removed!")
+                    .success(true)
+                    .build();
+        }
+    }
+
+    @Override
+    public ApiResponse<?> getAllActiveFalseTeachers() {
+        List<Teacher> teacherList = teacherRepository.findAllByActiveFalse();
+
+        if (teacherList.isEmpty()) return ApiResponse.builder()
+                .message("Removed Teachers not found")
                 .success(true)
-                .data(toResTeacherDTO(teachers))
+                .build();
+
+        else return ApiResponse.builder()
+                .message("Removed Teachers List")
+                .success(true)
+                .data(toResTeacherDTO(teacherList))
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> getOneActiveFalseTeacher(Long teacher_id) {
+
+        Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findByIdAndActiveFalse(teacher_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Removed Teacher", "id", teacher_id)));
+        Teacher teacher = optionalTeacher.get();
+
+        return ApiResponse.builder()
+                .message("Removed Teacher with " + teacher_id + " id")
+                .success(true)
+                .data(toResTeacherDTO(Collections.singletonList(teacher)))
                 .build();
     }
 

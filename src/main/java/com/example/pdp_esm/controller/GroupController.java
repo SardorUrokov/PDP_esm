@@ -1,9 +1,7 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.ApiResponse;
+import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.GroupDTO;
-import com.example.pdp_esm.dto.ResCourseDTOWithGroups;
-import com.example.pdp_esm.dto.ResGroupDTO;
 import com.example.pdp_esm.service.Implements.GroupServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

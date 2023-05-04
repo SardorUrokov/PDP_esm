@@ -1,8 +1,8 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.ApiResponse;
+import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.CourseDTO;
-import com.example.pdp_esm.dto.ResCourseDTOWithGroups;
+import com.example.pdp_esm.dto.result.ResCourseDTOWithGroups;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.enums.CourseType;

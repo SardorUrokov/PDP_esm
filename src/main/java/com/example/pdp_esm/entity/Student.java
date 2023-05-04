@@ -12,7 +12,7 @@ import lombok.*;
 //@Builder
 public class Student extends User{
 
-    private double balance = 0.0;
+    private double balance;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAITING;

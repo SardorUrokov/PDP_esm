@@ -1,11 +1,18 @@
 package com.example.pdp_esm.service;
 
-import com.example.pdp_esm.dto.ApiResponse;
+import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.StudentDTO;
-import com.example.pdp_esm.dto.TeacherDTO;
 
 public interface StudentService {
-    ApiResponse<?> create(StudentDTO studentDTO);
+    ApiResponse<?> createStudent(StudentDTO studentDTO);
+    ApiResponse<?> getAllStudents();
+    ApiResponse<?> getOneStudent(Long student_id);
 
-    ApiResponse<?> getAll();
+    ApiResponse<?> updateStudent(Long student_id, StudentDTO studentDTO);
+
+    ApiResponse<?> deleteStudent(Long student_id);
+
+    ApiResponse<?> getAllActiveFalseStudents();
+
+    ApiResponse<?> getOneActiveFalseStudent(Long student_id);
 }

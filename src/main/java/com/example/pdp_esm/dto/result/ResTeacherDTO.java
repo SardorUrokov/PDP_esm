@@ -1,4 +1,4 @@
-package com.example.pdp_esm.dto;
+package com.example.pdp_esm.dto.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
