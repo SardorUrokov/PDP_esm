@@ -88,7 +88,7 @@ public class CourseServiceImpl implements CourseService {
 
         course.setName(courseDTO.getCourseName());
         course.setPrice(courseDTO.getPrice());
-        course.setActive(courseDTO.isActive());
+        course.setActive(true);
         course.setCourseType(CourseType.valueOf(courseDTO.getCourseType()));
         Course save = courseRepository.save(course);
 
@@ -112,6 +112,7 @@ public class CourseServiceImpl implements CourseService {
             Optional<Course> optionalCourse = courseRepository.findById(course_id);
             Course course = optionalCourse.get();
             course.setActive(false);
+            courseRepository.save(course);
 
             return ApiResponse.builder()
                     .message("Course Terminated!")

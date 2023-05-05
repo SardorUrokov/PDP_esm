@@ -16,6 +16,7 @@ public class ResGroupDTO {
     private String groupName;
     private String courseName;
     private String courseType;
+    private String startsDate;
     private List<ResTeacherDTO> teachers;
     private List<ResStudentDTO> students;
     private boolean active;

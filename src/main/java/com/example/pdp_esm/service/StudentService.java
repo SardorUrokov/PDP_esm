@@ -5,7 +5,9 @@ import com.example.pdp_esm.dto.StudentDTO;
 
 public interface StudentService {
     ApiResponse<?> createStudent(StudentDTO studentDTO);
+
     ApiResponse<?> getAllStudents();
+
     ApiResponse<?> getOneStudent(Long student_id);
 
     ApiResponse<?> updateStudent(Long student_id, StudentDTO studentDTO);
@@ -15,4 +17,6 @@ public interface StudentService {
     ApiResponse<?> getAllActiveFalseStudents();
 
     ApiResponse<?> getOneActiveFalseStudent(Long student_id);
+
+    ApiResponse<?> getCompletedStudents();
 }

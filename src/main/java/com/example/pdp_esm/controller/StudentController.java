@@ -1,8 +1,8 @@
 package com.example.pdp_esm.controller;
 
 import com.example.pdp_esm.dto.StudentDTO;
-import com.example.pdp_esm.dto.TeacherDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.service.Implements.StudentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class StudentController {
     public ResponseEntity<?> createStudent(@RequestBody StudentDTO studentDTO) {
         ApiResponse<?> response = studentService.createStudent(studentDTO);
         if (response.isSuccess()) log.warn("Student Created! -> {}", response.getData());
-        else log.error(response.getMessage());
+        else log.error(response.getMessage(), " -> {}" + response.getData());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
@@ -81,6 +81,25 @@ public class StudentController {
         ApiResponse<?> response = studentService.getOneActiveFalseStudent(id);
         if (response.isSuccess()) log.warn("Getting One Removed Student {} with id! -> {}", response.getData(), id);
         else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
+    @GetMapping("/completedStudents")
+    public ResponseEntity<?> getAllCompletedStudents(){
+
+        ApiResponse<?> response = studentService.getCompletedStudents();
+        if (response.isSuccess()) log.warn("Getting All Completed Students -> {}", response.getData());
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
+    @GetMapping("/{status}Students")
+    public ResponseEntity<?> getAllStudentsByStatus(@PathVariable String status){
+
+        ApiResponse<?> response = studentService.getAllStudentsByStatus(Status.valueOf(status));
+        if (response.isSuccess()) log.warn("Getting All " + status + " Students -> {}", response.getData());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }

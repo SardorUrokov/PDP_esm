@@ -12,4 +12,5 @@ public class GroupDTO {
     private String groupName;
     private Long courseId;
     private List<Long> teacherIds;
+    private String startsDate;
 }

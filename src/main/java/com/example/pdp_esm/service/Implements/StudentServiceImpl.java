@@ -5,19 +5,24 @@ import com.example.pdp_esm.dto.result.ResStudentDTO;
 import com.example.pdp_esm.dto.StudentDTO;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.Roles;
+import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.example.pdp_esm.entity.enums.Roles.USER;
+import static com.example.pdp_esm.entity.enums.Status.COMPLETED;
+import static com.example.pdp_esm.entity.enums.Status.SUSPENDED;
 
 @Service
 @RequiredArgsConstructor
@@ -41,17 +46,20 @@ public class StudentServiceImpl implements StudentService {
                     .build();
         } else {
             Student student = new Student();
-
-            student.setFullName(studentDTO.getFullName());
-            student.setPhoneNumber(studentDTO.getPhoneNumber());
-            student.setGroup(group);
-            student.setEmail(studentDTO.getEmail());
-            student.setPassword(studentDTO.getPassword());
-            student.setGender(studentDTO.getGender());
-            student.setBalance(student.getBalance());
-            student.setRoles(Roles.USER);
-            student.setActive(true);
-            Student save = studentRepository.save(student);
+//            student.setFullName(studentDTO.getFullName());
+//            student.setPhoneNumber(studentDTO.getPhoneNumber());
+//            student.setGroup(group);
+//            student.setEmail(studentDTO.getEmail());
+//            student.setPassword(studentDTO.getPassword());
+//            student.setGender(studentDTO.getGender());
+//            student.setBalance(studentDTO.getBalance());
+//            student.setRoles(Roles.USER);
+//            student.setActive(true);
+//            student.setStatus(group.getStartDate().isAfter(LocalDate.now()) ?
+//                    Status.STUDYING : Status.WAITING);
+//
+//            Student save = studentRepository.save(student);
+            Student save = settingValues(student, studentDTO);
 
             return ApiResponse.builder()
                     .message("Student Saved!")
@@ -96,21 +104,22 @@ public class StudentServiceImpl implements StudentService {
         Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(student_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id)));
         Student student = optionalStudent.get();
-
-        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
-                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
-        Group group = optionalGroup.get();
-
-        student.setFullName(studentDTO.getFullName());
-        student.setPhoneNumber(studentDTO.getPhoneNumber());
-        student.setEmail(studentDTO.getEmail());
-        student.setPassword(studentDTO.getPassword());
-        student.setGroup(group);
-        student.setGender(studentDTO.getGender());
-        student.setRoles(USER);
-        student.setActive(true);
-        Student save = studentRepository.save(student);
-
+//        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
+//        Group group = optionalGroup.get();
+//
+//        student.setFullName(studentDTO.getFullName());
+//        student.setPhoneNumber(studentDTO.getPhoneNumber());
+//        student.setEmail(studentDTO.getEmail());
+//        student.setPassword(studentDTO.getPassword());
+//        student.setGroup(group);
+//        student.setGender(studentDTO.getGender());
+//        student.setBalance(studentDTO.getBalance());
+//        student.setRoles(USER);
+//        student.setActive(true);
+////        if () student.setStatus(Status.STUDYING);
+//        Student save = studentRepository.save(student);
+        Student save = settingValues(student, studentDTO);
         return ApiResponse.builder()
                 .message("Student Updated!")
                 .success(true)
@@ -168,6 +177,37 @@ public class StudentServiceImpl implements StudentService {
                 .build();
     }
 
+    @Override
+    public ApiResponse<?> getCompletedStudents() {
+
+        List<Student> completedStudents = new ArrayList<>();
+        LocalDate minusDays = LocalDate.now().minusDays(60);
+        List<Student> groupStartDateBeforeStudents = studentRepository.findAllByGroupStartDateBeforeAndStatusNotAndStatusNot(minusDays, COMPLETED, SUSPENDED);
+
+        for (Student student : groupStartDateBeforeStudents) {
+            student.setStatus(COMPLETED);
+            studentRepository.save(student);
+            completedStudents.add(student);
+        }
+
+        return ApiResponse.builder()
+                .message("Completed Students")
+                .success(true)
+                .data(toResStudentDTO(completedStudents))
+                .build();
+    }
+
+    public ApiResponse<?> getAllStudentsByStatus(Status status) {
+
+        List<Student> allByStatus = studentRepository.findAllByStatus(status);
+        return ApiResponse.builder()
+                .message(status + " Students List")
+                .success(true)
+                .data(toResStudentDTO(allByStatus))
+                .build();
+
+    }
+
     public List<ResStudentDTO> toResStudentDTO(List<Student> students) {
         return students.stream()
                 .map(student -> ResStudentDTO.builder()
@@ -175,7 +215,30 @@ public class StudentServiceImpl implements StudentService {
                         .phoneNumber(student.getPhoneNumber())
                         .email(student.getEmail())
                         .balance(student.getBalance())
+                        .status(String.valueOf(student.getStatus()))
                         .gender(student.getGender()).build()
                 ).toList();
+    }
+
+    public Student settingValues(Student student, StudentDTO studentDTO) {
+
+        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
+        Group group = optionalGroup.get();
+
+        student.setFullName(studentDTO.getFullName());
+        student.setPhoneNumber(studentDTO.getPhoneNumber());
+        student.setEmail(studentDTO.getEmail());
+        student.setPassword(studentDTO.getPassword());
+        student.setGroup(group);
+        student.setGender(studentDTO.getGender());
+        student.setBalance(studentDTO.getBalance());
+        student.setRoles(USER);
+        student.setActive(true);
+        student.setStatus(group.getStartDate().isAfter(LocalDate.now()) ?
+                Status.STUDYING : (group.getStartDate().isBefore(LocalDate.now()) ?
+                Status.WAITING : null));
+
+        return studentRepository.save(student);
     }
 }

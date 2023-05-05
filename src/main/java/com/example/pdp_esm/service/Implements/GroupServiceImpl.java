@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ public class GroupServiceImpl implements GroupService {
 
         boolean empty = teachers.isEmpty();
         boolean existGroup = groupRepository.existsByGroupNameAndCourseNameAndActiveTrue(groupDTO.getGroupName(), course.getName());
+        LocalDate date = LocalDate.parse(groupDTO.getStartsDate());
 
         if (existGroup) {
             return ApiResponse.builder()
@@ -57,7 +59,12 @@ public class GroupServiceImpl implements GroupService {
                     .build();
 
         } else if (empty) return ApiResponse.builder()
-                .message("Teacher not found with this " + groupDTO.getTeacherIds().toString() + " id")
+                .message("Teachers not found with this " + groupDTO.getTeacherIds().toString() + " id")
+                .success(false)
+                .build();
+
+        else if (date.isBefore(LocalDate.now())) return ApiResponse.builder()
+                .message("Groups Starts Date can't be Past")
                 .success(false)
                 .build();
         else {
@@ -65,6 +72,7 @@ public class GroupServiceImpl implements GroupService {
             group.setGroupName(groupDTO.getGroupName());
             group.setCourse(course);
             group.setTeacher(teachers);
+            group.setStartDate(date);
             group.setActive(true);
             Group save = groupRepository.save(group);
 
@@ -121,6 +129,7 @@ public class GroupServiceImpl implements GroupService {
         group.setCourse(course);
         group.setTeacher(teachers);
         group.setActive(group.isActive());
+        group.setStartDate(LocalDate.parse(groupDTO.getStartsDate()));
         Group save = groupRepository.save(group);
 
         return ApiResponse.builder()
@@ -189,6 +198,7 @@ public class GroupServiceImpl implements GroupService {
                 .courseName(group.getCourse().getName())
                 .courseType(group.getCourse().getCourseType().toString())
                 .active(group.isActive())
+                .startsDate(String.valueOf(group.getStartDate()))
                 .teachers(resTeacherDTOList)
                 .students(resStudentDTOList)
                 .build();
