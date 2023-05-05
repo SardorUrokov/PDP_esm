@@ -32,7 +32,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public ApiResponse<?> createTeacher(TeacherDTO teacherDTO) {
 
-        boolean exists = teacherRepository.existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
+        boolean exists = teacherRepository
+                .existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
 
         if (exists) {
             return ApiResponse.builder()
@@ -40,30 +41,13 @@ public class TeacherServiceImpl implements TeacherService {
                     .success(false)
                     .build();
         } else {
-
-            Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
-            Position position = optionalPosition.get();
-
-            List<Long> coursesIds = teacherDTO.getCoursesIds();
-            List<Course> courses = coursesIds.stream().map(courseRepository::getById).toList();
-
             Teacher teacher = new Teacher();
-            teacher.setFullName(teacherDTO.getFullName());
-            teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
-            teacher.setEmail(teacherDTO.getEmail());
-            teacher.setPassword(teacherDTO.getPassword());
-            teacher.setPosition(position);
-            teacher.setCourse(courses);
-            teacher.setGender(teacherDTO.getGender());
-            teacher.setRoles(USER);
-            teacher.setActive(true);
-            Teacher save = teacherRepository.save(teacher);
+            Teacher save = settingValues(teacher, teacherDTO);
 
             return ApiResponse.builder()
                     .message("Teacher Created!")
                     .success(true)
-                    .data(save)
+                    .data(toResTeacherDTO(Collections.singletonList(save)))
                     .build();
         }
     }
@@ -96,24 +80,7 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findById(teacher_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacher_id)));
         Teacher teacher = optionalTeacher.get();
-
-        Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
-                .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
-        Position position = optionalPosition.get();
-
-        List<Long> coursesIds = teacherDTO.getCoursesIds();
-        List<Course> courses = coursesIds.stream().map(courseRepository::getById).collect(Collectors.toList());
-
-        teacher.setFullName(teacherDTO.getFullName());
-        teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
-        teacher.setEmail(teacherDTO.getEmail());
-        teacher.setPassword(teacherDTO.getPassword());
-        teacher.setPosition(position);
-        teacher.setCourse(courses);
-        teacher.setGender(teacherDTO.getGender());
-        teacher.setRoles(USER);
-        teacher.setActive(true);
-        Teacher save = teacherRepository.save(teacher);
+        Teacher save = settingValues(teacher, teacherDTO);
 
         return ApiResponse.builder()
                 .message("Teacher Updated!")
@@ -172,6 +139,28 @@ public class TeacherServiceImpl implements TeacherService {
                 .success(true)
                 .data(toResTeacherDTO(Collections.singletonList(teacher)))
                 .build();
+    }
+
+    public Teacher settingValues(Teacher teacher, TeacherDTO teacherDTO){
+
+        Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
+        Position position = optionalPosition.get();
+
+        List<Long> coursesIds = teacherDTO.getCoursesIds();
+        List<Course> courses = coursesIds.stream().map(courseRepository::getById).collect(Collectors.toList());
+
+        teacher.setFullName(teacherDTO.getFullName());
+        teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
+        teacher.setEmail(teacherDTO.getEmail());
+        teacher.setPassword(teacherDTO.getPassword());
+        teacher.setPosition(position);
+        teacher.setCourse(courses);
+        teacher.setGender(teacherDTO.getGender());
+        teacher.setRoles(USER);
+        teacher.setActive(true);
+
+        return teacherRepository.save(teacher);
     }
 
     public List<ResTeacherDTO> toResTeacherDTO(List<Teacher> teachers) {

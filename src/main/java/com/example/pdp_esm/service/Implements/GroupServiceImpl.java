@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,17 +38,16 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ApiResponse<?> createGroup(GroupDTO groupDTO) {
 
-        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository
-                .findById(groupDTO.getCourseId())
+        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(groupDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId())));
-        Course course = optionalCourse.get();
+        String courseName = optionalCourse.get().getName();
 
         List<Long> teacherIds = groupDTO.getTeacherIds();
         List<Teacher> teachers =
                 teacherIds.stream().map(teacherRepository::getById).toList();
 
         boolean empty = teachers.isEmpty();
-        boolean existGroup = groupRepository.existsByGroupNameAndCourseNameAndActiveTrue(groupDTO.getGroupName(), course.getName());
+        boolean existGroup = groupRepository.existsByGroupNameAndCourseNameAndActiveTrue(groupDTO.getGroupName(), courseName);
         LocalDate date = LocalDate.parse(groupDTO.getStartsDate());
 
         if (existGroup) {
@@ -69,13 +67,7 @@ public class GroupServiceImpl implements GroupService {
                 .build();
         else {
             Group group = new Group();
-            group.setGroupName(groupDTO.getGroupName());
-            group.setCourse(course);
-            group.setTeacher(teachers);
-            group.setStartDate(date);
-            group.setActive(true);
-            Group save = groupRepository.save(group);
-
+            Group save = settingValues(group, groupDTO);
             return ApiResponse.builder()
                     .message("Group Created")
                     .success(true)
@@ -83,7 +75,6 @@ public class GroupServiceImpl implements GroupService {
                     .build();
         }
     }
-
     @Override
     public ApiResponse<?> getAllGroups(String courseName, String search) {
 
@@ -117,20 +108,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(group_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", group_id)));
         Group group = optionalGroup.get();
-
-        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(groupDTO.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", group_id)));
-        Course course = optionalCourse.get();
-
-        List<Long> teacherIds = groupDTO.getTeacherIds();
-        List<Teacher> teachers = teacherIds.stream().map(teacherRepository::getById).collect(Collectors.toList());
-
-        group.setGroupName(groupDTO.getGroupName());
-        group.setCourse(course);
-        group.setTeacher(teachers);
-        group.setActive(group.isActive());
-        group.setStartDate(LocalDate.parse(groupDTO.getStartsDate()));
-        Group save = groupRepository.save(group);
+        Group save = settingValues(group, groupDTO);
 
         return ApiResponse.builder()
                 .message("Group Updated!")
@@ -143,7 +121,6 @@ public class GroupServiceImpl implements GroupService {
     public ApiResponse<?> deleteGroup(Long group_id) {
 
         boolean exists = groupRepository.existsByIdAndActiveTrue(group_id);
-
         if (!exists) return ApiResponse.builder()
                 .message("Group not found!")
                 .success(false)
@@ -153,7 +130,6 @@ public class GroupServiceImpl implements GroupService {
             Group group = optionalGroup.get();
             group.setActive(false);
             groupRepository.save(group);
-
             return ApiResponse.builder()
                     .message("Group Terminated!")
                     .success(true)
@@ -183,6 +159,23 @@ public class GroupServiceImpl implements GroupService {
                 .success(true)
                 .data(toResDTO(group))
                 .build();
+    }
+
+    public Group settingValues(Group group, GroupDTO groupDTO) {
+
+        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(groupDTO.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId())));
+        Course course = optionalCourse.get();
+
+        List<Long> teacherIds = groupDTO.getTeacherIds();
+        List<Teacher> teachers = teacherIds.stream().map(teacherRepository::getById).toList();
+
+        group.setGroupName(groupDTO.getGroupName());
+        group.setCourse(course);
+        group.setTeacher(teachers);
+        group.setStartDate(LocalDate.parse(groupDTO.getStartsDate()));
+        group.setActive(true);
+        return groupRepository.save(group);
     }
 
     public ResGroupDTO toResDTO(Group group) {

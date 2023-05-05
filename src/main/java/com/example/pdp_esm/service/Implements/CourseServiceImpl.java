@@ -38,13 +38,7 @@ public class CourseServiceImpl implements CourseService {
                     .build();
         } else {
             Course course = new Course();
-            course.setName(courseDTO.getCourseName());
-            course.setPrice(courseDTO.getPrice());
-            course.setActive(true);
-            course.setCourseType(CourseType.valueOf(courseDTO.getCourseType()));
-            Course save = courseRepository.save(course);
-
-            //mapToDTO
+            Course save = settingValues(course, courseDTO);
             return ApiResponse.builder()
                     .message("Saved")
                     .success(true)
@@ -85,12 +79,7 @@ public class CourseServiceImpl implements CourseService {
         Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findByIdAndActiveTrue(course_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id)));
         Course course = optionalCourse.get();
-
-        course.setName(courseDTO.getCourseName());
-        course.setPrice(courseDTO.getPrice());
-        course.setActive(true);
-        course.setCourseType(CourseType.valueOf(courseDTO.getCourseType()));
-        Course save = courseRepository.save(course);
+        Course save = settingValues(course, courseDTO);
 
         return ApiResponse.builder()
                 .message("Course Updated!")
@@ -147,7 +136,6 @@ public class CourseServiceImpl implements CourseService {
                 .build();
     }
 
-    //Course -> ResCourseDTOWithGroups
     public ResCourseDTOWithGroups toDTO(Course course) {
 
         List<Group> allByCourseName = groupRepository.findAllByCourseName(course.getName());
@@ -159,6 +147,15 @@ public class CourseServiceImpl implements CourseService {
                 .courseType(String.valueOf(course.getCourseType()))
                 .groupList(allByCourseName)
                 .build();
+    }
+
+    public Course settingValues(Course course, CourseDTO courseDTO){
+
+        course.setName(courseDTO.getCourseName());
+        course.setPrice(courseDTO.getPrice());
+        course.setActive(true);
+        course.setCourseType(CourseType.valueOf(courseDTO.getCourseType()));
+        return courseRepository.save(course);
     }
 
     //List<Course> -> List<ResCourseDTOWithGroups>
