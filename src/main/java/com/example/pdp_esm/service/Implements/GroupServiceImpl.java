@@ -37,7 +37,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> createGroup(GroupDTO groupDTO) {
-
         Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(groupDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId())));
         String courseName = optionalCourse.get().getName();
@@ -75,9 +74,9 @@ public class GroupServiceImpl implements GroupService {
                     .build();
         }
     }
+
     @Override
     public ApiResponse<?> getAllGroups(String courseName, String search) {
-
         List<Group> groupList = groupRepository
                 .findAllByCourse_NameContainingIgnoreCaseAndGroupNameContainingIgnoreCaseOrderByCourse_Name(courseName, search);
 
@@ -90,7 +89,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> getOneGroup(Long group_id) {
-
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(group_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", group_id)));
         Group group = optionalGroup.get();
@@ -104,7 +102,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> updateGroup(Long group_id, GroupDTO groupDTO) {
-
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(group_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", group_id)));
         Group group = optionalGroup.get();
@@ -162,7 +159,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     public Group settingValues(Group group, GroupDTO groupDTO) {
-
         Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(groupDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId())));
         Course course = optionalCourse.get();
