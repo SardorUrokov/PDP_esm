@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.pdp_esm.entity.enums.Roles.USER;
-import static com.example.pdp_esm.entity.enums.Status.COMPLETED;
-import static com.example.pdp_esm.entity.enums.Status.SUSPENDED;
+import static com.example.pdp_esm.entity.enums.Status.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +45,6 @@ public class StudentServiceImpl implements StudentService {
                     .build();
         } else {
             Student student = new Student();
-//            student.setFullName(studentDTO.getFullName());
-//            student.setPhoneNumber(studentDTO.getPhoneNumber());
-//            student.setGroup(group);
-//            student.setEmail(studentDTO.getEmail());
-//            student.setPassword(studentDTO.getPassword());
-//            student.setGender(studentDTO.getGender());
-//            student.setBalance(studentDTO.getBalance());
-//            student.setRoles(Roles.USER);
-//            student.setActive(true);
-//            student.setStatus(group.getStartDate().isAfter(LocalDate.now()) ?
-//                    Status.STUDYING : Status.WAITING);
-//
-//            Student save = studentRepository.save(student);
             Student save = settingValues(student, studentDTO);
 
             return ApiResponse.builder()
@@ -104,21 +90,6 @@ public class StudentServiceImpl implements StudentService {
         Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(student_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id)));
         Student student = optionalStudent.get();
-//        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
-//        Group group = optionalGroup.get();
-//
-//        student.setFullName(studentDTO.getFullName());
-//        student.setPhoneNumber(studentDTO.getPhoneNumber());
-//        student.setEmail(studentDTO.getEmail());
-//        student.setPassword(studentDTO.getPassword());
-//        student.setGroup(group);
-//        student.setGender(studentDTO.getGender());
-//        student.setBalance(studentDTO.getBalance());
-//        student.setRoles(USER);
-//        student.setActive(true);
-////        if () student.setStatus(Status.STUDYING);
-//        Student save = studentRepository.save(student);
         Student save = settingValues(student, studentDTO);
         return ApiResponse.builder()
                 .message("Student Updated!")
@@ -221,10 +192,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Student settingValues(Student student, StudentDTO studentDTO) {
-
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
         Group group = optionalGroup.get();
+        LocalDate now = LocalDate.now();
 
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());
@@ -235,9 +206,9 @@ public class StudentServiceImpl implements StudentService {
         student.setBalance(studentDTO.getBalance());
         student.setRoles(USER);
         student.setActive(true);
-        student.setStatus(group.getStartDate().isAfter(LocalDate.now()) ?
-                Status.STUDYING : (group.getStartDate().isBefore(LocalDate.now()) ?
-                Status.WAITING : null));
+        if ((group.getStartDate().isBefore(now))) student.setStatus(STUDYING);
+        else if ((group.getStartDate().isAfter(now))) student.setStatus(WAITING);
+        else student.setStatus(COMPLETED);
 
         return studentRepository.save(student);
     }
