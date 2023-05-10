@@ -3,6 +3,7 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.CourseDTO;
 import com.example.pdp_esm.dto.result.ResCourseDTOWithGroups;
+import com.example.pdp_esm.dto.result.ResGroupDTO;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.enums.CourseType;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final GroupRepository groupRepository;
+    private final GroupServiceImpl groupService;
 
     @Override
     public ApiResponse<?> createCourse(CourseDTO courseDTO) {
@@ -139,17 +142,18 @@ public class CourseServiceImpl implements CourseService {
     public ResCourseDTOWithGroups toDTO(Course course) {
 
         List<Group> allByCourseName = groupRepository.findAllByCourseName(course.getName());
+        List<ResGroupDTO> resGroupDTOList = groupService.toDTOList(allByCourseName);
 
         return ResCourseDTOWithGroups.builder()
                 .courseName(course.getName())
                 .price(course.getPrice())
                 .active(course.isActive())
                 .courseType(String.valueOf(course.getCourseType()))
-                .groupList(allByCourseName)
+                .groupList(resGroupDTOList)
                 .build();
     }
 
-    public Course settingValues(Course course, CourseDTO courseDTO){
+    public Course settingValues(Course course, CourseDTO courseDTO) {
 
         course.setName(courseDTO.getCourseName());
         course.setPrice(courseDTO.getPrice());

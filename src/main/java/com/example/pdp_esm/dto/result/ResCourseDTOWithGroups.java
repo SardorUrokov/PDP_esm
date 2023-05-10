@@ -18,5 +18,5 @@ public class ResCourseDTOWithGroups {
     private double price;
     private String courseType;
     private boolean active;
-    private List<Group> groupList;
+    private List<ResGroupDTO> groupList;
 }

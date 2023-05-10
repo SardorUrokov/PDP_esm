@@ -191,6 +191,17 @@ public class StudentServiceImpl implements StudentService {
                 ).toList();
     }
 
+    public ResStudentDTO resStudentDTO(Student student){
+        return ResStudentDTO.builder()
+                .fullName(student.getFullName())
+                .phoneNumber(student.getPhoneNumber())
+                .email(student.getEmail())
+                .status(String.valueOf(student.getStatus()))
+                .gender(student.getGender())
+                .balance(student.getBalance())
+                .build();
+    }
+
     public Student settingValues(Student student, StudentDTO studentDTO) {
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));

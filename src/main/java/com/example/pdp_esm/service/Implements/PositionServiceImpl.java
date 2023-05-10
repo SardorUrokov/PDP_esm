@@ -6,7 +6,6 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.PositionRepository;
 import com.example.pdp_esm.service.PositionService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.id.factory.internal.SequenceGenerationTypeStrategy;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -53,10 +52,10 @@ public class PositionServiceImpl implements PositionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Position", "id", id)));
         Position position = optionalPosition.get();
         String message = "Position with " + id + " id";
-        return new ApiResponse<>(position, message, true);
+        return new ApiResponse<>( message, true, position);
     }
 
-    @Override //fix delete position
+    @Override
     public ApiResponse<?> deletePosition(Long id) {
         boolean exists = positionRepository.existsById(id);
 

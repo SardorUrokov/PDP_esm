@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -165,7 +166,7 @@ public class GroupServiceImpl implements GroupService {
         Course course = optionalCourse.get();
 
         List<Long> teacherIds = groupDTO.getTeacherIds();
-        List<Teacher> teachers = teacherIds.stream().map(teacherRepository::getById).toList();
+        List<Teacher> teachers = teacherIds.stream().map(teacherRepository::getById).collect(Collectors.toList());
 
         group.setGroupName(groupDTO.getGroupName());
         group.setCourse(course);

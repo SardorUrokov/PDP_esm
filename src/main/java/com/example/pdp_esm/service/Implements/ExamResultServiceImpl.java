@@ -1,10 +1,8 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.ExamResultDTO;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.entity.ExamResult;
-import com.example.pdp_esm.entity.Question;
-import com.example.pdp_esm.entity.Student;
+import com.example.pdp_esm.dto.result.*;
+import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
@@ -13,8 +11,10 @@ import com.example.pdp_esm.service.ExamResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     private final ExamResultRepository examResultRepository;
     private final StudentRepository studentRepository;
+    private final StudentServiceImpl studentService;
     private final QuestionRepository questionRepository;
 
     @Override
@@ -33,18 +34,19 @@ public class ExamResultServiceImpl implements ExamResultService {
         return ApiResponse.builder()
                 .message("Result saved!")
                 .success(true)
-                .data(save)
+                .data(toResExamResultDTO(save))
                 .build();
     }
 
     @Override
     public ApiResponse<?> getAllExamResult() {
+
         List<ExamResult> examResults = examResultRepository.findAll();
 
         return ApiResponse.builder()
                 .message("Result List!")
                 .success(true)
-                .data(examResults)
+                .data(toResExamResultDTOList(examResults))
                 .build();
     }
 
@@ -52,12 +54,12 @@ public class ExamResultServiceImpl implements ExamResultService {
     public ApiResponse<?> getOneExamResult(Long result_id) {
         Optional<ExamResult> optionalResult = Optional.ofNullable(examResultRepository.findById(result_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "id", result_id)));
-        ExamResult examResult = optionalResult.get();
+        ExamResult save = optionalResult.get();
 
         return ApiResponse.builder()
                 .message("Result with " + result_id + " id")
                 .success(true)
-                .data(examResult)
+                .data(toResExamResultDTO(save))
                 .build();
     }
 
@@ -73,7 +75,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         return ApiResponse.builder()
                 .message("Result Updated!")
                 .success(true)
-                .data(save)
+                .data(toResExamResultDTO(save))
                 .build();
     }
 
@@ -92,12 +94,34 @@ public class ExamResultServiceImpl implements ExamResultService {
         Student student = optionalStudent.get();
 
         List<Long> questionsIdList = resultDTO.getQuestionsIdList();
-        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).toList();
+        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).collect(Collectors.toList());
 
         result.setStudent(student);
         result.setScore(resultDTO.getScore());
         result.setQuestionList(questionList);
         result.setResultType(resultDTO.getResultType());
         return examResultRepository.save(result);
+    }
+
+    public ResExamResults toResExamResultDTO (ExamResult examResult){
+
+        Student student = examResult.getStudent();
+        Group group = examResult.getStudent().getGroup();
+
+        return ResExamResults.builder()
+                .score(examResult.getScore())
+                .resultType(String.valueOf(examResult.getResultType()))
+                .studentInfo(ResPaymentStudentInfo.builder()
+                        .studentName(student.getFullName())
+                        .studentGroupName(group.getGroupName())
+                        .studentPhoneNumber(student.getPhoneNumber())
+                        .build())
+                .questionList(examResult.getQuestionList())
+                .build();
+    }
+
+
+    public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
+        return examResults.stream().map(this::toResExamResultDTO).toList();
     }
 }

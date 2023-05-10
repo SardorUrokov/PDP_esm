@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ApiResponse <T>{
 
-    private T data;
     private String message;
     private boolean success;
+    private T data;
 
     public ApiResponse(String message, boolean success) {
         this.message = message;
