@@ -62,7 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
-    public ApiResponse<?> getOneTeacher(Long teacher_id){
+    public ApiResponse<?> getOneTeacher(Long teacher_id) {
         Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findById(teacher_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacher_id)));
         Teacher teacher = optionalTeacher.get();
@@ -141,7 +141,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
-    public Teacher settingValues(Teacher teacher, TeacherDTO teacherDTO){
+    public Teacher settingValues(Teacher teacher, TeacherDTO teacherDTO) {
 
         Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));

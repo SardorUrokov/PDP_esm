@@ -45,6 +45,16 @@ public class QuestionController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
+    @PutMapping("/question/{id}")
+    public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody QuestionDTO questionDTO){
+        ApiResponse<?> response = questionService.updateQuestion(id, questionDTO);
+
+        if (response.isSuccess()) log.warn("Question Updated! {} with id! -> {}", response.getData(), id);
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
     @DeleteMapping("/question/{id}")
     public ResponseEntity<?> deleteQuestion(@PathVariable Long id){
         ApiResponse<?> response = questionService.deleteQuestion(id);
