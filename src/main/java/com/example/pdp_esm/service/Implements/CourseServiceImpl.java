@@ -162,7 +162,6 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(course);
     }
 
-    //List<Course> -> List<ResCourseDTOWithGroups>
     public List<ResCourseDTOWithGroups> toDTOList(List<Course> courses) {
         return courses.stream().map(this::toDTO).collect(Collectors.toList());
     }

@@ -1,0 +1,14 @@
+package com.example.pdp_esm.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class AuthenticationDTO {
+
+    private String email;
+    private String password;
+}
