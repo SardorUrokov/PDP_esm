@@ -36,4 +36,5 @@ public class Course {
         this.price = price;
         this.courseType = courseType;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.pdp_esm.dto;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,15 +12,14 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class UserDTO {
     private final static List<UserDetails> APPLICATION_USERS = Arrays.asList(
             new User(
-
                     "urokovsardor@gamil.com",
                     "password123",
                     Collections.singletonList(new SimpleGrantedAuthority("R0LE_USER"))),
             new User(
-
                     "urokovsardor70@gamil.com",
                     "password123",
                     Collections.singletonList(new SimpleGrantedAuthority("R0LE_ADMIN")))

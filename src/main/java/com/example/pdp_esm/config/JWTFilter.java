@@ -1,6 +1,6 @@
 package com.example.pdp_esm.config;
 
-import com.example.pdp_esm.dto.UserDTO;
+import com.example.pdp_esm.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final UserDTO userDTO;
+//    private final UserDTO userDTO;
+    private final UserRepository userRepository;
     private final JWTUtils jwtUtils;
 
     @Override
@@ -29,9 +30,9 @@ public class JWTFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader(AUTHORIZATION);
-        final String userEmail;
+        final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
+        final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -40,11 +41,12 @@ public class JWTFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
         userEmail = jwtUtils.extractUsername(jwtToken);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDTO.findUserByEmail(userEmail);
-            final boolean isValidToken = jwtUtils.isTokenValid(jwtToken, userDetails);
+            UserDetails byEmail = userRepository.findByEmail(userEmail);
+//            UserDetails byEmail = userDTO.findUserByEmail(userEmail);
+            final boolean isValidToken = jwtUtils.isTokenValid(jwtToken, byEmail);
             if (isValidToken) {
                 UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(byEmail, null, byEmail.getAuthorities());
 
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

@@ -2,7 +2,6 @@ package com.example.pdp_esm.controller;
 
 import com.example.pdp_esm.config.JWTUtils;
 import com.example.pdp_esm.dto.AuthenticationDTO;
-import com.example.pdp_esm.dto.UserDTO;
 import com.example.pdp_esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDTO userDTO;
+//    private final UserDTO userDTO;
     private final UserRepository userRepository;
     private final JWTUtils jwtUtils;
 
@@ -31,7 +30,7 @@ public class AuthenticationController {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-        final UserDetails user = userDTO.findUserByEmail(dto.getEmail());
+        final UserDetails user = userRepository.findByEmail(dto.getEmail());
 
         if (user != null)
             return ResponseEntity.ok(jwtUtils.generateToken(user));

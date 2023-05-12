@@ -1,6 +1,6 @@
 package com.example.pdp_esm.config;
 
-import com.example.pdp_esm.dto.UserDTO;
+import com.example.pdp_esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -27,7 +26,8 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
-    private final UserDTO userDTO;
+//    private final UserDTO userDTO;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -35,9 +35,12 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("*/auth/**").permitAll()
                 .anyRequest()
-                .authenticated()
+//                .requestMatchers( "/**")
+//                .requestMatchers("/api/auth/authenticate")
+                .permitAll()
+//                .anyRequest()
+//                .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -61,7 +64,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -74,7 +77,8 @@ public class SecurityConfig {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-                return userDTO.findUserByEmail(email);
+                return userRepository.findByEmail(email);
+//                        userDTO.findUserByEmail(email);
             }
         };
     }
