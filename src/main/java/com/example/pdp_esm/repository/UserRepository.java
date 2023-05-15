@@ -9,7 +9,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 //    Optional<User> findByChatId(String chatId);
-//    Optional<UserDetails> findByPhone(String phone);
-    UserDetails findByEmail(String email);
 
+    Optional<UserDetails> findByPhoneNumber(String phone);
+
+    UserDetails findByEmail(String email);
+    Optional<User> findByEmailAndPassword(String email, String password);
+
+    Optional<User> findByEmailAndOtpCode(String email, Integer code);
 }

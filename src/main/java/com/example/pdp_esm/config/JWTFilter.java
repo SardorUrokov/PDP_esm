@@ -12,16 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
-//    private final UserDTO userDTO;
     private final UserRepository userRepository;
     private final JWTUtils jwtUtils;
 
@@ -40,6 +36,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         jwtToken = authHeader.substring(7);
         userEmail = jwtUtils.extractUsername(jwtToken);
+
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails byEmail = userRepository.findByEmail(userEmail);
 //            UserDetails byEmail = userDTO.findUserByEmail(userEmail);
@@ -54,5 +51,4 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
 }

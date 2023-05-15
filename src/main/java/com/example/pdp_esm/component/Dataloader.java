@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -42,19 +41,19 @@ public class Dataloader implements CommandLineRunner {
             Position mentor = positionRepository.save(new Position("Mentor"));
             Position mentor_assistant = positionRepository.save(new Position("Mentor Assistant"));
 
-            Teacher java_teacher = teacherRepository.save(new Teacher("java_teacher Teacherov", "1234567", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(java_backend_course)));
-            Teacher android_teacher = teacherRepository.save(new Teacher("android_teacher Teacherov", "1234567", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(android_course, java_backend_course)));
-            Teacher front_end_teacher = teacherRepository.save(new Teacher("front_end_teacher Teacherov", "1234567", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(frontEnd_course)));
-            Teacher teacher_assistant = teacherRepository.save(new Teacher("teacher_assistant Teacherov", "1234567", "1@gmail.com", passwordEncoder.encode("password123"), "Female", Roles.USER, true, mentor_assistant, List.of(java_backend_course)));
+            Teacher java_teacher = teacherRepository.save(new Teacher("java_teacher Teacherov", "1234567", "13@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(java_backend_course)));
+            Teacher android_teacher = teacherRepository.save(new Teacher("android_teacher Teacherov", "1234567", "17@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(android_course, java_backend_course)));
+            Teacher front_end_teacher = teacherRepository.save(new Teacher("front_end_teacher Teacherov", "1234567", "71@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, mentor, List.of(frontEnd_course)));
+            Teacher teacher_assistant = teacherRepository.save(new Teacher("teacher_assistant Teacherov", "1234567", "19@gmail.com", passwordEncoder.encode("password123"), "Female", Roles.USER, true, mentor_assistant, List.of(java_backend_course)));
 
             Group J1 = groupRepository.save(new Group("J1", java_backend_course, true, List.of(java_teacher, teacher_assistant), LocalDate.parse("2023-05-01")));
             Group A1 = groupRepository.save(new Group("A1", android_course, true, List.of(android_teacher, teacher_assistant), LocalDate.parse("2023-05-22")));
             Group F1 = groupRepository.save(new Group("F1", frontEnd_course, true, List.of(front_end_teacher), LocalDate.parse("2023-03-30")));
 
-            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1200000d, Status.STUDYING, J1));
-            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "111111111", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1100000d, Status.WAITING, A1));
-            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "977777777", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1100000d, Status.WAITING, A1));
-            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998998998999", "1@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1000000d, Status.COMPLETED, F1));
+            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "12@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1200000d, Status.STUDYING, J1));
+            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "111111111", "11@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1100000d, Status.WAITING, A1));
+            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "977777777", "21@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1100000d, Status.WAITING, A1));
+            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998998998999", "14@gmail.com", passwordEncoder.encode("password123"), "Male", Roles.USER, true, 1000000d, Status.COMPLETED, F1));
 
             Question question1 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
             Question question2 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
@@ -74,6 +73,14 @@ public class Dataloader implements CommandLineRunner {
             ExamResult examResult2 = resultRepository.save(new ExamResult(57f, a1_student, ResultType.FAIL, List.of(question1, question2)));
             ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
             ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
+
+            User user = User.builder()
+                    .roles(Roles.ADMIN)
+                    .email("urokovsardor70@gmail.com")
+                    .fullName("Sardor Urokov")
+                    .password(passwordEncoder.encode("123"))
+                    .build();
+            userRepository.save(user);
         }
     }
 }

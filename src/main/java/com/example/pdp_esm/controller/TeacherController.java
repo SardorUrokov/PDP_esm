@@ -6,6 +6,7 @@ import com.example.pdp_esm.service.Implements.TeacherServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -15,6 +16,7 @@ public class TeacherController {
 
     private final TeacherServiceImpl teacherService;
 
+    @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
     @PostMapping("/teacher/create")
     public ResponseEntity<?> createTeacher(@RequestBody TeacherDTO teacherDTO) {
         ApiResponse<?> response = teacherService.createTeacher(teacherDTO);
