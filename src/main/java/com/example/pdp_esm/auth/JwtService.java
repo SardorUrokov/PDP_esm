@@ -67,7 +67,6 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
     public String isTokenValidAndExpired(String jwt) {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt);

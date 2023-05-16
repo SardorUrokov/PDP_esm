@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -80,7 +79,7 @@ public class AuthServiceImpl {
         String email = authDTO.getEmail();
 
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "email or password", password)));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email or password", email)));
 
         User user = optionalUser.get();
         return ApiResponse.builder()

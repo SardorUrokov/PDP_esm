@@ -76,7 +76,7 @@ public class Dataloader implements CommandLineRunner {
 
             User user = User.builder()
                     .roles(Roles.ADMIN)
-                    .email("urokovsardor70@gmail.com")
+                    .email("admin@root")
                     .fullName("Sardor Urokov")
                     .password(passwordEncoder.encode("123"))
                     .build();
