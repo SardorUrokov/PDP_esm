@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @Column(unique = true)
+    @Column(unique = true)
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
     private String otpCode;
@@ -33,6 +32,9 @@ public class User implements UserDetails {
     private Roles roles = Roles.USER;
 
     private String fullName, phoneNumber, password;
+
+    private String userName = this.email;
+
     private boolean active = true;
     private String gender;
 
@@ -52,27 +54,27 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.userName;
     }
 
-    private boolean accountNonExpired = true; //accountni vaqti o'tmaganmi?
-    private boolean accountNonLocked = true; //account bloklanmaganmi?
-    private boolean credentialsNonExpired = true; //parol o'znikimi?
+    //    private boolean accountNonExpired = true; //accountni vaqti o'tmaganmi?
+//    private boolean accountNonLocked = true; //account bloklanmaganmi?
+//    private boolean credentialsNonExpired = true; //parol o'znikimi?
     private boolean enabled = true; //tizimga kimdir kirganda undan foydalanish mumkinmi?
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.accountNonExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.accountNonLocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.credentialsNonExpired;
+        return true;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.example.pdp_esm.config;
 
 import com.example.pdp_esm.dto.handler.ApiResponseHandler;
 import com.example.pdp_esm.dto.handler.ResponseObject;
-import com.example.pdp_esm.dto.result.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

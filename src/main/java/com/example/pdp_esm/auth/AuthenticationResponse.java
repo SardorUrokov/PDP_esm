@@ -1,6 +1,7 @@
 package com.example.pdp_esm.auth;
 
 import com.example.pdp_esm.entity.enums.Roles;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
 
-    String token;
-    Roles role;
-    String username;
+    @JsonProperty("access_token")
+    String accessToken;
+    @JsonProperty("refresh_token")
+    String refreshToken;
 }
