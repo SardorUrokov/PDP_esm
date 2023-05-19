@@ -38,6 +38,9 @@ public class User implements UserDetails {
     private boolean active = true;
     private String gender;
 
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
+
     //bot uchun
 //    private String chatId;
 

@@ -5,10 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
-    String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    String SECRET_KEY = "586E3272357538782F4125442A472D4B6150645367566B597033733676397924";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -31,33 +30,31 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         long jwtExpiration = 86400000;
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    public String generateRefreshToken(
-            UserDetails userDetails
-    ) {
+    public String generateRefreshToken(UserDetails userDetails) {
         long refreshExpiration = 604800000;
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
     }
 
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration
-    ) {
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+
+        List<SignatureAlgorithm> signatureAlgorithms = List.of(
+                SignatureAlgorithm.RS256,
+                SignatureAlgorithm.ES256,
+                SignatureAlgorithm.PS256,
+                SignatureAlgorithm.HS256);
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, getSignInKey())
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -74,15 +71,22 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token){
-        return Jwts.parser()
+    private Claims extractAllClaims(String token) {
+//        return Jwts.parser()
+//                .setSigningKey(getSignInKey())
+//                .parseClaimsJwt(token)
+//                .getBody();
+//    }
+        return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
-                .parseClaimsJwt(token)
+                .build()
+                .parseClaimsJws(token)
                 .getBody();
     }
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

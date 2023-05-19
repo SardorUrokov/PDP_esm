@@ -2,6 +2,7 @@ package com.example.pdp_esm.component;
 
 import com.example.pdp_esm.auth.AuthenticationService;
 import com.example.pdp_esm.auth.RegisterRequest;
+import com.example.pdp_esm.config.JwtService;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.repository.*;
@@ -31,9 +32,11 @@ public class Dataloader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationService service;
+    private final JwtService jwtService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
+    private RegisterRequest registerRequest;
 
     @Override
     public void run(String... args) {
@@ -79,30 +82,7 @@ public class Dataloader implements CommandLineRunner {
             ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
             ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
 
-//            User user = User.builder()
-//                    .roles(ADMIN)
-//                    .email("admin@root")
-//                    .fullName("Sardor Urokov")
-//                    .password(passwordEncoder.encode("123"))
-//                    .build();
-//            userRepository.save(user);
-
-            var manager = RegisterRequest.builder()
-                    .fullName("Manager Managerov")
-                    .email("manager@mail.com")
-                    .password("password")
-                    .role(MANAGER)
-                    .build();
-            System.out.println("Manager token: " + service.register(manager).getAccessToken());
-
-            var admin = RegisterRequest.builder()
-                    .fullName("Admin Adminov")
-                    .email("admin@mail.com")
-                    .password("password")
-                    .role(ADMIN)
-                    .build();
-            System.out.println("Admin token: " + service.register(admin).getAccessToken());
-
+            System.out.println(a1_student1.getFullName() + " token: " + jwtService.generateToken(a1_student1));
         }
     }
 }

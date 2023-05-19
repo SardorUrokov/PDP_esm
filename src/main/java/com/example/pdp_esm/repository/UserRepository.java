@@ -1,6 +1,7 @@
 package com.example.pdp_esm.repository;
 
 import com.example.pdp_esm.entity.User;
+import jakarta.validation.constraints.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,5 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailAndPassword(String email, String password);
 
-    Optional<User> findByEmailAndOtpCode(String email, Integer code);
+    Optional<User> findByEmailAndOtpCode(@Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String email, String otpCode);
 }

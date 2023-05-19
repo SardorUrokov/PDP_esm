@@ -58,7 +58,7 @@ public class AuthServiceImpl {
                 .build();
     }
 
-    public ApiResponse<?> verify(String email, Integer otpCode) {
+    public ApiResponse<?> verify(String email, String otpCode) {
 
         Optional<User> byEmailAndCode = Optional.ofNullable(userRepository.findByEmailAndOtpCode(email, otpCode)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email)));
