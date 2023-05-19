@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-//@Table(name = "user", schema = "users_details")
 public class User implements UserDetails {
 
     @Id
