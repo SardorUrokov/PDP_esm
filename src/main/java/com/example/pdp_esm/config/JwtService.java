@@ -41,13 +41,6 @@ public class JwtService {
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
-
-        List<SignatureAlgorithm> signatureAlgorithms = List.of(
-                SignatureAlgorithm.RS256,
-                SignatureAlgorithm.ES256,
-                SignatureAlgorithm.PS256,
-                SignatureAlgorithm.HS256);
-
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

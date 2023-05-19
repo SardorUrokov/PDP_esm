@@ -9,11 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
-
-@Getter
-@Setter
+@Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
@@ -60,9 +57,6 @@ public class User implements UserDetails {
         return this.userName;
     }
 
-    //    private boolean accountNonExpired = true; //accountni vaqti o'tmaganmi?
-//    private boolean accountNonLocked = true; //account bloklanmaganmi?
-//    private boolean credentialsNonExpired = true; //parol o'znikimi?
     private boolean enabled = true; //tizimga kimdir kirganda undan foydalanish mumkinmi?
 
     @Override
@@ -92,15 +86,6 @@ public class User implements UserDetails {
         this.password = password;
         this.gender = gender;
         this.roles = roles;
-        this.active = active;
-    }
-
-    public User(String fullName, String phoneNumber, String email, String password, String gender, boolean active) {
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.password = password;
-        this.gender = gender;
         this.active = active;
     }
 }

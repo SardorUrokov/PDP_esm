@@ -31,13 +31,12 @@ public class Dataloader implements CommandLineRunner {
     private final PositionRepository positionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
     private final AuthenticationService service;
     private final JwtService jwtService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
-    private RegisterRequest registerRequest;
-
     @Override
     public void run(String... args) {
         if (mode.equals("always")) {
@@ -82,7 +81,6 @@ public class Dataloader implements CommandLineRunner {
             ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
             ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
 
-            System.out.println(a1_student1.getFullName() + " token: " + jwtService.generateToken(a1_student1));
         }
     }
 }
