@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
+//@Table(name = "user", schema = "users_details")
 public class User implements UserDetails {
 
     @Id
@@ -30,7 +31,7 @@ public class User implements UserDetails {
 
     private String fullName, phoneNumber, password;
 
-    private String userName = this.email;
+    private String userName;
 
     private boolean active = true;
     private String gender;
@@ -54,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.email;
     }
 
     private boolean enabled = true; //tizimga kimdir kirganda undan foydalanish mumkinmi?

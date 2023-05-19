@@ -6,11 +6,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import static com.example.pdp_esm.entity.enums.Roles.ADMIN;
 import static com.example.pdp_esm.entity.enums.Roles.MANAGER;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.example"})
 public class PdpEsmApplication {
     public static void main(String[] args) {
         SpringApplication.run(PdpEsmApplication.class, args);

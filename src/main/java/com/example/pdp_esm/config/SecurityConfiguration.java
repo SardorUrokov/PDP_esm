@@ -1,13 +1,9 @@
 package com.example.pdp_esm.config;
 
-import com.example.pdp_esm.config.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,8 +32,8 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
 
     private final String[] accessUrls = {
-            "/api/v1/auth/authenticate",
-            "/api/v1/auth/register",
+            "/api/auth/authenticate",
+            "/api/auth/register",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
