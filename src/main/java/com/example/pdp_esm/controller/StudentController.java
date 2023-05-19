@@ -22,7 +22,7 @@ public class StudentController {
         if (response.isSuccess()) log.warn("Student Created! -> {}", response.getData());
         else log.error(response.getMessage(), " -> {}" + response.getData());
 
-        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
     }
 
     @GetMapping("/student")

@@ -20,7 +20,7 @@ public class PositionController {
     public ResponseEntity<?> createPosition(@PathVariable String name){
         ApiResponse<?> response = positionService.createPosition(name);
         if (response.isSuccess()) log.warn("Position Created -> {}", response.getData());
-        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
     }
 
     @GetMapping("/position")

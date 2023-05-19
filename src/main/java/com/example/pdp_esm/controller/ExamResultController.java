@@ -22,7 +22,7 @@ public class ExamResultController {
         if (response.isSuccess()) log.warn("ExamResult Saved! -> {}", response);
         else log.error(response.getMessage());
 
-        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
     }
 
     @GetMapping("/examResult")

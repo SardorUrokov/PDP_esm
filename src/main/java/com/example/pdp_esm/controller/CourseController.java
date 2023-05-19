@@ -24,7 +24,7 @@ public class CourseController {
         else log.error(response.getMessage());
 
         return ResponseEntity
-                .status(response.isSuccess() ? 200 : 409)
+                .status(response.isSuccess() ? 201 : 409)
                 .body(response);
     }
 
