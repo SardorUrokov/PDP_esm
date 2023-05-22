@@ -13,6 +13,7 @@ public class ResPaymentDTO {
 
     private double amount;
     private String payType;
+    private String payStatus;
     private String date;
     private ResPaymentStudentInfo studentInfo;
 

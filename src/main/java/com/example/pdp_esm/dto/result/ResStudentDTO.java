@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class ResStudentDTO {
     private String fullName, phoneNumber, email;
     private Double balance;
-    private String gender;
-    private String status;
+    private String gender, status, groupName;
 }

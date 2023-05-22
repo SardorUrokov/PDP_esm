@@ -29,7 +29,6 @@ public class Dataloader implements CommandLineRunner {
     private final PositionRepository positionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ReserveUsersService reserveUsersService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -68,16 +67,14 @@ public class Dataloader implements CommandLineRunner {
             User admin_A = userRepository.save(new User("AAA", "91504235", "1@gmail.com", passwordEncoder.encode("123"), "Male", ADMIN, true));
             User admin_B = userRepository.save(new User("BBB", "91504235", "2@gmail.com", passwordEncoder.encode("123"), "Female", ADMIN, true));
 
-            Payment payment1 = paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH));
-            Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP));
-            Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD));
+            Payment payment1 = paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH, PayStatus.RECEIVED));
+            Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
+            Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
 
             ExamResult examResult1 = resultRepository.save(new ExamResult(81.8f, j1_student, ResultType.SUCCESS, List.of(question3, question4)));
             ExamResult examResult2 = resultRepository.save(new ExamResult(57f, a1_student, ResultType.FAIL, List.of(question1, question2)));
             ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
             ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
-
-
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.RegisterDTO;
 import com.example.pdp_esm.dto.ReserveUserDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.service.Implements.ReserveUsersService;
@@ -11,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,10 +20,12 @@ public class ReserveController {
     private final ReserveUsersService reserveUsersService;
 
     @PostMapping("/reserve/register")
-    public ResponseEntity<?> register(@RequestBody ReserveUserDTO dto){
+    public ResponseEntity<?> register(@RequestBody ReserveUserDTO dto) {
         final ApiResponse<?> response = reserveUsersService.updateUser(dto);
-        return ResponseEntity
-                .status(response.isSuccess() ? 201 : 409)
-                .body(response);
+
+        if (response.isSuccess()) log.warn("User Updated! -> {}", response.getData());
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
     }
 }

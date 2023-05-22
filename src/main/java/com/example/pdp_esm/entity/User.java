@@ -21,6 +21,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true)
+
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
     private String otpCode;

@@ -10,7 +10,6 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.PositionRepository;
 import com.example.pdp_esm.repository.TeacherRepository;
-import com.example.pdp_esm.repository.UserRepository;
 import com.example.pdp_esm.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,15 +52,14 @@ public class TeacherServiceImpl implements TeacherService {
 //                    .build();
 
         } else {
-
             Teacher teacher = new Teacher();
-            Teacher save = settingValues(teacher, teacherDTO);
-            final var otp = reserveUsersService.returnOTP(save);
+            final var teacherApiResponse = settingValues(teacher, teacherDTO);
+            String otp = reserveUsersService.returnOTP(teacherApiResponse.getData());
 
             return ApiResponse.builder()
                     .message("Teacher Created! otp: " + otp)
                     .success(true)
-                    .data(toResTeacherDTO(Collections.singletonList(save)))
+                    .data(toResTeacherDTO(Collections.singletonList(teacherApiResponse.getData())))
                     .build();
         }
     }
@@ -94,12 +92,12 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<Teacher> optionalTeacher = Optional.ofNullable(teacherRepository.findById(teacher_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacher_id)));
         Teacher teacher = optionalTeacher.get();
-        Teacher save = settingValues(teacher, teacherDTO);
+        final var teacherApiResponse = settingValues(teacher, teacherDTO);
 
         return ApiResponse.builder()
                 .message("Teacher Updated!")
                 .success(true)
-                .data(toResTeacherDTO(Collections.singletonList(save)))
+                .data(toResTeacherDTO(Collections.singletonList(teacherApiResponse.getData())))
                 .build();
     }
 
@@ -155,7 +153,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
-    public Teacher settingValues(Teacher teacher, TeacherDTO teacherDTO) {
+    public ApiResponse<Teacher> settingValues(Teacher teacher, TeacherDTO teacherDTO) {
 
         Optional<Position> optionalPosition = Optional.ofNullable(positionRepository.findById(teacherDTO.getPositionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Position", "id", teacherDTO.getPositionId())));
@@ -164,18 +162,22 @@ public class TeacherServiceImpl implements TeacherService {
         List<Long> coursesIds = teacherDTO.getCoursesIds();
         List<Course> courses = coursesIds.stream().map(courseRepository::getById).collect(Collectors.toList());
 
+        boolean matches = teacherDTO.getPhoneNumber().matches("[7-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}");
+        if (!matches)
+            return new ApiResponse<>("Phone number is not valid!", false);
+
+//        teacher.setEmail(teacherDTO.getEmail());
+//        teacher.setPassword(teacherDTO.getPassword());
+
         teacher.setFullName(teacherDTO.getFullName());
         teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
-//        teacher.setEmail(teacherDTO.getEmail());
-//
-//        teacher.setPassword(teacherDTO.getPassword());
         teacher.setPosition(position);
         teacher.setCourse(courses);
         teacher.setGender(teacherDTO.getGender());
         teacher.setRoles(USER);
         teacher.setActive(true);
 
-        return teacherRepository.save(teacher);
+        return new ApiResponse<>("Saved",  true, teacherRepository.save(teacher));
     }
 
     public List<ResTeacherDTO> toResTeacherDTO(List<Teacher> teachers) {

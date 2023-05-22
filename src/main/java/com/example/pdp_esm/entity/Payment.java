@@ -1,5 +1,6 @@
 package com.example.pdp_esm.entity;
 
+import com.example.pdp_esm.entity.enums.PayStatus;
 import com.example.pdp_esm.entity.enums.PayType;
 import com.example.pdp_esm.entity.template.AbsEntity;
 import jakarta.persistence.Entity;
@@ -25,4 +26,7 @@ public class Payment extends AbsEntity {
 
     @Enumerated(value = EnumType.STRING)
     private PayType payType;
+
+    @Enumerated(value = EnumType.STRING)
+    private PayStatus payStatus;
 }

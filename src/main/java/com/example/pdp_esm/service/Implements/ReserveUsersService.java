@@ -55,7 +55,6 @@ public class ReserveUsersService {
         reserveUser.setOtpCode(otp);
         reserveUser.setFullName(user.getFullName());
         reserveUsersRepository.save(reserveUser);
-
         return otp;
     }
 }
