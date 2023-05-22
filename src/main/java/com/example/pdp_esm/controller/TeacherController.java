@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
 public class TeacherController {
 
     private final TeacherServiceImpl teacherService;
 
-    @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
+    @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
     @PostMapping("/teacher/create")
     public ResponseEntity<?> createTeacher(@RequestBody TeacherDTO teacherDTO) {
         ApiResponse<?> response = teacherService.createTeacher(teacherDTO);
@@ -53,6 +54,7 @@ public class TeacherController {
         if (response.isSuccess()) log.warn("Teacher Updated {} with id! -> {}", response.getData(), id);
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
+    @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
 
     @DeleteMapping("/deleteTeacher/{id}")
     public ResponseEntity<?> deleteTeacher(@PathVariable Long id) {

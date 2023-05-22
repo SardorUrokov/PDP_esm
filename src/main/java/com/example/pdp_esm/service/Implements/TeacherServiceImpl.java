@@ -10,6 +10,7 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.PositionRepository;
 import com.example.pdp_esm.repository.TeacherRepository;
+import com.example.pdp_esm.repository.UserRepository;
 import com.example.pdp_esm.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import static com.example.pdp_esm.entity.enums.Roles.*;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final PositionRepository positionRepository;
 
@@ -35,11 +37,21 @@ public class TeacherServiceImpl implements TeacherService {
         boolean exists = teacherRepository
                 .existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
 
+        final boolean existedByEmail = userRepository.existsByEmail(teacherDTO.getEmail());
+
         if (exists) {
             return ApiResponse.builder()
                     .message("Such a Teacher is already created!")
                     .success(false)
                     .build();
+
+        } else if (existedByEmail) {
+            return ApiResponse.builder()
+                    .message("User with this email is already created!")
+                    .data(teacherDTO.getEmail())
+                    .success(false)
+                    .build();
+
         } else {
             Teacher teacher = new Teacher();
             Teacher save = settingValues(teacher, teacherDTO);
@@ -153,6 +165,8 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setFullName(teacherDTO.getFullName());
         teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
         teacher.setEmail(teacherDTO.getEmail());
+
+
         teacher.setPassword(teacherDTO.getPassword());
         teacher.setPosition(position);
         teacher.setCourse(courses);

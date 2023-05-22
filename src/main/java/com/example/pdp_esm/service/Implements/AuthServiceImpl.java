@@ -3,8 +3,10 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.AuthDTO;
 import com.example.pdp_esm.dto.RegisterDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.entity.ReserveUsers;
 import com.example.pdp_esm.entity.User;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
+import com.example.pdp_esm.repository.ReserveUsersRepository;
 import com.example.pdp_esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class AuthServiceImpl {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final ReserveUsersRepository reserveUsersRepository;
 
     @Value("${spring.mail.username}")
     String sender;
@@ -43,7 +47,7 @@ public class AuthServiceImpl {
         user.setEmail(registerDTO.getEmail());
         user.setPassword(registerDTO.getPassword());
 
-        String sent = sendOtp(user);
+        String sent = verifyCode(user);
         boolean isSuccess = true;
         String message = "Tasdiqlash kodi yuborildi";
 
@@ -90,7 +94,7 @@ public class AuthServiceImpl {
                 .build();
     }
 
-    private String sendOtp(User user) {
+    private String verifyCode(User user) {
 
         //6-xonali email tasdiqlash kodi
         String otpCode = String.valueOf(Math.random() * 899999 + 100000);
@@ -106,4 +110,5 @@ public class AuthServiceImpl {
         userRepository.save(user);
         return otpCode;
     }
+
 }

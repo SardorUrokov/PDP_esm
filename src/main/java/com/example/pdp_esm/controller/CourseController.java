@@ -6,6 +6,7 @@ import com.example.pdp_esm.service.Implements.CourseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -15,7 +16,7 @@ public class CourseController {
 
     private final CourseServiceImpl courseService;
 
-    //    @PreAuthorize(value = "hasAnyAuthority('ADMIN')") //security qo'shilganida ochiladi
+    @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
     @PostMapping("/course/create")
     public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.createCourse(courseDTO);
@@ -45,13 +46,15 @@ public class CourseController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
     @PutMapping("/course/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.updateCourse(id, courseDTO);
         log.warn("Course with id {} is updated! -> {}", id, response.getData());
-        return ResponseEntity.status(response.isSuccess() ? 200 : 400 ).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 400).body(response);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
     @DeleteMapping("/course/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ApiResponse<?> response = courseService.deleteCourse(id);
@@ -60,14 +63,14 @@ public class CourseController {
     }
 
     @GetMapping("/deletedCourses")
-    public ResponseEntity<?> getAllActiveFalseCourses(){
+    public ResponseEntity<?> getAllActiveFalseCourses() {
         ApiResponse<?> response = courseService.getAllActiveFalseCourses();
         log.warn("Getting All Terminated Courses List! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
     @GetMapping("/deletedCourses/{id}")
-    public ResponseEntity<?> getOneActiveFalseCourse(@PathVariable Long id){
+    public ResponseEntity<?> getOneActiveFalseCourse(@PathVariable Long id) {
         ApiResponse<?> response = courseService.getOneActiveFalseCourse(id);
         log.warn("Getting One Terminated Course! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

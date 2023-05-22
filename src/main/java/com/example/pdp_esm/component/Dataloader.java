@@ -1,8 +1,5 @@
 package com.example.pdp_esm.component;
 
-import com.example.pdp_esm.auth.AuthenticationService;
-import com.example.pdp_esm.auth.RegisterRequest;
-import com.example.pdp_esm.config.JwtService;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.repository.*;
@@ -31,9 +28,6 @@ public class Dataloader implements CommandLineRunner {
     private final PositionRepository positionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenRepository tokenRepository;
-    private final AuthenticationService service;
-    private final JwtService jwtService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;

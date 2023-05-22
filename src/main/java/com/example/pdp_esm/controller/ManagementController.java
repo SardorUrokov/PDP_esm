@@ -1,6 +1,5 @@
 package com.example.pdp_esm.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/management")
 @Tag(name = "Management")
 public class ManagementController {
-
 
     @Operation(
             description = "Get endpoint for manager",
@@ -43,4 +41,5 @@ public class ManagementController {
     public String delete() {
         return "DELETE:: management controller";
     }
+
 }

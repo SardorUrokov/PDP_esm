@@ -9,6 +9,7 @@ import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.repository.StudentRepository;
+import com.example.pdp_esm.repository.UserRepository;
 import com.example.pdp_esm.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,6 +29,7 @@ import static com.example.pdp_esm.entity.enums.Status.*;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
     @Override
@@ -37,10 +39,18 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
         Group group = optionalGroup.get();
 
+        final boolean existedByEmail = userRepository.existsByEmail(studentDTO.getEmail());
         boolean exists = studentRepository.existsByPhoneNumberAndGroup(studentDTO.getPhoneNumber(), group);
+
         if (exists) {
             return ApiResponse.builder()
                     .message("Such a Student is already saved!")
+                    .success(false)
+                    .build();
+        } else if (existedByEmail) {
+            return ApiResponse.builder()
+                    .message("User with this email is already created!")
+                    .data(studentDTO.getEmail())
                     .success(false)
                     .build();
         } else {
