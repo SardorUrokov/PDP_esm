@@ -1,9 +1,7 @@
 package com.example.pdp_esm.dto.result;
 
-import jakarta.validation.constraints.Null;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.lang.Nullable;
 
 @Data
 @Builder

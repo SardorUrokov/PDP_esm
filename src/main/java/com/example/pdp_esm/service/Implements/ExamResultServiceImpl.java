@@ -1,17 +1,21 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.result.*;
 import com.example.pdp_esm.entity.*;
+import com.example.pdp_esm.entity.requests.DeleteRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.ExamResultService;
+import com.example.pdp_esm.service.repository.DeleteExamResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +25,8 @@ import java.util.stream.Collectors;
 public class ExamResultServiceImpl implements ExamResultService {
 
     private final ExamResultRepository examResultRepository;
+    private final DeleteExamResultRepository deleteExamResultRepository;
     private final StudentRepository studentRepository;
-    private final StudentServiceImpl studentService;
     private final QuestionRepository questionRepository;
 
     @Override
@@ -87,6 +91,42 @@ public class ExamResultServiceImpl implements ExamResultService {
                 .build();
     }
 
+
+    public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
+        return examResults.stream().map(this::toResExamResultDTO).toList();
+    }
+
+    public ApiResponse<?> createDeleteRequest(DeleteRequestDTO deleteRequestDTO) {
+
+        Optional<ExamResult> optionalExamResult = examResultRepository.findById(deleteRequestDTO.getId());
+        ExamResult examResult = optionalExamResult.get();
+
+        DeleteRequest<ExamResult> deleteExamResult = new DeleteRequest<>();
+        deleteExamResult.setObject(examResult);
+
+        if (deleteRequestDTO.getDescription().isEmpty())
+            return new ApiResponse<>("Description is empty!", false);
+
+        deleteExamResult.setDescription(deleteRequestDTO.getDescription());
+        deleteExamResult.setCreatedAt(new Date());
+        deleteExamResult.setActive(true);
+
+        DeleteRequest<ExamResult> save =
+                deleteExamResultRepository.save(deleteExamResult);
+        return
+                new ApiResponse<>("Delete ExamResult Request created!", true, (save));
+    }
+
+    public ApiResponse<?> getAllDeleteExamResultRequests() {
+        List<DeleteRequest<ExamResult>> deletePaymentRequestList = deleteExamResultRepository.findAll();
+
+        return ApiResponse.builder()
+                .message("Delete ExamResult Requests LIst ")
+                .success(true)
+                .data((deletePaymentRequestList))
+                .build();
+    }
+
     public ExamResult settingValues(ExamResult result, ExamResultDTO resultDTO) {
 
         Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(resultDTO.getStudentId())
@@ -118,10 +158,5 @@ public class ExamResultServiceImpl implements ExamResultService {
                         .build())
                 .questionList(examResult.getQuestionList())
                 .build();
-    }
-
-
-    public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
-        return examResults.stream().map(this::toResExamResultDTO).toList();
     }
 }

@@ -1,10 +1,9 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.DeletePaymentDTO;
+import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.PaymentDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.service.Implements.PaymentServiceImpl;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -60,11 +59,11 @@ public class PaymentController {
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
     @PostMapping("/deleteRequest")
-    public ResponseEntity<?> deletePaymentRequest(@RequestBody DeletePaymentDTO dto) {
+    public ResponseEntity<?> deletePaymentRequest(@RequestBody DeleteRequestDTO dto) {
         ApiResponse<?> response = paymentService.createDeletePaymentRequest(dto);
 
         if (response.isSuccess())
-            log.warn("Delete Payment Request Created with {} Payment id! -> {}", dto.getPayment_id(), response.getData());
+            log.warn("Delete Payment Request Created with {} Payment id! -> {}", dto.getId(), response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);

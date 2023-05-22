@@ -10,12 +10,12 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DeletePaymentDTO {
+public class DeleteRequestDTO {
 
-    @NotNull(message = "To'lovni o'chirish uchun uning ID sini kiriting")
-    Long payment_id;
+    @NotNull(message = "O'chirish uchun data ing ID sini kiriting")
+    Long id;
 
     @Length(min = 10, max = 100)
-    @NotNull(message = "To'lovni o'chirish uchun sabab kiriting")
+    @NotNull(message = "O'chirish uchun sabab kiriting")
     String description;
 }

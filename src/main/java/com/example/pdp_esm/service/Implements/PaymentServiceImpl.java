@@ -1,6 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.DeletePaymentDTO;
+import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.PaymentDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResDeletePaymentDTO;
@@ -11,9 +11,9 @@ import com.example.pdp_esm.entity.Payment;
 import com.example.pdp_esm.entity.Student;
 import com.example.pdp_esm.entity.enums.PayStatus;
 import com.example.pdp_esm.entity.enums.PayType;
-import com.example.pdp_esm.entity.requests.DeletePaymentRequest;
+import com.example.pdp_esm.entity.requests.DeleteRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.DeletePaymentRequestsRepository;
+import com.example.pdp_esm.repository.deleteRequests.DeletePaymentRequestsRepository;
 import com.example.pdp_esm.repository.PaymentRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.PaymentService;
@@ -80,33 +80,33 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
     }
 
-    public ApiResponse<?> createDeletePaymentRequest(DeletePaymentDTO deletePaymentDTO) {
+    public ApiResponse<?> createDeletePaymentRequest(DeleteRequestDTO deleteRequestDTO) {
 
-        Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(deletePaymentDTO.getPayment_id())
-                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", deletePaymentDTO.getPayment_id())));
+        Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(deleteRequestDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", deleteRequestDTO.getId())));
         Payment payment = optionalPayment.get();
 
-        DeletePaymentRequest deletePaymentRequest = new DeletePaymentRequest();
-        deletePaymentRequest.setPayment((payment));
+        DeleteRequest<Payment> deletePaymentRequest = new DeleteRequest<>();
+        deletePaymentRequest.setObject((payment));
 
-        if (deletePaymentDTO.getDescription().isEmpty())
+        if (deleteRequestDTO.getDescription().isEmpty())
             return new ApiResponse<>("Description is empty!", false);
 
-        deletePaymentRequest.setDescription(deletePaymentDTO.getDescription());
+        deletePaymentRequest.setDescription(deleteRequestDTO.getDescription());
         deletePaymentRequest.setCreatedAt(new Date());
         deletePaymentRequest.setActive(true);
 
-        DeletePaymentRequest save =
+        DeleteRequest<Payment> save =
                 deletePaymentRequestsRepository.save(deletePaymentRequest);
         return
                 new ApiResponse<>("Delete Payment Request created!", true, toResDeletePaymentDTO(save));
     }
 
     public ApiResponse<?> getAllDeletePaymentRequests() {
-        List<DeletePaymentRequest> deletePaymentRequestList = deletePaymentRequestsRepository.findAll();
+        List<DeleteRequest<Payment>> deletePaymentRequestList = deletePaymentRequestsRepository.findAll();
 
         return ApiResponse.builder()
-                .message("Deltete Payment Requests LIst ")
+                .message("Delete Payment Requests LIst ")
                 .success(true)
                 .data(toResDeletePaymentDTOList(deletePaymentRequestList))
                 .build();
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPayStatus(PayStatus.CANCELLED);
         paymentRepository.save(payment);
 
-        Optional<DeletePaymentRequest> optional = deletePaymentRequestsRepository.findByPaymentId(payment_id);
+        Optional<DeleteRequest<Payment>> optional = deletePaymentRequestsRepository.findById(payment_id);
         optional.get().setActive(false);
 
         deletePaymentRequestsRepository.save(optional.get());
@@ -164,16 +164,16 @@ public class PaymentServiceImpl implements PaymentService {
         return payments.stream().map(this::toResDTO).toList();
     }
 
-    public ResDeletePaymentDTO toResDeletePaymentDTO(DeletePaymentRequest deletePaymentRequest) {
+    public ResDeletePaymentDTO toResDeletePaymentDTO(DeleteRequest<Payment> deletePaymentRequest) {
         return ResDeletePaymentDTO.builder()
                 .description(deletePaymentRequest.getDescription())
                 .requestCreated_time(String.valueOf(deletePaymentRequest.getCreatedAt()))
                 .active(deletePaymentRequest.getActive())
-                .resPaymentDTO(toResDTO(deletePaymentRequest.getPayment()))
+                .resPaymentDTO(toResDTO(deletePaymentRequest.getObject()))
                 .build();
     }
 
-    public List<ResDeletePaymentDTO> toResDeletePaymentDTOList(List<DeletePaymentRequest> deletePaymentRequestList) {
+    public List<ResDeletePaymentDTO> toResDeletePaymentDTOList(List<DeleteRequest<Payment>> deletePaymentRequestList) {
         return deletePaymentRequestList.stream().map(this::toResDeletePaymentDTO).toList();
     }
 }
