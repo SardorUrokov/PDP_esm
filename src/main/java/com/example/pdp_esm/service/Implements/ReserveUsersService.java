@@ -8,7 +8,7 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ReserveUsersRepository;
 import com.example.pdp_esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,20 +20,24 @@ public class ReserveUsersService {
 
     private final ReserveUsersRepository reserveUsersRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public ApiResponse<?> updateUser(ReserveUserDTO reserveUserDTO) {
+
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findUserByPhoneNumber(reserveUserDTO.getPhoneNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "phoneNumber", reserveUserDTO.getPhoneNumber())));
 
         User user = optionalUser.get();
-        String otp = returnOTP(user);
+        user.setEmail(reserveUserDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(reserveUserDTO.getPassword()));
 
         return ApiResponse.builder()
-                .message("User uchun Bir Martalik parol yaratildi")
+                .message("User updated")
                 .success(true)
-                .data(otp)
+                .data(userRepository.save(user))
                 .build();
     }
+
     public String returnOTP(User user) {
 
         final String usersDType = userRepository.getUsersDType(user.getPhoneNumber()); //users dType maybe Student or Teacher
@@ -43,7 +47,6 @@ public class ReserveUsersService {
 
         if (usersDType.equals("Student"))
             otp = "AS-" + rndCode;
-
         else if (usersDType.equals("Teacher"))
             otp = "AT-" + rndCode;
 
@@ -55,5 +58,4 @@ public class ReserveUsersService {
 
         return otp;
     }
-
 }

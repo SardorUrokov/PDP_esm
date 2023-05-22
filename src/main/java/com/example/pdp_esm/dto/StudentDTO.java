@@ -14,8 +14,8 @@ public class StudentDTO {
     private Long groupId;
     private Double balance;
 
-    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    private String email, password;
+//    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+//    private String email, password;
 
     private String gender;
 }

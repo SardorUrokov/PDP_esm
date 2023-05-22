@@ -27,9 +27,9 @@ import static com.example.pdp_esm.entity.enums.Roles.*;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final PositionRepository positionRepository;
+    private final ReserveUsersService reserveUsersService;
 
     @Override
     public ApiResponse<?> createTeacher(TeacherDTO teacherDTO) {
@@ -37,7 +37,7 @@ public class TeacherServiceImpl implements TeacherService {
         boolean exists = teacherRepository
                 .existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
 
-        final boolean existedByEmail = userRepository.existsByEmail(teacherDTO.getEmail());
+//        final boolean existedByEmail = userRepository.existsByEmail(teacherDTO.getEmail());
 
         if (exists) {
             return ApiResponse.builder()
@@ -45,19 +45,21 @@ public class TeacherServiceImpl implements TeacherService {
                     .success(false)
                     .build();
 
-        } else if (existedByEmail) {
-            return ApiResponse.builder()
-                    .message("User with this email is already created!")
-                    .data(teacherDTO.getEmail())
-                    .success(false)
-                    .build();
+//        } else if (existedByEmail) {
+//            return ApiResponse.builder()
+//                    .message("User with this email is already created!")
+//                    .data(teacherDTO.getEmail())
+//                    .success(false)
+//                    .build();
 
         } else {
+
             Teacher teacher = new Teacher();
             Teacher save = settingValues(teacher, teacherDTO);
+            final var otp = reserveUsersService.returnOTP(save);
 
             return ApiResponse.builder()
-                    .message("Teacher Created!")
+                    .message("Teacher Created! otp: " + otp)
                     .success(true)
                     .data(toResTeacherDTO(Collections.singletonList(save)))
                     .build();
@@ -164,10 +166,9 @@ public class TeacherServiceImpl implements TeacherService {
 
         teacher.setFullName(teacherDTO.getFullName());
         teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
-        teacher.setEmail(teacherDTO.getEmail());
-
-
-        teacher.setPassword(teacherDTO.getPassword());
+//        teacher.setEmail(teacherDTO.getEmail());
+//
+//        teacher.setPassword(teacherDTO.getPassword());
         teacher.setPosition(position);
         teacher.setCourse(courses);
         teacher.setGender(teacherDTO.getGender());

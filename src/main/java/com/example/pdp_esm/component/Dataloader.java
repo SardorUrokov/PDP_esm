@@ -3,6 +3,7 @@ package com.example.pdp_esm.component;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.repository.*;
+import com.example.pdp_esm.service.Implements.ReserveUsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -28,6 +29,7 @@ public class Dataloader implements CommandLineRunner {
     private final PositionRepository positionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReserveUsersService reserveUsersService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -74,6 +76,7 @@ public class Dataloader implements CommandLineRunner {
             ExamResult examResult2 = resultRepository.save(new ExamResult(57f, a1_student, ResultType.FAIL, List.of(question1, question2)));
             ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
             ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
+
 
         }
     }

@@ -23,8 +23,8 @@ public class TeacherDTO {
     private Long positionId;
     private List<Long> coursesIds;
 
-    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    private String email, password;
+//    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+//    private String email, password;
 
     private String gender;
 }

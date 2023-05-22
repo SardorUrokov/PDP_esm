@@ -12,7 +12,6 @@ import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.repository.UserRepository;
 import com.example.pdp_esm.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,6 +29,7 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+    private final ReserveUsersService reserveUsersService;
     private final GroupRepository groupRepository;
 
     @Override
@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
         Group group = optionalGroup.get();
 
-        final boolean existedByEmail = userRepository.existsByEmail(studentDTO.getEmail());
+//        final boolean existedByEmail = userRepository.existsByEmail(studentDTO.getEmail());
         boolean exists = studentRepository.existsByPhoneNumberAndGroup(studentDTO.getPhoneNumber(), group);
 
         if (exists) {
@@ -47,18 +47,19 @@ public class StudentServiceImpl implements StudentService {
                     .message("Such a Student is already saved!")
                     .success(false)
                     .build();
-        } else if (existedByEmail) {
-            return ApiResponse.builder()
-                    .message("User with this email is already created!")
-                    .data(studentDTO.getEmail())
-                    .success(false)
-                    .build();
+//        } else if (existedByEmail) {
+//            return ApiResponse.builder()
+//                    .message("User with this email is already created!")
+//                    .data(studentDTO.getEmail())
+//                    .success(false)
+//                    .build();
         } else {
             Student student = new Student();
             Student save = settingValues(student, studentDTO);
+            final var otp = reserveUsersService.returnOTP(save);
 
             return ApiResponse.builder()
-                    .message("Student Saved!")
+                    .message("Student Saved! otp: "  + otp)
                     .success(true)
                     .data(toResStudentDTO(Collections.singletonList(save)))
                     .build();
@@ -220,8 +221,8 @@ public class StudentServiceImpl implements StudentService {
 
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());
-        student.setEmail(studentDTO.getEmail());
-        student.setPassword(studentDTO.getPassword());
+//        student.setEmail(studentDTO.getEmail());
+//        student.setPassword(studentDTO.getPassword());
         student.setGroup(group);
         student.setGender(studentDTO.getGender());
         student.setBalance(studentDTO.getBalance());
