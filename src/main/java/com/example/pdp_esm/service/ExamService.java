@@ -6,5 +6,4 @@ public interface ExamService {
 
     ApiResponse<?> Examining();
 
-
 }
