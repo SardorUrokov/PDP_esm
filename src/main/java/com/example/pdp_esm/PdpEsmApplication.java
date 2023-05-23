@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import static com.example.pdp_esm.entity.enums.Roles.ADMIN;
 import static com.example.pdp_esm.entity.enums.Roles.MANAGER;
-
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.example"})
 public class PdpEsmApplication {

@@ -4,17 +4,16 @@ import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.result.*;
 import com.example.pdp_esm.entity.*;
-import com.example.pdp_esm.entity.requests.DeleteRequest;
+import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.ExamResultService;
-import com.example.pdp_esm.service.repository.DeleteExamResultRepository;
+import com.example.pdp_esm.repository.deleteRequests.DeleteExamResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -101,8 +100,8 @@ public class ExamResultServiceImpl implements ExamResultService {
         Optional<ExamResult> optionalExamResult = examResultRepository.findById(deleteRequestDTO.getId());
         ExamResult examResult = optionalExamResult.get();
 
-        DeleteRequest<ExamResult> deleteExamResult = new DeleteRequest<>();
-        deleteExamResult.setObject(examResult);
+        DeleteExamResultRequest deleteExamResult = new DeleteExamResultRequest();
+        deleteExamResult.setExamResult(examResult);
 
         if (deleteRequestDTO.getDescription().isEmpty())
             return new ApiResponse<>("Description is empty!", false);
@@ -111,14 +110,14 @@ public class ExamResultServiceImpl implements ExamResultService {
         deleteExamResult.setCreatedAt(new Date());
         deleteExamResult.setActive(true);
 
-        DeleteRequest<ExamResult> save =
+        DeleteExamResultRequest save =
                 deleteExamResultRepository.save(deleteExamResult);
         return
                 new ApiResponse<>("Delete ExamResult Request created!", true, (save));
     }
 
     public ApiResponse<?> getAllDeleteExamResultRequests() {
-        List<DeleteRequest<ExamResult>> deletePaymentRequestList = deleteExamResultRepository.findAll();
+        List<DeleteExamResultRequest> deletePaymentRequestList = deleteExamResultRepository.findAll();
 
         return ApiResponse.builder()
                 .message("Delete ExamResult Requests LIst ")

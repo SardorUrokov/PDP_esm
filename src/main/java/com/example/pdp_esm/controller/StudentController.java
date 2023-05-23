@@ -21,6 +21,7 @@ public class StudentController {
     @PostMapping("/student/create")
     public ResponseEntity<?> createStudent(@RequestBody StudentDTO studentDTO) {
         ApiResponse<?> response = studentService.createStudent(studentDTO);
+
         if (response.isSuccess()) log.warn("Student Created! -> {}", response.getData());
         else log.error(response.getMessage(), " -> {}" + response.getData());
 

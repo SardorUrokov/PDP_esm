@@ -29,7 +29,6 @@ public class PaymentController {
         return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
     }
 
-    //    @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
     @GetMapping("/allPayments")
     public ResponseEntity<?> getAllPayments() {
         ApiResponse<?> response = paymentService.getAllPayments();
@@ -59,7 +58,7 @@ public class PaymentController {
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
     @PostMapping("/deleteRequest")
-    public ResponseEntity<?> deletePaymentRequest(@RequestBody DeleteRequestDTO dto) {
+    public ResponseEntity<?> createDeletePaymentRequest(@RequestBody DeleteRequestDTO dto) {
         ApiResponse<?> response = paymentService.createDeletePaymentRequest(dto);
 
         if (response.isSuccess())

@@ -7,14 +7,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
 public class PositionController {
 
     private final PositionServiceImpl positionService;
+
+    @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
 
     @PostMapping("/position/create+{name}")
     public ResponseEntity<?> createPosition(@PathVariable String name){
@@ -37,6 +41,7 @@ public class PositionController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
     @DeleteMapping("/deletePosition/{id}")
     public ResponseEntity<?> deletePosition(@PathVariable Long id){
         ApiResponse<?> response = positionService.deletePosition(id);

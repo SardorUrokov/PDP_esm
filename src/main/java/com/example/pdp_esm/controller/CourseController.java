@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/course")
 public class CourseController {
 
     private final CourseServiceImpl courseService;
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
-    @PostMapping("/course/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createCourse(@RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.createCourse(courseDTO);
 
@@ -29,14 +30,14 @@ public class CourseController {
                 .body(response);
     }
 
-    @GetMapping("/course")
+    @GetMapping("/")
     public ResponseEntity<?> getAllCourses() {
         ApiResponse<?> response = courseService.getAllCourses();
         log.warn("Getting All Courses List! -> {}", response.getData());
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @GetMapping("/course/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getOneCourse(@PathVariable Long id) {
         ApiResponse<?> response = courseService.getOneCourse(id);
 
@@ -47,7 +48,7 @@ public class CourseController {
     }
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
-    @PutMapping("/course/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CourseDTO courseDTO) {
         ApiResponse<?> response = courseService.updateCourse(id, courseDTO);
         log.warn("Course with id {} is updated! -> {}", id, response.getData());
@@ -55,7 +56,7 @@ public class CourseController {
     }
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
-    @DeleteMapping("/course/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ApiResponse<?> response = courseService.deleteCourse(id);
         log.warn("Course with id {} is terminated! -> {}", id, response.getData());

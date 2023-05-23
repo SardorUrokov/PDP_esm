@@ -57,12 +57,12 @@ public class Dataloader implements CommandLineRunner {
             Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "977777777", "21@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
             Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998998998999", "14@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1000000d, Status.COMPLETED, F1));
 
-            Question question1 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
-            Question question2 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
-            Question question3 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
-            Question question4 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
-            Question question5 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
-            Question question6 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer"));
+            Question question1 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question2 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question3 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question4 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question5 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question6 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
 
             User admin_A = userRepository.save(new User("AAA", "91504235", "1@gmail.com", passwordEncoder.encode("123"), "Male", ADMIN, true));
             User admin_B = userRepository.save(new User("BBB", "91504235", "2@gmail.com", passwordEncoder.encode("123"), "Female", ADMIN, true));

@@ -9,17 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/reserve")
 @PreAuthorize(value = "hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
 public class ReserveController {
 
     private final ReserveUsersService reserveUsersService;
 
-    @PostMapping("/reserve/register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody ReserveUserDTO dto) {
         final ApiResponse<?> response = reserveUsersService.updateUser(dto);
 

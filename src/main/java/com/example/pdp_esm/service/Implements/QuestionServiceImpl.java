@@ -35,13 +35,24 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public ApiResponse<?> getAllQuestions() {
-        List<Question> questionList = questionRepository.findAll();
+        List<Question> questionList = questionRepository.findAllByActiveTrue();
 
         return ApiResponse.builder()
-                .message("All Questions List")
+                .message("All Active True Questions List")
                 .success(true)
                 .data(questionList)
                 .build();
+    }
+
+    @Override
+    public ApiResponse<?> getAllByActive(String active) {
+
+        if (!(active.equals("true") || active.equals("false")))
+            return new ApiResponse<>("Active type doesn't exist" + active, false);
+
+        List<Question> allQuestionsByActive = questionRepository.findAllByActive(Boolean.valueOf(active));
+        return new ApiResponse<>("All Questions By Active " + active, true, allQuestionsByActive);
+
     }
 
     @Override
@@ -72,10 +83,11 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public ApiResponse<?> deleteQuestion(Long question_id) {
 
-        return ApiResponse.builder()
-                .message("DELETE QUESTION METHOD NOT CREATED YET")
-                .success(false)
-                .build();
+        if (questionRepository.findById(question_id).isPresent()) {
+            questionRepository.findById(question_id).get().setActive(false);
+            return new ApiResponse<>("Question is Terminated", true);
+        } else
+            return new ApiResponse<>("Question not found", false);
     }
 
     public Question settingValues(Question question, QuestionDTO questionDTO) {
