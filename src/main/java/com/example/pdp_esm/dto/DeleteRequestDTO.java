@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
 public class DeleteRequestDTO {
 
     @NotNull(message = "O'chirish uchun data ing ID sini kiriting")
-    Long id;
+    Long data_id;
 
     @Length(min = 10, max = 100)
     @NotNull(message = "O'chirish uchun sabab kiriting")

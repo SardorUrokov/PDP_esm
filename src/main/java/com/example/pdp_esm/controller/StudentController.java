@@ -42,7 +42,7 @@ public class StudentController {
     public ResponseEntity<?> getOneStudent(@PathVariable Long id) {
 
         ApiResponse<?> response = studentService.getOneStudent(id);
-        if (response.isSuccess()) log.warn("Getting Student {} with id! -> {}", response.getData(), id);
+        if (response.isSuccess()) log.warn("Getting Student {} with id! -> {}", id, response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

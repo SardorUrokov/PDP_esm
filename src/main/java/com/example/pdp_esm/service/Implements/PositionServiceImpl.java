@@ -63,7 +63,7 @@ public class PositionServiceImpl implements PositionService {
             positionRepository.deleteById(id);
             return ApiResponse.builder()
                     .message("Position deleted!")
-                    .success(false)
+                    .success(true)
                     .build();
 
         } else return ApiResponse.builder()

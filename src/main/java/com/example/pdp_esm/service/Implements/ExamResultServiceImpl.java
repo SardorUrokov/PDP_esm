@@ -5,6 +5,7 @@ import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.result.*;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
+import com.example.pdp_esm.entity.requests.DeletePaymentRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
@@ -76,7 +77,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         ExamResult save = settingValues(result, resultDTO);
 
         return ApiResponse.builder()
-                .message("Result Updated!")
+                .message("ExamResult Updated!")
                 .success(true)
                 .data(toResExamResultDTO(save))
                 .build();
@@ -84,20 +85,22 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     @Override
     public ApiResponse<?> deleteExamResult(Long id) {
-        return ApiResponse.builder()
-                .message("Delete Result Method Not Created yet!")
-                .success(false)
-                .build();
-    }
 
+//         find examResult in examResultRepository through examResult_id
+//         then bring it to deleteExamResultRepository and examResultRepository.delete()
+        Optional<ExamResult> optionalExamResult = Optional.ofNullable(examResultRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "id", id)));
+        ExamResult examResult = optionalExamResult.get();
 
-    public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
-        return examResults.stream().map(this::toResExamResultDTO).toList();
+        deleteExamResultRepository.deleteByExamResult_Id(examResult.getId());
+        examResultRepository.delete(examResult);
+
+        return
+                new ApiResponse<>("ExamResult with " + id + " is Deleted!", true);
     }
 
     public ApiResponse<?> createDeleteRequest(DeleteRequestDTO deleteRequestDTO) {
-
-        Optional<ExamResult> optionalExamResult = examResultRepository.findById(deleteRequestDTO.getId());
+        Optional<ExamResult> optionalExamResult = examResultRepository.findById(deleteRequestDTO.getData_id());
         ExamResult examResult = optionalExamResult.get();
 
         DeleteExamResultRequest deleteExamResult = new DeleteExamResultRequest();
@@ -113,7 +116,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         DeleteExamResultRequest save =
                 deleteExamResultRepository.save(deleteExamResult);
         return
-                new ApiResponse<>("Delete ExamResult Request created!", true, (save));
+                new ApiResponse<>("Delete ExamResult Request created!", true, toResDeleteExamResultDTO(save));
     }
 
     public ApiResponse<?> getAllDeleteExamResultRequests() {
@@ -122,7 +125,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         return ApiResponse.builder()
                 .message("Delete ExamResult Requests LIst ")
                 .success(true)
-                .data((deletePaymentRequestList))
+                .data(toResDeleteExamResultDTOList(deletePaymentRequestList))
                 .build();
     }
 
@@ -133,7 +136,9 @@ public class ExamResultServiceImpl implements ExamResultService {
         Student student = optionalStudent.get();
 
         List<Long> questionsIdList = resultDTO.getQuestionsIdList();
-        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).collect(Collectors.toList());
+//        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).collect(Collectors.toList());
+        List<Question> questionList = questionsIdList.stream()
+                .map(questionId -> questionRepository.getById(questionId)).toList();
 
         result.setStudent(student);
         result.setScore(resultDTO.getScore());
@@ -142,7 +147,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         return examResultRepository.save(result);
     }
 
-    public ResExamResults toResExamResultDTO (ExamResult examResult){
+    public ResExamResults toResExamResultDTO(ExamResult examResult) {
 
         Student student = examResult.getStudent();
         Group group = examResult.getStudent().getGroup();
@@ -157,5 +162,21 @@ public class ExamResultServiceImpl implements ExamResultService {
                         .build())
                 .questionList(examResult.getQuestionList())
                 .build();
+    }
+
+    public ResDeleteExamResultDTO toResDeleteExamResultDTO(DeleteExamResultRequest deleteExamResultRequest){
+        return ResDeleteExamResultDTO.builder()
+                .description(deleteExamResultRequest.getDescription())
+                .requestCreated_time(deleteExamResultRequest.getCreatedAt().toString())
+                .active(deleteExamResultRequest.getActive())
+                .examResults(toResExamResultDTO(deleteExamResultRequest.getExamResult()))
+                .build();
+    }
+
+    public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
+        return examResults.stream().map(this::toResExamResultDTO).toList();
+    }
+    public List<ResDeleteExamResultDTO> toResDeleteExamResultDTOList(List<DeleteExamResultRequest> deleteExamResultRequestList) {
+        return deleteExamResultRequestList.stream().map(this::toResDeleteExamResultDTO).toList();
     }
 }

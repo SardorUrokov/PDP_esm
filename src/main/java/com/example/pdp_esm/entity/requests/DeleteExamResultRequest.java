@@ -1,7 +1,6 @@
 package com.example.pdp_esm.entity.requests;
 
 import com.example.pdp_esm.entity.ExamResult;
-import com.example.pdp_esm.entity.Payment;
 import com.example.pdp_esm.entity.template.AbsEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;

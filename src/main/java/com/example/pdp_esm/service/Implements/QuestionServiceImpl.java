@@ -48,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService {
     public ApiResponse<?> getAllByActive(String active) {
 
         if (!(active.equals("true") || active.equals("false")))
-            return new ApiResponse<>("Active type doesn't exist" + active, false);
+            return new ApiResponse<>("Active type doesn't exist " + active, false);
 
         List<Question> allQuestionsByActive = questionRepository.findAllByActive(Boolean.valueOf(active));
         return new ApiResponse<>("All Questions By Active " + active, true, allQuestionsByActive);

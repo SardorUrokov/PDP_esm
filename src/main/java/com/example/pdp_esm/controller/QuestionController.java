@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/question")
 @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
 public class QuestionController {
 
     private final QuestionServiceImpl questionService;
 
-    @PostMapping("/question/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createQuestion(@RequestBody QuestionDTO questionDTO){
         ApiResponse<?> response = questionService.createQuestion(questionDTO);
 
@@ -27,7 +28,7 @@ public class QuestionController {
         return ResponseEntity.status(response.isSuccess()? 201 : 409).body(response);
     }
 
-    @GetMapping("/question")
+    @GetMapping("/")
     public ResponseEntity<?> getAllQuestions(){
         ApiResponse<?> response = questionService.getAllQuestions();
 
@@ -37,17 +38,17 @@ public class QuestionController {
         return ResponseEntity.status(response.isSuccess()? 200 : 409).body(response);
     }
 
-    @GetMapping("/question/{active}")
+    @GetMapping("/questionsByActive/{active}")
     public ResponseEntity<?> getAllQuestionsByActive(@PathVariable String active){
         ApiResponse<?> response = questionService.getAllByActive(active);
 
-        if (response.isSuccess()) log.warn("All Questions by List Active {} -> {}", active, response);
+        if (response.isSuccess()) log.warn("All Questions List by Active {} -> {}", active, response);
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess()? 200 : 409).body(response);
     }
 
-    @GetMapping("/question/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getOneQuestion(@PathVariable Long id){
         ApiResponse<?> response = questionService.getOneQuestion(id);
 
@@ -57,7 +58,7 @@ public class QuestionController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @PutMapping("/question/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody QuestionDTO questionDTO){
         ApiResponse<?> response = questionService.updateQuestion(id, questionDTO);
 
@@ -68,7 +69,7 @@ public class QuestionController {
     }
 
     @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
-    @DeleteMapping("/question/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuestion(@PathVariable Long id){
         ApiResponse<?> response = questionService.deleteQuestion(id);
 

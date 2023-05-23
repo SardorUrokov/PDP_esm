@@ -82,8 +82,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     public ApiResponse<?> createDeletePaymentRequest(DeleteRequestDTO deleteRequestDTO) {
 
-        Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(deleteRequestDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", deleteRequestDTO.getId())));
+        Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(deleteRequestDTO.getData_id())
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", deleteRequestDTO.getData_id())));
         Payment payment = optionalPayment.get();
 
         DeletePaymentRequest deletePaymentRequest = new DeletePaymentRequest();

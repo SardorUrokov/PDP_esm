@@ -62,7 +62,7 @@ public class PaymentController {
         ApiResponse<?> response = paymentService.createDeletePaymentRequest(dto);
 
         if (response.isSuccess())
-            log.warn("Delete Payment Request Created with {} Payment id! -> {}", dto.getId(), response.getData());
+            log.warn("Delete Payment Request Created with {} Payment id! -> {}", dto.getData_id(), response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);

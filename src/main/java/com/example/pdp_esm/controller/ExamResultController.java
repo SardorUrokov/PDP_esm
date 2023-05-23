@@ -19,7 +19,7 @@ public class ExamResultController {
     private final ExamResultServiceImpl resultService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createQuestion(@RequestBody ExamResultDTO resultDTO) {
+    public ResponseEntity<?> createExamResult(@RequestBody ExamResultDTO resultDTO) {
         ApiResponse<?> response = resultService.createExamResult(resultDTO);
 
         if (response.isSuccess()) log.warn("ExamResult Saved! -> {}", response);
@@ -29,7 +29,7 @@ public class ExamResultController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllQuestions(){
+    public ResponseEntity<?> getAllExamResults(){
         ApiResponse<?> response = resultService.getAllExamResult();
 
         if (response.isSuccess()) log.warn("All Exam Results List! -> {}", response);
@@ -39,7 +39,7 @@ public class ExamResultController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneQuestion(@PathVariable Long id){
+    public ResponseEntity<?> getOneExamResult(@PathVariable Long id){
         ApiResponse<?> response = resultService.getOneExamResult(id);
 
         if (response.isSuccess()) log.warn("Getting Exam Result {} with id! -> {}", response.getData(), id);
@@ -52,7 +52,7 @@ public class ExamResultController {
     public ResponseEntity<?> updateExamResult (@PathVariable Long id, @RequestBody ExamResultDTO resultDTO){
         ApiResponse<?> response = resultService.updateExamResult(id, resultDTO);
 
-        if (response.isSuccess()) log.warn("Exam Result Updated! {} with id! -> {}", response.getData(), id);
+        if (response.isSuccess()) log.warn("Exam Result with {} id is Updated! -> {}", response.getData(), id);
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
@@ -60,7 +60,7 @@ public class ExamResultController {
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN')")
     @PostMapping("/deleteRequest")
-    public ResponseEntity<?> createDeleteQuestionRequest(@RequestBody DeleteRequestDTO deleteRequestDTO){
+    public ResponseEntity<?> createDeleteExamResultRequest(@RequestBody DeleteRequestDTO deleteRequestDTO){
 
         ApiResponse<?> response = resultService.createDeleteRequest(deleteRequestDTO);
 
@@ -72,7 +72,7 @@ public class ExamResultController {
 
     @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
     @GetMapping("/deleteRequestsList")
-    public ResponseEntity<?> deletePaymentRequestsList() {
+    public ResponseEntity<?> deleteExamResultRequestsList() {
         ApiResponse<?> response = resultService.getAllDeleteExamResultRequests();
 
         if (response.isSuccess()) log.warn("Delete ExamResult Requests List! -> {}", response.getData());
@@ -83,7 +83,7 @@ public class ExamResultController {
 
     @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long id){
+    public ResponseEntity<?> deleteExamResult(@PathVariable Long id){
         ApiResponse<?> response = resultService.deleteExamResult(id);
 
         if (response.isSuccess()) log.warn("Exam Result Deleted! {} with id! -> {}", response.getData(), id);
