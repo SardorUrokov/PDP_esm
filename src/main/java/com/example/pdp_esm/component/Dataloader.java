@@ -27,11 +27,14 @@ public class Dataloader implements CommandLineRunner {
     private final PaymentRepository paymentRepository;
     private final QuestionRepository questionRepository;
     private final PositionRepository positionRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ExamResultRepository resultRepository;
     private final AuthenticationService authenticationService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
+
     @Override
     public void run(String... args) {
         if (mode.equals("always")) {
@@ -68,13 +71,18 @@ public class Dataloader implements CommandLineRunner {
             Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
             Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
 
+            ExamResult examResult1 = resultRepository.save(new ExamResult(81.8f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
+            ExamResult examResult2 = resultRepository.save(new ExamResult(57f, a1_student1, ResultType.FAIL, List.of(question1, question2)));
+            ExamResult examResult3 = resultRepository.save(new ExamResult(57f, a1_student, ResultType.FAIL, List.of(question1, question2)));
+
             var aaa = RegisterRequest.builder()
                     .fullName("AAA")
                     .email("a@gmail.com")
                     .password("password")
                     .role(USER)
                     .build();
-//            System.out.println("AAA token: " + authenticationService.register(aaa).getAccessToken());
+//            System.out.println("AAA access token: " + authenticationService.register(aaa).getAccessToken());
+
         }
     }
 }

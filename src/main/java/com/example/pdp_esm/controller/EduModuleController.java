@@ -46,7 +46,15 @@ public class EduModuleController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-//    public ResponseEntity<?> update
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEduModule(@PathVariable Long id, @RequestBody EduModuleDTO moduleDTO){
+        ApiResponse<?> response = eduModuleService.updateModule(id, moduleDTO);
+
+        if (response.isSuccess()) log.warn("EduModule with {} id is Updated! -> {}", id, response);
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
 
     @DeleteMapping("/deleteModule/{id}")
     public ResponseEntity<?> deleteModule(@PathVariable Long id){

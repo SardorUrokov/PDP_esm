@@ -31,7 +31,7 @@ public class EduModuleService {
         EduModule save = settingValues(module, moduleDTO);
 
         return ApiResponse.builder()
-                .message("Module Crated!")
+                .message("Module Created!")
                 .success(true)
                 .data(toResModuleDTO(save))
                 .build();
@@ -53,7 +53,7 @@ public class EduModuleService {
         return new ApiResponse<>("All Modules List", true, toResModuleDTOList(all));
     }
 
-    public ApiResponse<?> updateResponse(Long id, EduModuleDTO moduleDTO){
+    public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO){
         final var byId = moduleRepository.findById(id);
         final var module = settingValues(byId.get(), moduleDTO);
 
