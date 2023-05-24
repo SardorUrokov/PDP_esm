@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface DeletePaymentRequestsRepository extends JpaRepository<DeletePaymentRequest, Long> {
 
 //    Optional<DeletePaymentRequest> findByPayStatus (PayStatus payStatus);
+
+    Optional<DeletePaymentRequest> findByPaymentId(Long payment_id);
 }

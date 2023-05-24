@@ -64,7 +64,7 @@ public class AuthServiceImpl {
 
     public ApiResponse<?> verify(String email, String otpCode) {
 
-        Optional<User> byEmailAndCode = Optional.ofNullable(userRepository.findByEmailAndOtpCode(email, otpCode)
+        Optional<User> byEmailAndCode = Optional.ofNullable(userRepository.findByEmailAndVerifyCode(email, otpCode)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email)));
 
         if (byEmailAndCode.isPresent()) {
@@ -104,7 +104,7 @@ public class AuthServiceImpl {
         simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setSubject("Tasdiqlash kodi : " + otpCode);
         simpleMailMessage.setText("Test Mail Sender");
-        user.setOtpCode(otpCode);
+        user.setVerifyCode(otpCode);
 
         javaMailSender.send(simpleMailMessage);
         userRepository.save(user);

@@ -5,7 +5,6 @@ import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.result.*;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
-import com.example.pdp_esm.entity.requests.DeletePaymentRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
@@ -17,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,13 +137,17 @@ public class ExamResultServiceImpl implements ExamResultService {
         List<Long> questionsIdList = resultDTO.getQuestionsIdList();
 //        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).collect(Collectors.toList());
         List<Question> questionList = questionsIdList.stream()
-                .map(questionId -> questionRepository.getById(questionId)).toList();
+                .map(questionId -> questionRepository.findById(questionId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId)))
+                .filter(Objects::nonNull)
+                .toList();
 
         result.setStudent(student);
         result.setScore(resultDTO.getScore());
         result.setQuestionList(questionList);
         result.setResultType(resultDTO.getResultType());
-        return examResultRepository.save(result);
+        final var examResult = examResultRepository.save(result); //null
+        return examResult;
     }
 
     public ResExamResults toResExamResultDTO(ExamResult examResult) {

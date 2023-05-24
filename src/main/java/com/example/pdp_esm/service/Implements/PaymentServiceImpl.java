@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPayStatus(PayStatus.CANCELLED);
         paymentRepository.save(payment);
 
-        Optional<DeletePaymentRequest> optional = deletePaymentRequestsRepository.findById(payment_id);
+        Optional<DeletePaymentRequest> optional = deletePaymentRequestsRepository.findByPaymentId(payment_id);
         optional.get().setActive(false);
 
 

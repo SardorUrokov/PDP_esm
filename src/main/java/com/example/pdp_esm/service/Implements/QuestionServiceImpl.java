@@ -82,9 +82,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public ApiResponse<?> deleteQuestion(Long question_id) {
-
-        if (questionRepository.findById(question_id).isPresent()) {
-            questionRepository.findById(question_id).get().setActive(false);
+        final var byId = questionRepository.findById(question_id);
+        if (byId.isPresent()) {
+            byId.get().setActive(false);
             return new ApiResponse<>("Question is Terminated", true);
         } else
             return new ApiResponse<>("Question not found", false);
@@ -102,6 +102,7 @@ public class QuestionServiceImpl implements QuestionService {
         question.setWrong_answer1(questionDTO.getWrong_answer1());
         question.setWrong_answer2(questionDTO.getWrong_answer2());
         question.setWrong_answer3(questionDTO.getWrong_answer3());
+        question.setActive(true);
         return questionRepository.save(question);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
+//@EntityListeners(Auditable.class)
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,7 +25,8 @@ public class User implements UserDetails {
 
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
-    private String otpCode;
+
+    private String verifyCode;
 
     @Enumerated(EnumType.STRING)
     private Roles roles = Roles.USER;

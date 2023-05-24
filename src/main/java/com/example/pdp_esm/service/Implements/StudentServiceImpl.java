@@ -221,9 +221,9 @@ public class StudentServiceImpl implements StudentService {
         Group group = optionalGroup.get();
         LocalDate now = LocalDate.now();
 
-        boolean matches = studentDTO.getPhoneNumber().matches("[7-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}");
-        if (!matches)
-            return new ApiResponse<>("Phone number is not valid!", false);
+//        boolean matches = studentDTO.getPhoneNumber().matches("[7-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}");
+//        if (!matches)
+//            return new ApiResponse<>("Phone number is not valid!", false);
 
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());

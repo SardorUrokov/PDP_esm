@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailAndPassword(String email, String password);
 
-    Optional<User> findByEmailAndOtpCode(@Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String email, String otpCode);
+    Optional<User> findByEmailAndVerifyCode(@Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$") String email, String verifyCode);
 
     @Query(value = "select users.dType from users where users.phone_number = :phoneNumber",
             nativeQuery = true)
