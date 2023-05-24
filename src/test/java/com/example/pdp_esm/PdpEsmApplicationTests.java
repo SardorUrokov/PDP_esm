@@ -58,7 +58,7 @@ class PdpEsmApplicationTests {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//        httpHeaders.set("Authorization", "Bearer, xxxxxxx");   //security bo'lganida qo'shiladi
+        httpHeaders.set("Authorization", "Bearer, eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTY4NDkyMTUzNSwiZXhwIjoxNjg1MDA3OTM1fQ.RmP58pA3gT1PfFy3ng4We-Wc2ZBtK3Vu3SAwOPXRGtM");   //security bo'lganida qo'shiladi
 
         String json = """
                 {

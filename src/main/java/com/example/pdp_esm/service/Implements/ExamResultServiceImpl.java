@@ -131,7 +131,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     public ExamResult settingValues(ExamResult result, ExamResultDTO resultDTO) {
 
         Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(resultDTO.getStudentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", result.getId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", resultDTO.getStudentId())));
         Student student = optionalStudent.get();
 
         List<Long> questionsIdList = resultDTO.getQuestionsIdList();

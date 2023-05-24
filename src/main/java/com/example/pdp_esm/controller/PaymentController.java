@@ -50,7 +50,7 @@ public class PaymentController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getOnePayment(@PathVariable Long id) {
         ApiResponse<?> response = paymentService.getOnePayment(id);
-        if (response.isSuccess()) log.warn("Getting Payment {} with id! -> {}", response.getData(), id);
+        if (response.isSuccess()) log.warn("Getting Payment with {}-id! -> {}",  id, response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

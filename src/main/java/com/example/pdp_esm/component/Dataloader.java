@@ -1,9 +1,10 @@
 package com.example.pdp_esm.component;
 
+import com.example.pdp_esm.auth.AuthenticationService;
+import com.example.pdp_esm.auth.RegisterRequest;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.repository.*;
-import com.example.pdp_esm.service.Implements.ReserveUsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -25,10 +26,9 @@ public class Dataloader implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final PaymentRepository paymentRepository;
     private final QuestionRepository questionRepository;
-    private final ExamResultRepository resultRepository;
     private final PositionRepository positionRepository;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -57,24 +57,24 @@ public class Dataloader implements CommandLineRunner {
             Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "998914525468", "21@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
             Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998914525468", "14@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1000000d, Status.COMPLETED, F1));
 
-            Question question1 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Question question2 = questionRepository.save(new Question(android_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Question question3 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Question question4 = questionRepository.save(new Question(java_backend_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Question question5 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Question question6 = questionRepository.save(new Question(frontEnd_course, "There's a question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-
-            User admin_A = userRepository.save(new User("AAA", "998914525468", "1@gmail.com", passwordEncoder.encode("123"), "Male", ADMIN, true));
-            User admin_B = userRepository.save(new User("BBB", "998914525468", "2@gmail.com", passwordEncoder.encode("123"), "Female", ADMIN, true));
+            Question question1 = questionRepository.save(new Question(android_course, "There's a 1st question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question2 = questionRepository.save(new Question(android_course, "There's a 2nd question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question3 = questionRepository.save(new Question(java_backend_course, "There's a 3rd question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question4 = questionRepository.save(new Question(java_backend_course, "There's a 4th question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question5 = questionRepository.save(new Question(frontEnd_course, "There's a 5th question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
+            Question question6 = questionRepository.save(new Question(frontEnd_course, "There's a 6th question", "There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
 
             Payment payment1 = paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH, PayStatus.RECEIVED));
             Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
             Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
 
-            ExamResult examResult1 = resultRepository.save(new ExamResult(81.8f, j1_student, ResultType.SUCCESS, List.of(question3, question4)));
-            ExamResult examResult2 = resultRepository.save(new ExamResult(57f, a1_student, ResultType.FAIL, List.of(question1, question2)));
-            ExamResult examResult3 = resultRepository.save(new ExamResult(67f, a1_student1, ResultType.SUCCESS, List.of(question2, question4)));
-            ExamResult examResult4 = resultRepository.save(new ExamResult(78.3f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
+            var aaa = RegisterRequest.builder()
+                    .fullName("AAA")
+                    .email("a@gmail.com")
+                    .password("password")
+                    .role(USER)
+                    .build();
+//            System.out.println("AAA token: " + authenticationService.register(aaa).getAccessToken());
         }
     }
 }

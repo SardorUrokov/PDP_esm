@@ -17,7 +17,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     private Course course;
 
     private String question, true_answer, wrong_answer1, wrong_answer2, wrong_answer3;
