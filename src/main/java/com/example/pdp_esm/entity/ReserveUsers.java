@@ -21,5 +21,4 @@ public class ReserveUsers {
     private Long id;
 
     private String fullName, otpCode, phoneNumber, dType;
-
 }

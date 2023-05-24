@@ -48,6 +48,9 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPayStatus(RECEIVED);
         Payment save = paymentRepository.save(payment);
 
+        student.setBalance(student.getBalance() + payment.getAmount());
+        studentRepository.save(student);
+
         return ApiResponse.builder()
                 .message("Payment Saved!")
                 .success(true)
@@ -115,20 +118,40 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ApiResponse<?> deletePayment(Long payment_id) {
 
+        ApiResponse response = new ApiResponse();
         Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(payment_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", payment_id)));
         Payment payment = optionalPayment.get();
 
-        payment.setPayStatus(PayStatus.CANCELLED);
-        paymentRepository.save(payment);
+        Optional<DeletePaymentRequest> optionalRequest = Optional.ofNullable(deletePaymentRequestsRepository.findByPaymentId(payment_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Delete Payment Request", "id", payment_id)));
+        final var deletePaymentRequest = optionalRequest.get();
 
-        Optional<DeletePaymentRequest> optional = deletePaymentRequestsRepository.findByPaymentId(payment_id);
-        optional.get().setActive(false);
+        final var byId = studentRepository.findById(payment.getStudent().getId());
+        final var student = byId.get();
+        final var currentBalance = student.getBalance();
 
+        if (currentBalance >= payment.getAmount()) {
 
-        deletePaymentRequestsRepository.save(optional.get());
-        return
-                new ApiResponse<>("Payment Deleted! ", true);
+            student.setBalance(student.getBalance() - payment.getAmount());
+            studentRepository.save(student);
+
+            if (currentBalance - student.getBalance() == payment.getAmount()) {
+
+                payment.setPayStatus(PayStatus.CANCELLED);
+                paymentRepository.save(payment);
+
+                deletePaymentRequest.setActive(false);
+                deletePaymentRequestsRepository.save(deletePaymentRequest);
+
+                response.setMessage("Payment Deleted! ");
+                response.setSuccess(true);
+            }
+        } else {
+            response.setMessage("Something went wrong! ");
+            response.setSuccess(false);
+        }
+        return response;
     }
 
     @Override
