@@ -16,4 +16,5 @@ public class SumOfPaymentsDTO {
     CalculationInterval interval;
     double sumOfIntervalPayments;
     List<ResPaymentDTO> resPaymentDTOList;
+
 }
