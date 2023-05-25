@@ -60,7 +60,7 @@ public class ExaminingService {
 //                    data.getScore(), data.getStudent(), data.getResultType(), data.getQuestionList()
 //            );
            
-            ResExamResults resExamResults = new ResExamResults(data.getScore(), data.getStudentInfo(), data.getResultType(), data.getQuestionList());
+            ResExamResults resExamResults = new ResExamResults(data.getScore(), data.getStudentInfo(), data.getResultType(), data.getSubmitted_time(), data.getQuestionList());
 //            ResExamResults resExamResultDTO = examResultService.toResExamResultDTO(data);
             
             return ApiResponse.builder()

@@ -1,18 +1,18 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.DeleteRequestDTO;
-import com.example.pdp_esm.dto.ExamResultDTO;
-import com.example.pdp_esm.dto.result.*;
 import com.example.pdp_esm.entity.*;
-import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.ExamResultRepository;
-import com.example.pdp_esm.repository.QuestionRepository;
-import com.example.pdp_esm.repository.StudentRepository;
-import com.example.pdp_esm.service.ExamResultService;
-import com.example.pdp_esm.repository.deleteRequests.DeleteExamResultRepository;
 import lombok.RequiredArgsConstructor;
+import com.example.pdp_esm.dto.result.*;
+import com.example.pdp_esm.dto.ExamResultDTO;
 import org.springframework.stereotype.Service;
+import com.example.pdp_esm.dto.DeleteRequestDTO;
+import com.example.pdp_esm.service.ExamResultService;
+import com.example.pdp_esm.repository.StudentRepository;
+import com.example.pdp_esm.repository.QuestionRepository;
+import com.example.pdp_esm.repository.ExamResultRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
+import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
+import com.example.pdp_esm.repository.deleteRequests.DeleteExamResultRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -146,8 +146,8 @@ public class ExamResultServiceImpl implements ExamResultService {
         result.setScore(resultDTO.getScore());
         result.setQuestionList(questionList);
         result.setResultType(resultDTO.getResultType());
-        final var examResult = examResultRepository.save(result); //null
-        return examResult;
+        result.setCreatedAt(new Date());
+        return examResultRepository.save(result);
     }
 
     public ResExamResults toResExamResultDTO(ExamResult examResult) {
@@ -158,6 +158,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         return ResExamResults.builder()
                 .score(examResult.getScore())
                 .resultType(String.valueOf(examResult.getResultType()))
+                .submitted_time(examResult.getCreatedAt().toString())
                 .studentInfo(ResPaymentStudentInfo.builder()
                         .studentName(student.getFullName())
                         .studentGroupName(group.getGroupName())
@@ -179,6 +180,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     public List<ResExamResults> toResExamResultDTOList(List<ExamResult> examResults) {
         return examResults.stream().map(this::toResExamResultDTO).toList();
     }
+
     public List<ResDeleteExamResultDTO> toResDeleteExamResultDTOList(List<DeleteExamResultRequest> deleteExamResultRequestList) {
         return deleteExamResultRequestList.stream().map(this::toResDeleteExamResultDTO).toList();
     }

@@ -1,5 +1,6 @@
 package com.example.pdp_esm.controller;
 
+import com.example.pdp_esm.dto.CalculationInterval;
 import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.PaymentDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 @Slf4j
 @RestController
@@ -42,6 +45,22 @@ public class PaymentController {
         ApiResponse<?> response = paymentService.getAllPaymentsByStatus(status);
 
         if (response.isSuccess()) log.warn("Getting All Payments List by {} status! -> {}", status, response.getData());
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
+    @PostMapping("/sumOfPayments")
+    public ResponseEntity<?> sumOfPaymentsInInterval(@RequestBody CalculationInterval interval){
+
+        ApiResponse<?> response;
+        try {
+            response = paymentService.calculateSumOfPayments(interval);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) log.warn("Getting Sum of Payments from {} to {} -> {}",
+                interval.getFrom(), interval.getTo(), response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

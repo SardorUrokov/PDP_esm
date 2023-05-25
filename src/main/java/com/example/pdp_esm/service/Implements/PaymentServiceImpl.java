@@ -1,7 +1,9 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.dto.CalculationInterval;
 import com.example.pdp_esm.dto.DeleteRequestDTO;
 import com.example.pdp_esm.dto.PaymentDTO;
+import com.example.pdp_esm.dto.SumOfPaymentsDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResDeletePaymentDTO;
 import com.example.pdp_esm.dto.result.ResPaymentDTO;
@@ -20,15 +22,16 @@ import com.example.pdp_esm.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.example.pdp_esm.entity.enums.PayStatus.RECEIVED;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
+
     private final DeletePaymentRequestsRepository deletePaymentRequestsRepository;
     private final PaymentRepository paymentRepository;
     private final StudentRepository studentRepository;
@@ -118,7 +121,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ApiResponse<?> deletePayment(Long payment_id) {
 
-        ApiResponse response = new ApiResponse();
         Optional<Payment> optionalPayment = Optional.ofNullable(paymentRepository.findById(payment_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", payment_id)));
         Payment payment = optionalPayment.get();
@@ -130,6 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
         final var byId = studentRepository.findById(payment.getStudent().getId());
         final var student = byId.get();
         final var currentBalance = student.getBalance();
+        ApiResponse response = new ApiResponse();
 
         if (currentBalance >= payment.getAmount()) {
 
@@ -163,6 +166,39 @@ public class PaymentServiceImpl implements PaymentService {
                 .message("All Payments List by " + status + " status")
                 .success(true)
                 .data(toResDTOList(allPaymentsByStatus))
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> calculateSumOfPayments(CalculationInterval interval) throws ParseException {
+
+        final String pattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        Date parseFrom = sdf.parse(interval.getFrom());
+        Date parseTo = sdf.parse(interval.getTo());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(parseTo);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        Date updatedTo = calendar.getTime();
+
+        List<Payment> payments = paymentRepository.findPaymentsWithinInterval(parseFrom, updatedTo);
+        double sum = 0.0;
+        List<ResPaymentDTO> resPaymentDTOList = new ArrayList<>();
+
+        for (Payment payment : payments) {
+            sum += payment.getAmount();
+            resPaymentDTOList.add(toResDTO(payment));
+        }
+
+        return ApiResponse.builder()
+                .message("Sum of Payments from " + interval.getFrom() + " to " + interval.getTo())
+                .success(true)
+                .data(SumOfPaymentsDTO.builder()
+                        .sumOfIntervalPayments(sum)
+                        .resPaymentDTOList(resPaymentDTOList)
+                        .interval(interval)
+                        .build())
                 .build();
     }
 

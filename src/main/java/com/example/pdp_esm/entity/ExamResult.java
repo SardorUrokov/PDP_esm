@@ -1,6 +1,7 @@
 package com.example.pdp_esm.entity;
 
 import com.example.pdp_esm.entity.enums.ResultType;
+import com.example.pdp_esm.entity.template.AbsEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Builder;
@@ -13,11 +14,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExamResult {
+public class ExamResult extends AbsEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
     private float score;
 
     @OneToOne
@@ -29,10 +30,10 @@ public class ExamResult {
     @ManyToMany
     private List<Question> questionList;
 
-    public ExamResult(float score, Student student, ResultType resultType, List<Question> questionList) {
-        this.score = score;
-        this.student = student;
-        this.resultType = resultType;
-        this.questionList = questionList;
-    }
+//    public ExamResult(float score, Student student, ResultType resultType, List<Question> questionList) {
+//        this.score = score;
+//        this.student = student;
+//        this.resultType = resultType;
+//        this.questionList = questionList;
+//    }
 }
