@@ -12,5 +12,4 @@ public class QuestionDTO {
 
      Long courseId, answerId;
      String questionType, questionText;
-
 }

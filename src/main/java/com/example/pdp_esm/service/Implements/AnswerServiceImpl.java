@@ -1,12 +1,13 @@
 package com.example.pdp_esm.service.Implements;
 
 import lombok.RequiredArgsConstructor;
-import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.dto.AnswerDTO;
+import com.example.pdp_esm.entity.Answer;
 import org.springframework.stereotype.Service;
 import com.example.pdp_esm.service.AnswerService;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.repository.AnswerRepository;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +30,23 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public ApiResponse<?> getAllAnswers() {
-        return null;
+        final var answerList = answerRepository.findAll();
+        return ApiResponse.builder()
+                .message("Answers List")
+                .success(true)
+                .data(answerList) //toResAnswerList
+                .build();
     }
 
     @Override
     public ApiResponse<?> getOneAnswer(Long id) {
-        return null;
+        final var optionalAnswer = answerRepository.findById(id);
+        Answer answer = optionalAnswer.get();
+        return ApiResponse.builder()
+                .message("Answers by " + id + " id! ")
+                .success(true)
+                .data(answer) //toResAnswer
+                .build();
     }
 
     @Override
