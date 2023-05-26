@@ -2,9 +2,12 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.QuestionDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Question;
+import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
+import com.example.pdp_esm.repository.AnswerRepository;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.service.QuestionService;
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final CourseRepository courseRepository;
 
     @Override
@@ -94,15 +98,16 @@ public class QuestionServiceImpl implements QuestionService {
 
         Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(questionDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", questionDTO.getCourseId())));
-        Course course = optionalCourse.get();
 
-        question.setCourse(course);
-        question.setQuestion(questionDTO.getQuestion());
-        question.setTrue_answer(questionDTO.getTrue_answer());
-        question.setWrong_answer1(questionDTO.getWrong_answer1());
-        question.setWrong_answer2(questionDTO.getWrong_answer2());
-        question.setWrong_answer3(questionDTO.getWrong_answer3());
+        Optional<Answer> optionalAnswer = Optional.ofNullable(answerRepository.findById(questionDTO.getAnswerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", questionDTO.getCourseId())));
+
+        question.setCourse(optionalCourse.get());
+        question.setQuestionType(QuestionType.valueOf(questionDTO.getQuestionType()));
+        question.setQuestionText(questionDTO.getQuestionText());
+        question.setAnswer(optionalAnswer.get());
         question.setActive(true);
+
         return questionRepository.save(question);
     }
 }

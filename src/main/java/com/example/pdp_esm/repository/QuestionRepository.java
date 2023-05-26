@@ -10,6 +10,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     List<Question> findAllByActiveTrue();
 
-    Optional<Question> findByQuestion(String question);
+    Optional<Question> findByQuestionText(String question);
+
     List<Question> findAllByActive(Boolean active);
 }

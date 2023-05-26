@@ -5,7 +5,6 @@ import com.example.pdp_esm.dto.result.ResCertificateDTO;
 import com.example.pdp_esm.entity.Certificate;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CertificateRepository;
-import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,16 +20,14 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
 
-
     @Override
     public ApiResponse<?> createCertificate(Long student_id) {
 
         final var student = studentRepository.findById(student_id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Student", "id", student_id));
+        final var byId = certificateRepository.findByStudentId(student_id);
 
-        final var byId = certificateRepository.findById(student_id);
-// fix this -> qayta saqlanmasin
         if (byId.isEmpty()) {
             final var course = student.getGroup().getCourse();
 

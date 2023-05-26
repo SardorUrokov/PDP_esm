@@ -35,7 +35,7 @@ public class CertificateController {
         if (response.isSuccess()) log.warn("Certificates List -> {}", response.getData());
         else log.error(response.getMessage());
 
-        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
     @PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
@@ -46,7 +46,7 @@ public class CertificateController {
         if (response.isSuccess()) log.warn("Getting One Certificate by {} id -> {}", id, response.getData());
         else log.error(response.getMessage());
 
-        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
     @PreAuthorize(value = "hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
@@ -57,7 +57,7 @@ public class CertificateController {
         if (response.isSuccess()) log.warn("Getting One Certificate by {} id -> {}", certificateId, response.getData());
         else log.error(response.getMessage());
 
-        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
     @PreAuthorize(value = "hasAnyAuthority('MANAGER')")
@@ -68,6 +68,6 @@ public class CertificateController {
         if (response.isSuccess()) log.warn("Deleting Certificate by {} id -> {}", id, response.getData());
         else log.error(response.getMessage());
 
-        return ResponseEntity.status(response.isSuccess() ? 201 : 409).body(response);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 }

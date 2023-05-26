@@ -1,15 +1,16 @@
 package com.example.pdp_esm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class QuestionDTO {
 
-    private Long courseId;
-    private String question, true_answer, wrong_answer1, wrong_answer2, wrong_answer3;
+     Long courseId, answerId;
+     String questionType, questionText;
 
 }

@@ -5,7 +5,6 @@ import com.example.pdp_esm.dto.ExaminingDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.AttemptDTO;
 import com.example.pdp_esm.dto.result.ResExamResults;
-import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
@@ -37,11 +36,11 @@ public class ExaminingService {
             String message = "Student Failed";
 
             for (AttemptDTO attempt : attempts) {
-                final var byQuestion = questionRepository.findByQuestion(attempt.getQuestion());
+                final var byQuestion = questionRepository.findByQuestionText(attempt.getQuestion());
                 questionsIdsList.add(byQuestion.get().getId());
-                if (byQuestion.get().getTrue_answer().equals(attempt.getSelectedAnswer())) {
+
+                if (byQuestion.get().getAnswer().getTrue_answer().equals(attempt.getSelectedAnswer()))
                     score += 10;
-                }
             }
             examResultDTO.setScore(score);
             examResultDTO.setStudentId(examiningDTO.getStudent_id());
@@ -56,13 +55,9 @@ public class ExaminingService {
             ApiResponse<?> examResult = examResultService.createExamResult(examResultDTO);
             ResExamResults data = (ResExamResults) examResult.getData();
 
-//            ExamResult result = new ExamResult(
-//                    data.getScore(), data.getStudent(), data.getResultType(), data.getQuestionList()
-//            );
-           
-            ResExamResults resExamResults = new ResExamResults(data.getScore(), data.getStudentInfo(), data.getResultType(), data.getSubmitted_time(), data.getQuestionList());
-//            ResExamResults resExamResultDTO = examResultService.toResExamResultDTO(data);
-            
+            ResExamResults resExamResults =
+                    new ResExamResults(data.getScore(), data.getStudentInfo(), data.getResultType(), data.getSubmitted_time(), data.getQuestionList());
+
             return ApiResponse.builder()
                     .message(message)
                     .success(true)
