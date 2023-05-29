@@ -11,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 public class AnswerDTO {
 
     String true_answer, answer1, answer2, answer3, answer4;
+    public AnswerDTO(String true_answer) {
+        this.true_answer = true_answer;
+    }
 
     public AnswerDTO(String true_answer, String answer1) {
         this.true_answer = true_answer;

@@ -5,6 +5,8 @@ import com.example.pdp_esm.dto.ExaminingDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.AttemptDTO;
 import com.example.pdp_esm.dto.result.ResExamResults;
+import com.example.pdp_esm.entity.Question;
+import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
@@ -34,14 +36,37 @@ public class ExaminingService {
 
             int score = 0;
             String message = "Student Failed";
+            boolean equals = false,
+                    equals1 = false,
+                    equals2 = false,
+                    equals3 = false,
+                    equals4 = false;
 
             for (AttemptDTO attempt : attempts) {
                 final var byQuestion = questionRepository.findByQuestionText(attempt.getQuestion());
-                questionsIdsList.add(byQuestion.get().getId());
+                Question question = byQuestion.get();
+                questionsIdsList.add(question.getId());
 
-                if (byQuestion.get().getAnswer().getTrue_answer().equals(attempt.getSelectedAnswer()))
-                    score += 10;
+                List<String> selectedAnswers = attempt.getSelectedAnswer();
+                if (!question.getQuestionType().equals(QuestionType.SEQUENCE)) {
+                    if (question.getAnswer().getTrue_answer()
+                            .equals(
+                                    selectedAnswers.get(0)))
+                        score += 10;
+                } else {
+                    for (int i = 0; i < selectedAnswers.size(); i++) {
+                        equals = selectedAnswers.get(0).equals(question.getAnswer().getTrue_answer());
+                        equals1 = selectedAnswers.get(1).equals(question.getAnswer().getAnswer1());
+                        equals2 = selectedAnswers.get(2).equals(question.getAnswer().getAnswer2());
+                        equals3 = selectedAnswers.get(3).equals(question.getAnswer().getAnswer3());
+                        equals4 = selectedAnswers.get(4).equals(question.getAnswer().getAnswer4());
+                    }
+                    if (equals && equals1 && equals2 && equals3 && equals4){
+                        score += 10;
+                    }
+                }
             }
+
             examResultDTO.setScore(score);
             examResultDTO.setStudentId(examiningDTO.getStudent_id());
             examResultDTO.setQuestionsIdList(questionsIdsList);

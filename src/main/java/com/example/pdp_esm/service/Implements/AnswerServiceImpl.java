@@ -60,7 +60,7 @@ public class AnswerServiceImpl implements AnswerService {
         final var byId = answerRepository.findById(id);
 
         byId.ifPresent(answerRepository::delete);
-            return new ApiResponse<>("Answer Deleted!", true);
+        return new ApiResponse<>("Answer Deleted!", true);
     }
 
     public Answer settingValues(Answer answer, AnswerDTO answerDTO) {
@@ -72,8 +72,10 @@ public class AnswerServiceImpl implements AnswerService {
         answer.setAnswer2(answerDTO.getAnswer2());
 //        if (answerDTO.getAnswer3() != null)
         answer.setAnswer3(answerDTO.getAnswer3());
-//        if (answerDTO.getAnswer4() != null)
-        answer.setAnswer4(answerDTO.getAnswer4());
+        if (answerDTO.getAnswer4() != null)
+            answer.setAnswer4(answerDTO.getAnswer4());
+        else
+            answer.setAnswer4("null");
 
         return answerRepository.save(answer);
     }
