@@ -36,11 +36,7 @@ public class ExaminingService {
 
             int score = 0;
             String message = "Student Failed";
-            boolean equals = false,
-                    equals1 = false,
-                    equals2 = false,
-                    equals3 = false,
-                    equals4 = false;
+            boolean equals, equals1, equals2, equals3, equals4;
 
             for (AttemptDTO attempt : attempts) {
                 final var byQuestion = questionRepository.findByQuestionText(attempt.getQuestion());
@@ -54,14 +50,13 @@ public class ExaminingService {
                                     selectedAnswers.get(0)))
                         score += 10;
                 } else {
-                    for (int i = 0; i < selectedAnswers.size(); i++) {
-                        equals = selectedAnswers.get(0).equals(question.getAnswer().getTrue_answer());
-                        equals1 = selectedAnswers.get(1).equals(question.getAnswer().getAnswer1());
-                        equals2 = selectedAnswers.get(2).equals(question.getAnswer().getAnswer2());
-                        equals3 = selectedAnswers.get(3).equals(question.getAnswer().getAnswer3());
-                        equals4 = selectedAnswers.get(4).equals(question.getAnswer().getAnswer4());
-                    }
-                    if (equals && equals1 && equals2 && equals3 && equals4){
+                    equals = selectedAnswers.get(0).equals(question.getAnswer().getTrue_answer());
+                    equals1 = selectedAnswers.get(1).equals(question.getAnswer().getAnswer1());
+                    equals2 = selectedAnswers.get(2).equals(question.getAnswer().getAnswer2());
+                    equals3 = selectedAnswers.get(3).equals(question.getAnswer().getAnswer3());
+                    equals4 = selectedAnswers.get(4).equals(question.getAnswer().getAnswer4());
+
+                    if (equals && equals1 && equals2 && equals3 && equals4) {
                         score += 10;
                     }
                 }

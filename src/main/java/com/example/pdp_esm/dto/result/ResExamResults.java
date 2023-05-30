@@ -17,5 +17,5 @@ public class ResExamResults {
     private float score;
     private ResPaymentStudentInfo studentInfo;
     private String resultType, submitted_time;
-    private List<Question> questionList;
+    private List<ResQuestionDTO> questionList;
 }

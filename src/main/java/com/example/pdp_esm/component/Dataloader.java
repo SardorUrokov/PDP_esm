@@ -64,7 +64,7 @@ public class Dataloader implements CommandLineRunner {
             Answer answer3 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", true));
             Answer answer4 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
             Answer answer5 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence", "There's a 5th answer of the sequence", true));
-            Answer answer6 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence",  true));
+            Answer answer6 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence",  "null", true));
 
             Question question1 = questionRepository.save(new Question(android_course, QuestionType.TRUE_FALSE, "There's a 1st question", answer1, true));
             Question question2 = questionRepository.save(new Question(android_course, QuestionType.TRUE_FALSE, "There's a 2nd question", answer2, true));

@@ -27,6 +27,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final DeleteExamResultRepository deleteExamResultRepository;
     private final StudentRepository studentRepository;
     private final QuestionRepository questionRepository;
+    private final QuestionServiceImpl questionService;
 
     @Override
     public ApiResponse<?> createExamResult(ExamResultDTO examResultDTO) {
@@ -164,7 +165,8 @@ public class ExamResultServiceImpl implements ExamResultService {
                         .studentGroupName(group.getGroupName())
                         .studentPhoneNumber(student.getPhoneNumber())
                         .build())
-                .questionList(examResult.getQuestionList())
+                .questionList(questionService
+                        .toResQuestionDTOList(examResult.getQuestionList()))
                 .build();
     }
 

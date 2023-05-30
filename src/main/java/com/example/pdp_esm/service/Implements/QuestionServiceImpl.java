@@ -2,8 +2,12 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.QuestionDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.dto.result.ResAnswer;
+import com.example.pdp_esm.dto.result.ResExamResults;
+import com.example.pdp_esm.dto.result.ResQuestionDTO;
 import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.entity.Course;
+import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.Question;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
@@ -33,7 +37,7 @@ public class QuestionServiceImpl implements QuestionService {
         return ApiResponse.builder()
                 .message("Question Saved!")
                 .success(true)
-                .data(save)
+                .data(toResQuestionDTO(save))
                 .build();
     }
 
@@ -44,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService {
         return ApiResponse.builder()
                 .message("All Active True Questions List")
                 .success(true)
-                .data(questionList)
+                .data(toResQuestionDTOList(questionList))
                 .build();
     }
 
@@ -55,7 +59,7 @@ public class QuestionServiceImpl implements QuestionService {
             return new ApiResponse<>("Active type doesn't exist " + active, false);
 
         List<Question> allQuestionsByActive = questionRepository.findAllByActive(Boolean.valueOf(active));
-        return new ApiResponse<>("All Questions By Active " + active, true, allQuestionsByActive);
+        return new ApiResponse<>("All Questions By Active " + active, true, toResQuestionDTOList(allQuestionsByActive));
 
     }
 
@@ -67,7 +71,7 @@ public class QuestionServiceImpl implements QuestionService {
         return ApiResponse.builder()
                 .message("Question with " + question_id + " id")
                 .success(true)
-                .data(optionalQuestion)
+                .data(toResQuestionDTO(optionalQuestion.get()))
                 .build();
     }
 
@@ -80,7 +84,7 @@ public class QuestionServiceImpl implements QuestionService {
         return ApiResponse.builder()
                 .message("Question Updated!")
                 .success(true)
-                .data(save)
+                .data(toResQuestionDTO(save))
                 .build();
     }
 
@@ -109,5 +113,24 @@ public class QuestionServiceImpl implements QuestionService {
         question.setActive(true);
 
         return questionRepository.save(question);
+    }
+
+    public ResQuestionDTO toResQuestionDTO (Question question){
+        return ResQuestionDTO.builder()
+                .courseName(question.getCourse().getName())
+                .questionType(String.valueOf(question.getQuestionType()))
+                .question(question.getQuestionText())
+                .resAnswer(ResAnswer.builder()
+                        .trueAnswer(question.getAnswer().getTrue_answer())
+                        .answer1(question.getAnswer().getAnswer1())
+                        .answer2(question.getAnswer().getAnswer2())
+                        .answer3(question.getAnswer().getAnswer3())
+                        .answer4(question.getAnswer().getAnswer4())
+                        .build())
+                .build();
+    }
+
+    public List<ResQuestionDTO> toResQuestionDTOList(List<Question> questionList) {
+        return questionList.stream().map(this::toResQuestionDTO).toList();
     }
 }
