@@ -1,11 +1,9 @@
 package com.example.pdp_esm.entity;
 
-import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.util.List;
+import jakarta.persistence.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Entity
