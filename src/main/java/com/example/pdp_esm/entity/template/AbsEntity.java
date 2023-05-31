@@ -3,6 +3,8 @@ package com.example.pdp_esm.entity.template;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.Date;
 
 @Data
@@ -21,6 +23,13 @@ public class AbsEntity {
     @Column(updatable = false)
     private Date createdAt;
 
+    //qachon o'zgardi
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date updatedAt;
+
+
 //    /*    securitydan keyin qo'shiladi */
 //    kim qo'shdi user
 //    @CreatedBy
@@ -31,11 +40,5 @@ public class AbsEntity {
 //    @LastModifiedBy
 //    @Column(nullable = false)
 //    private Long updatedBy;
-
-    //qachon o'zgardi
-//    @UpdateTimestamp
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(nullable = false)
-//    private Date updatedAt;
 
 }

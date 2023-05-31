@@ -4,16 +4,22 @@ import com.example.pdp_esm.dto.EduModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResModuleDTO;
 import com.example.pdp_esm.entity.ExamResult;
+import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.GroupModule;
+import com.example.pdp_esm.entity.Student;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.EduModuleRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.GroupRepository;
+import com.example.pdp_esm.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class EduModuleService {
     private final ExamResultRepository examResultRepository;
     private final GroupServiceImpl groupService;
     private final ExamResultServiceImpl examResultService;
+    private final StudentRepository studentRepository;
 
     public ApiResponse<?> createModule(EduModuleDTO moduleDTO) {
 
@@ -54,6 +61,7 @@ public class EduModuleService {
     }
 
     public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO){
+
         final var optionalModulePerGroup = moduleRepository.findById(id);
         final var module = settingValues(optionalModulePerGroup.get(), moduleDTO);
 
@@ -92,16 +100,29 @@ public class EduModuleService {
 
     public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO){
 
-//        List<Group> groupList = moduleDTO.getGroupIds().stream().map(groupRepository::getById).toList();
-        List<ExamResult> examResultList = moduleDTO.getExamResultIds().stream().map(examResultRepository::getById).toList();
-
         final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
+
+//        List<ExamResult> examResultList = new ArrayList<>();
+//        for (Student student : studentRepository.findAllByGroupId(optionalGroup.get().getId())) {
+//            final var examResult = examResultRepository.findByStudentId(student.getId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", student.getId()));
+//            examResultList.add(examResult);
+//        }
+
+        List<ExamResult> examResultList = studentRepository
+                .findAllByGroupId(moduleDTO.getGroupId())
+                .stream()
+                .map(Student::getId)
+                .map(studentId -> examResultRepository
+                        .findByStudentId(studentId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", studentId))
+                )
+                .collect(Collectors.toList());
 
         module.setCreatedAt(new Date());
         module.setGroup(optionalGroup.get());
         module.setExamResults(examResultList);
         moduleRepository.save(module);
-
         return module;
     }
 }

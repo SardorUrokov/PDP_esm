@@ -15,7 +15,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Modules extends AbsEntity {
 
-    Integer ordinalNumber;
+    Long ordinalNumber;
 
     @ManyToOne
     Course course;

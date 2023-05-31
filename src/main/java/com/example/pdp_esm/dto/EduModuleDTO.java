@@ -13,6 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class EduModuleDTO {
 
-    private List<Long> examResultIds;
     private Long groupId;
 }

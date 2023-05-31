@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
 
     boolean existsByStudentId(Long student_id);
+    Optional<ExamResult> findByStudentId(Long student_id);
 }
