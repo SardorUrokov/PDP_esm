@@ -3,9 +3,8 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.EduModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResModuleDTO;
-import com.example.pdp_esm.entity.EduModule;
 import com.example.pdp_esm.entity.ExamResult;
-import com.example.pdp_esm.entity.Group;
+import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.EduModuleRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
@@ -13,6 +12,7 @@ import com.example.pdp_esm.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,8 +27,8 @@ public class EduModuleService {
 
     public ApiResponse<?> createModule(EduModuleDTO moduleDTO) {
 
-        EduModule module = new EduModule();
-        EduModule save = settingValues(module, moduleDTO);
+        GroupModule module = new GroupModule();
+        GroupModule save = settingValues(module, moduleDTO);
 
         return ApiResponse.builder()
                 .message("Module Created!")
@@ -37,25 +37,25 @@ public class EduModuleService {
                 .build();
     }
 
-    public ApiResponse<?> getOne(Long id) {
-        final var byId = moduleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("EduModule", "id", id));
-
-        return ApiResponse.builder()
-                .message("EduModule with " + id + " id")
-                .success(true)
-                .data(toResModuleDTO(byId))
-                .build();
-    }
-
     public ApiResponse<?> getAllModules() {
         final var all = moduleRepository.findAll();
         return new ApiResponse<>("All Modules List", true, toResModuleDTOList(all));
     }
 
+    public ApiResponse<?> getOne(Long id) {
+        final var byId = moduleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("GroupModule", "id", id));
+
+        return ApiResponse.builder()
+                .message("GroupModule with " + id + " id")
+                .success(true)
+                .data(toResModuleDTO(byId))
+                .build();
+    }
+
     public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO){
-        final var byId = moduleRepository.findById(id);
-        final var module = settingValues(byId.get(), moduleDTO);
+        final var optionalModulePerGroup = moduleRepository.findById(id);
+        final var module = settingValues(optionalModulePerGroup.get(), moduleDTO);
 
         return ApiResponse.builder()
                 .message("Module Updated!")
@@ -74,31 +74,31 @@ public class EduModuleService {
     }
 
 
-    public ResModuleDTO toResModuleDTO(EduModule module){
+    public ResModuleDTO toResModuleDTO(GroupModule module){
 
-        final var groups = groupService.toDTOList(module.getGroups());
+        final var group = groupService.toResDTO(module.getGroup());
         final var resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
 
         return ResModuleDTO.builder()
-                .moduleName(module.getModuleName())
-                .ordinalNumber(String.valueOf(module.getOrdinalNumber()))
-                .moduleGroups(groups)
+                .createdAt(module.getCreatedAt().toString())
+                .moduleGroup(group)
                 .moduleExamResults(resExamResultDTOList)
                 .build();
     }
 
-    public List<ResModuleDTO> toResModuleDTOList(List<EduModule> eduModuleList) {
+    public List<ResModuleDTO> toResModuleDTOList(List<GroupModule> eduModuleList) {
         return eduModuleList.stream().map(this::toResModuleDTO).toList();
     }
 
-    public EduModule settingValues(EduModule module, EduModuleDTO moduleDTO){
+    public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO){
 
-        List<Group> groupList = moduleDTO.getGroupIds().stream().map(groupRepository::getById).toList();
+//        List<Group> groupList = moduleDTO.getGroupIds().stream().map(groupRepository::getById).toList();
         List<ExamResult> examResultList = moduleDTO.getExamResultIds().stream().map(examResultRepository::getById).toList();
 
-        module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
-        module.setModuleName(moduleDTO.getOrdinalNumber() + "-modul");
-        module.setGroups(groupList);
+        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
+
+        module.setCreatedAt(new Date());
+        module.setGroup(optionalGroup.get());
         module.setExamResults(examResultList);
         moduleRepository.save(module);
 

@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class EduModuleDTO {
 
-    private Integer ordinalNumber = 1;
     private List<Long> examResultIds;
-    private List<Long> groupIds;
+    private Long groupId;
 }

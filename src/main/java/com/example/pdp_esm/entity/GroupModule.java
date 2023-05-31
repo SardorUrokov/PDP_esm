@@ -4,6 +4,7 @@ import lombok.*;
 import java.util.List;
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
+import com.example.pdp_esm.entity.template.AbsEntity;
 
 @Data
 @Entity
@@ -11,18 +12,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EduModule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    Integer ordinalNumber = 1;
-    String moduleName;
+public class GroupModule extends AbsEntity {
 
     @OneToMany
     List<ExamResult> examResults;
 
-    @OneToMany
-    List<Group> groups;
+    @OneToOne
+    Group group;
 }

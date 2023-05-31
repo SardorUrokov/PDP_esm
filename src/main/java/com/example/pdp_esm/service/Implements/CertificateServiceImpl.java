@@ -36,7 +36,7 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setStudent(student);
             certificate.setCreatedAt(new Date());
             String rndValue = String.valueOf(Math.random() * 89999 + 10000).substring(0, 5); //length 5
-            certificate.setCertificateId("PDP-CER-" + rndValue);
+            certificate.setCertificateNumber("PDP-CER-" + rndValue);
             Certificate save = certificateRepository.save(certificate);
 
             return ApiResponse.builder()
@@ -71,10 +71,10 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public ApiResponse<?> getCertificateById(String certificateId) {
-        final var byId = certificateRepository.findByCertificateId(certificateId);
+    public ApiResponse<?> getCertificateById(String certificateNumber) {
+        final var byId = certificateRepository.findByCertificateNumber(certificateNumber);
         return ApiResponse.builder()
-                .message("Certificate by " + certificateId + " id")
+                .message("Certificate by " + certificateNumber + " id")
                 .success(true)
                 .data(toResCertificateDTO(byId.get()))
                 .build();
@@ -91,7 +91,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     public ResCertificateDTO toResCertificateDTO(Certificate certificate) {
         return ResCertificateDTO.builder()
-                .certificateId(certificate.getCertificateId())
+                .certificateId(certificate.getCertificateNumber())
                 .courseName(certificate.getCourse().getName())
                 .studentFullName(certificate.getStudent().getFullName())
                 .createdAt(certificate.getCreatedAt().toString())

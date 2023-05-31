@@ -1,11 +1,11 @@
 package com.example.pdp_esm.entity;
 
 import lombok.*;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
 import com.example.pdp_esm.entity.template.AbsEntity;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -13,13 +13,13 @@ import com.example.pdp_esm.entity.template.AbsEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Certificate extends AbsEntity {
+public class Modules extends AbsEntity {
 
-    String certificateNumber;
-
-    @OneToOne
-    Course course;
+    Integer ordinalNumber;
 
     @ManyToOne
-    Student student;
+    Course course;
+
+    @OneToMany
+    List<GroupModule> eduModules;
 }

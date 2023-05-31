@@ -16,9 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ExamResult extends AbsEntity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     private float score;
 
     @OneToOne
@@ -30,10 +27,4 @@ public class ExamResult extends AbsEntity {
     @ManyToMany
     private List<Question> questionList;
 
-//    public ExamResult(float score, Student student, ResultType resultType, List<Question> questionList) {
-//        this.score = score;
-//        this.student = student;
-//        this.resultType = resultType;
-//        this.questionList = questionList;
-//    }
 }

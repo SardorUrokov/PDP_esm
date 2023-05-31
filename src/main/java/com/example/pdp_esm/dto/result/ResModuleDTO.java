@@ -12,7 +12,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResModuleDTO {
 
-    String ordinalNumber, moduleName;
     List<ResExamResults> moduleExamResults;
-    List<ResGroupDTO> moduleGroups;
+    ResGroupDTO moduleGroup;
+    String createdAt;
 }
