@@ -12,6 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EduModuleDTO {
-
     private Long groupId;
 }

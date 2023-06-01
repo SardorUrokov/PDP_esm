@@ -7,8 +7,8 @@ import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.entity.Student;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.EduModuleRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
+import com.example.pdp_esm.repository.GroupModuleRepository;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,29 +25,35 @@ public class GroupModuleService {
     private final GroupServiceImpl groupService;
     private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
-    private final EduModuleRepository moduleRepository;
+    private final GroupModuleRepository groupModuleRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
 
     public ApiResponse<?> createModule(EduModuleDTO moduleDTO) {
 
-        GroupModule module = new GroupModule();
-        GroupModule save = settingValues(module, moduleDTO);
+        final var groupId = moduleDTO.getGroupId();
+        final var exists = groupModuleRepository.existsByGroup_Id(groupId);
 
-        return ApiResponse.builder()
-                .message("Module Created!")
-                .success(true)
-                .data(toResModuleDTO(save))
-                .build();
+        if (!exists) {
+            GroupModule module = new GroupModule();
+            GroupModule save = settingValues(module, moduleDTO);
+
+            return ApiResponse.builder()
+                    .message("Module Created!")
+                    .success(true)
+                    .data(toResModuleDTO(save))
+                    .build();
+        } else return
+                new ApiResponse<>("Such a Module is already created with this group Id " + groupId, false);
     }
 
     public ApiResponse<?> getAllModules() {
-        final var all = moduleRepository.findAll();
+        final var all = groupModuleRepository.findAll();
         return new ApiResponse<>("All Modules List", true, toResModuleDTOList(all));
     }
 
     public ApiResponse<?> getOne(Long id) {
-        final var byId = moduleRepository.findById(id)
+        final var byId = groupModuleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("GroupModule", "id", id));
 
         return ApiResponse.builder()
@@ -58,9 +63,9 @@ public class GroupModuleService {
                 .build();
     }
 
-    public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO){
+    public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO) {
 
-        final var optionalModulePerGroup = moduleRepository.findById(id);
+        final var optionalModulePerGroup = groupModuleRepository.findById(id);
         final var module = settingValues(optionalModulePerGroup.get(), moduleDTO);
 
         return ApiResponse.builder()
@@ -71,15 +76,15 @@ public class GroupModuleService {
     }
 
     public ApiResponse<?> deleteModule(Long module_id) {
-        if (moduleRepository.existsById(module_id)) {
-            moduleRepository.deleteById(module_id);
+        if (groupModuleRepository.existsById(module_id)) {
+            groupModuleRepository.deleteById(module_id);
             return new ApiResponse<>("Module Deleted!", true);
         } else
             return new ApiResponse<>("Module not found!", false);
     }
 
 
-    public ResModuleDTO toResModuleDTO(GroupModule module){
+    public ResModuleDTO toResModuleDTO(GroupModule module) {
 
         final var group = groupService.toResDTO(module.getGroup());
         final var resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
@@ -95,10 +100,10 @@ public class GroupModuleService {
         return eduModuleList.stream().map(this::toResModuleDTO).toList();
     }
 
-    public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO){
+    public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO) {
 
         final var group = groupRepository.findById(moduleDTO.getGroupId())
-                .orElseThrow(()-> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
 //        List<ExamResult> examResultList = new ArrayList<>();
 //        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
 //            final var examResult = examResultRepository.findByStudentId(student.getId())
@@ -119,7 +124,7 @@ public class GroupModuleService {
         module.setCreatedAt(new Date());
         module.setGroup(group);
         module.setExamResults(examResultList);
-        moduleRepository.save(module);
+        groupModuleRepository.save(module);
         return module;
     }
 }

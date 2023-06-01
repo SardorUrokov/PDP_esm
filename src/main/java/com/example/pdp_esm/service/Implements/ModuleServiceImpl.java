@@ -1,14 +1,14 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.ModuleDTO;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.entity.Modules;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.CourseRepository;
-import com.example.pdp_esm.repository.EduModuleRepository;
-import com.example.pdp_esm.repository.ModulesRepository;
+import com.example.pdp_esm.entity.GroupModule;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.repository.GroupModuleRepository;
 import com.example.pdp_esm.service.ModulesService;
+import com.example.pdp_esm.repository.CourseRepository;
+import com.example.pdp_esm.repository.ModulesRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ModuleServiceImpl implements ModulesService {
 
     private final ModulesRepository modulesRepository;
-    private final EduModuleRepository eduModuleRepository;
+    private final GroupModuleRepository eduModuleRepository;
     private final CourseRepository courseRepository;
 
     @Override

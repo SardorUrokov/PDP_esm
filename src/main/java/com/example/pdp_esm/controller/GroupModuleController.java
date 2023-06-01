@@ -17,7 +17,9 @@ public class GroupModuleController {
     private final GroupModuleService eduModuleService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createModule(@RequestBody EduModuleDTO moduleDTO){
+    public ResponseEntity<?> createModule(@RequestBody EduModuleDTO moduleDTO) {
+
+
         ApiResponse<?> response = eduModuleService.createModule(moduleDTO);
 
         if (response.isSuccess()) log.warn("Group Module Created! -> {}", response);
@@ -27,7 +29,7 @@ public class GroupModuleController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllModules(){
+    public ResponseEntity<?> getAllModules() {
         ApiResponse<?> response = eduModuleService.getAllModules();
 
         if (response.isSuccess()) log.warn("Getting Group Modules List! -> {}", response);
@@ -37,7 +39,7 @@ public class GroupModuleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOne (@PathVariable Long id){
+    public ResponseEntity<?> getOne(@PathVariable Long id) {
         ApiResponse<?> response = eduModuleService.getOne(id);
 
         if (response.isSuccess()) log.warn("Getting Group Module with {} id! -> {}", id, response);
@@ -47,7 +49,7 @@ public class GroupModuleController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateEduModule(@PathVariable Long id, @RequestBody EduModuleDTO moduleDTO){
+    public ResponseEntity<?> updateEduModule(@PathVariable Long id, @RequestBody EduModuleDTO moduleDTO) {
         ApiResponse<?> response = eduModuleService.updateModule(id, moduleDTO);
 
         if (response.isSuccess()) log.warn("Group Module with {} id is Updated! -> {}", id, response);
@@ -57,7 +59,7 @@ public class GroupModuleController {
     }
 
     @DeleteMapping("/deleteModule/{id}")
-    public ResponseEntity<?> deleteModule(@PathVariable Long id){
+    public ResponseEntity<?> deleteModule(@PathVariable Long id) {
         ApiResponse<?> response = eduModuleService.deleteModule(id);
 
         if (response.isSuccess()) log.warn("Delete Group Module with {} id! -> {}", id, response);
