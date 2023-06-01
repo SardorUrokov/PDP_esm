@@ -11,11 +11,11 @@ public interface ModulesService {
 
     ApiResponse<?> getByModuleId(Long id);
 
-    ApiResponse<?> getByOrdinalNumber(Integer ordinalNumber);
+    ApiResponse<?> getByOrdinalNumber(Long ordinalNumber);
 
     ApiResponse<?> getByCourseId(Long id);
 
     ApiResponse<?> updateModule(Long id, ModuleDTO moduleDTO);
 
-    ApiResponse<?> deleteResponse(Long id);
+    ApiResponse<?> deleteModule(Long id);
 }

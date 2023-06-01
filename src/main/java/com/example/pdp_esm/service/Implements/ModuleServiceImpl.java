@@ -59,7 +59,7 @@ public class ModuleServiceImpl implements ModulesService {
     }
 
     @Override
-    public ApiResponse<?> getByOrdinalNumber(Integer ordinalNumber) {
+    public ApiResponse<?> getByOrdinalNumber(Long ordinalNumber) {
         final var module = modulesRepository.findByOrdinalNumber(ordinalNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "OrdinalNumber", ordinalNumber));
         return ApiResponse.builder()
@@ -98,7 +98,7 @@ public class ModuleServiceImpl implements ModulesService {
     }
 
     @Override
-    public ApiResponse<?> deleteResponse(Long id) {
+    public ApiResponse<?> deleteModule(Long id) {
         if (modulesRepository.existsById(id)) {
             modulesRepository.deleteById(id);
             return new ApiResponse<>("Module Deleted!", true);

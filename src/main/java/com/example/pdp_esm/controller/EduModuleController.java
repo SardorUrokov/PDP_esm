@@ -37,7 +37,7 @@ public class EduModuleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAllModules(@PathVariable Long id){
+    public ResponseEntity<?> getOne (@PathVariable Long id){
         ApiResponse<?> response = eduModuleService.getOne(id);
 
         if (response.isSuccess()) log.warn("Getting EduModule with {} id! -> {}", id, response);
