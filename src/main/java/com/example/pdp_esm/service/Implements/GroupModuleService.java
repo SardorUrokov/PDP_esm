@@ -2,7 +2,7 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.EduModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.result.ResModuleDTO;
+import com.example.pdp_esm.dto.result.ResGroupModule;
 import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.entity.Student;
@@ -84,19 +84,19 @@ public class GroupModuleService {
     }
 
 
-    public ResModuleDTO toResModuleDTO(GroupModule module) {
+    public ResGroupModule toResModuleDTO(GroupModule module) {
 
         final var group = groupService.toResDTO(module.getGroup());
         final var resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
 
-        return ResModuleDTO.builder()
+        return ResGroupModule.builder()
                 .createdAt(module.getCreatedAt().toString())
                 .moduleGroup(group)
                 .moduleExamResults(resExamResultDTOList)
                 .build();
     }
 
-    public List<ResModuleDTO> toResModuleDTOList(List<GroupModule> eduModuleList) {
+    public List<ResGroupModule> toResModuleDTOList(List<GroupModule> eduModuleList) {
         return eduModuleList.stream().map(this::toResModuleDTO).toList();
     }
 

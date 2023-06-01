@@ -1,6 +1,8 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.ModuleDTO;
+import com.example.pdp_esm.dto.result.ResGroupModule;
+import com.example.pdp_esm.dto.result.ResModule;
 import com.example.pdp_esm.entity.Modules;
 import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.dto.result.ApiResponse;
@@ -22,6 +24,7 @@ public class ModuleServiceImpl implements ModulesService {
 
     private final ModulesRepository modulesRepository;
     private final GroupModuleRepository eduModuleRepository;
+    private final GroupModuleService groupModuleService;
     private final CourseRepository courseRepository;
 
     @Override
@@ -40,7 +43,7 @@ public class ModuleServiceImpl implements ModulesService {
             return ApiResponse.builder()
                     .message("Module Created! ")
                     .success(true)
-                    .data(save)
+                    .data(toResModule(save))
                     .build();
         } else
             return new ApiResponse<>("Such a Module has already created!", false);
@@ -52,7 +55,7 @@ public class ModuleServiceImpl implements ModulesService {
         return ApiResponse.builder()
                 .message("All Modules List")
                 .success(true)
-                .data(allModules)
+                .data(toResModuleList(allModules))
                 .build();
     }
 
@@ -63,7 +66,7 @@ public class ModuleServiceImpl implements ModulesService {
         return ApiResponse.builder()
                 .message("Module by " + id + " id")
                 .success(true)
-                .data(module)
+                .data(toResModule(module))
                 .build();
     }
 
@@ -74,7 +77,7 @@ public class ModuleServiceImpl implements ModulesService {
         return ApiResponse.builder()
                 .message("Module by " + ordinalNumber + " ordinalNumber")
                 .success(true)
-                .data(module)
+                .data(toResModule(module))
                 .build();
     }
 
@@ -85,7 +88,7 @@ public class ModuleServiceImpl implements ModulesService {
         return ApiResponse.builder()
                 .message("Module by " + id + " courseId")
                 .success(true)
-                .data(module)
+                .data(toResModule(module))
                 .build();
     }
 
@@ -102,7 +105,7 @@ public class ModuleServiceImpl implements ModulesService {
         return ApiResponse.builder()
                 .message("Module Updated!")
                 .success(true)
-                .data(update)
+                .data(toResModule(update))
                 .build();
     }
 
@@ -134,5 +137,21 @@ public class ModuleServiceImpl implements ModulesService {
 //                .groupModules(groupModules)
 //                .ordinalNumber(moduleDTO.getOrdinalNumber())
 //                .build();
+    }
+
+    public ResModule toResModule(Modules module) {
+
+        List<ResGroupModule> resModuleDTOList =
+                groupModuleService.toResModuleDTOList(module.getGroupModules());
+
+        return ResModule.builder()
+                .ordinalNumber(module.getOrdinalNumber())
+                .courseName(module.getCourse().getName())
+                .groupModuleList(resModuleDTOList)
+                .build();
+    }
+
+    public List<ResModule> toResModuleList(List<Modules> modules) {
+        return modules.stream().map(this::toResModule).toList();
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResModuleDTO {
+public class ResGroupModule {
 
     List<ResExamResults> moduleExamResults;
     ResGroupDTO moduleGroup;
