@@ -1,12 +1,12 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.EduModuleDTO;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.service.Implements.GroupModuleService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import com.example.pdp_esm.dto.EduModuleDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.service.Implements.GroupModuleService;
 
 @Slf4j
 @RestController
