@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,16 +26,24 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
-        Modules module = new Modules();
-        Modules modules = settingValues(module, moduleDTO);
-        modules.setCreatedAt(new Date());
-        final var save = modulesRepository.save(modules);
 
-        return ApiResponse.builder()
-                .message("Module Created! ")
-                .success(true)
-                .data(save)
-                .build();
+        final var exists = modulesRepository
+                .existsByCourseIdAndOrdinalNumber(moduleDTO.getCourseId(), moduleDTO.getOrdinalNumber());
+
+        if (!exists) {
+
+            Modules module = new Modules();
+            Modules modules = settingValues(module, moduleDTO);
+            modules.setCreatedAt(new Date());
+            final var save = modulesRepository.save(modules);
+
+            return ApiResponse.builder()
+                    .message("Module Created! ")
+                    .success(true)
+                    .data(save)
+                    .build();
+        } else
+            return new ApiResponse<>("Such a Module has already created!", false);
     }
 
     @Override
@@ -83,12 +92,12 @@ public class ModuleServiceImpl implements ModulesService {
     @Override
     public ApiResponse<?> updateModule(Long id, ModuleDTO moduleDTO) {
 
-        final var module = modulesRepository.findById(id)
+        Modules module = modulesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "id", id));
 
         Modules updatedModule = settingValues(module, moduleDTO);
         updatedModule.setUpdatedAt(new Date());
-        final var update = modulesRepository.save(updatedModule);
+        Modules update = modulesRepository.save(updatedModule);
 
         return ApiResponse.builder()
                 .message("Module Updated!")
@@ -113,15 +122,17 @@ public class ModuleServiceImpl implements ModulesService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "CourseId", courseId));
 
         List<GroupModule> groupModules =
-                moduleDTO.getEduModulesIds().stream().map(eduModuleRepository::getById).toList();
+                moduleDTO.getEduModulesIds().stream().map(eduModuleRepository::getById).collect(Collectors.toList());
 
-//        module.setCourse(course);
-//        module.setEduModules(groupModules);
-//        module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
-        return Modules.builder()
-                .course(course)
-                .eduModules(groupModules)
-                .ordinalNumber(moduleDTO.getOrdinalNumber())
-                .build();
+        module.setCourse(course);
+        module.setGroupModules(groupModules);
+        module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
+        return module;
+
+//        return Modules.builder()
+//                .course(course)
+//                .groupModules(groupModules)
+//                .ordinalNumber(moduleDTO.getOrdinalNumber())
+//                .build();
     }
 }

@@ -20,6 +20,6 @@ public class Modules extends AbsEntity {
     @ManyToOne
     Course course;
 
-    @OneToMany
-    List<GroupModule> eduModules;
+    @OneToMany(fetch = FetchType.EAGER)
+    List<GroupModule> groupModules;
 }

@@ -4,7 +4,6 @@ import com.example.pdp_esm.dto.EduModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResModuleDTO;
 import com.example.pdp_esm.entity.ExamResult;
-import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.GroupModule;
 import com.example.pdp_esm.entity.Student;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
@@ -15,22 +14,21 @@ import com.example.pdp_esm.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EduModuleService {
+public class GroupModuleService {
 
-    private final EduModuleRepository moduleRepository;
-    private final GroupRepository groupRepository;
-    private final ExamResultRepository examResultRepository;
     private final GroupServiceImpl groupService;
-    private final ExamResultServiceImpl examResultService;
+    private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
+    private final EduModuleRepository moduleRepository;
+    private final ExamResultServiceImpl examResultService;
+    private final ExamResultRepository examResultRepository;
 
     public ApiResponse<?> createModule(EduModuleDTO moduleDTO) {
 
@@ -73,7 +71,6 @@ public class EduModuleService {
     }
 
     public ApiResponse<?> deleteModule(Long module_id) {
-
         if (moduleRepository.existsById(module_id)) {
             moduleRepository.deleteById(module_id);
             return new ApiResponse<>("Module Deleted!", true);
@@ -100,10 +97,10 @@ public class EduModuleService {
 
     public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO){
 
-        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
-
+        final var group = groupRepository.findById(moduleDTO.getGroupId())
+                .orElseThrow(()-> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
 //        List<ExamResult> examResultList = new ArrayList<>();
-//        for (Student student : studentRepository.findAllByGroupId(optionalGroup.get().getId())) {
+//        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
 //            final var examResult = examResultRepository.findByStudentId(student.getId())
 //                    .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", student.getId()));
 //            examResultList.add(examResult);
@@ -120,7 +117,7 @@ public class EduModuleService {
                 .collect(Collectors.toList());
 
         module.setCreatedAt(new Date());
-        module.setGroup(optionalGroup.get());
+        module.setGroup(group);
         module.setExamResults(examResultList);
         moduleRepository.save(module);
         return module;
