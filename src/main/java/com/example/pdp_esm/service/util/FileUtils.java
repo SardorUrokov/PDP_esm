@@ -6,7 +6,7 @@ import java.util.zip.Inflater;
 
 public class FileUtils {
 
-    public static byte[] compressImage(byte[] data) {
+    public static byte[] compressFile(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
         deflater.setInput(data);
@@ -26,7 +26,7 @@ public class FileUtils {
     }
 
 
-    public static byte[] decompressImage(byte[] data) {
+    public static byte[] decompressFile(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);

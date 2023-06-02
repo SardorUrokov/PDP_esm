@@ -13,15 +13,14 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     public ApiResponse<?> createCertificate(Long student_id) {
@@ -50,8 +50,14 @@ public class CertificateServiceImpl implements CertificateService {
             String rndValue = String.valueOf(Math.random() * 89999 + 10000).substring(0, 5); //length 5
             certificate.setCertificateNumber("PDP-CER-" + rndValue);
             Certificate save = certificateRepository.save(certificate);
-            final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
 
+            final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
+            try {
+                assert generatedCertificate != null;
+                fileStorageService.uploadFile(generatedCertificate);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return ApiResponse.builder()
                     .message("Certificate Created!")
                     .success(true)
@@ -115,9 +121,11 @@ public class CertificateServiceImpl implements CertificateService {
         return certificates.stream().map(this::toResCertificateDTO).toList();
     }
 
-    public static byte[] generateCertificate(ResCertificateDTO certificateDTO) {
+    public static MultipartFile generateCertificate(ResCertificateDTO certificateDTO) {
 
         String folder = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
+        String contentType = "application/pdf";
+        String fileName = certificateDTO.getCertificateId();
 
         final var createdAt = certificateDTO.getCreatedAt();
         String dayOfMonth = createdAt.substring(3, 10);
@@ -174,7 +182,8 @@ public class CertificateServiceImpl implements CertificateService {
             document.save(folder + certificateDTO.getCertificateId());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             document.save(baos);
-            return baos.toByteArray();
+            final var byteArray = baos.toByteArray();
+            return new MockMultipartFile(fileName, fileName, contentType, byteArray);
 
         } catch (IOException e) {
             e.printStackTrace();

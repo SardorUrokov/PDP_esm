@@ -23,8 +23,4 @@ public class Certificate extends AbsEntity {
 
     @ManyToOne
     Student student;
-
-    @Lob
-    byte[] bytes;
-    String type;
 }
