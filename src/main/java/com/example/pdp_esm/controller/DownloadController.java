@@ -1,6 +1,7 @@
 package com.example.pdp_esm.controller;
 
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.service.Implements.CertificateDownloader;
 import com.example.pdp_esm.service.Implements.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class DownloadController {
 
     private final FileStorageService storageService;
+    private final CertificateDownloader certificateDownloader;
 
     @PostMapping
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
@@ -31,10 +33,7 @@ public class DownloadController {
     }
 
     @GetMapping("/{certificateId}")
-    public ResponseEntity<?> downloadImage(@PathVariable String certificateId){
-        byte[] downloadFile=storageService.downloadFile(certificateId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("application/pdf"))
-                .body(downloadFile);
+    public ResponseEntity<byte[]> getCertificate(@PathVariable String certificateName) {
+        return certificateDownloader.downloadCertificate(certificateName);
     }
 }
