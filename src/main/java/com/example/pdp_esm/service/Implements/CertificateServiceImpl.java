@@ -8,8 +8,20 @@ import com.example.pdp_esm.repository.CertificateRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +50,7 @@ public class CertificateServiceImpl implements CertificateService {
             String rndValue = String.valueOf(Math.random() * 89999 + 10000).substring(0, 5); //length 5
             certificate.setCertificateNumber("PDP-CER-" + rndValue);
             Certificate save = certificateRepository.save(certificate);
+            final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
 
             return ApiResponse.builder()
                     .message("Certificate Created!")
@@ -100,5 +113,72 @@ public class CertificateServiceImpl implements CertificateService {
 
     public List<ResCertificateDTO> toResCertificateDTOList(List<Certificate> certificates) {
         return certificates.stream().map(this::toResCertificateDTO).toList();
+    }
+
+    public static byte[] generateCertificate(ResCertificateDTO certificateDTO) {
+
+        String folder = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
+
+        final var createdAt = certificateDTO.getCreatedAt();
+        String dayOfMonth = createdAt.substring(3, 10);
+        String year = createdAt.substring(23);
+        String date = dayOfMonth + year;
+
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+
+                // Set background color for the list
+//                contentStream.setNonStrokingColor(Color.LIGHT_GRAY);
+//                contentStream.fillRect(0, 0, 800, 900);
+
+                // Set font color
+                contentStream.setNonStrokingColor(Color.BLACK);
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+
+                // Add frame around the list
+                contentStream.addRect(20, 20, 555, 800);
+                contentStream.stroke();
+
+                // Add text
+                contentStream.beginText();
+                contentStream.newLineAtOffset(85, 700);
+                contentStream.setFont(PDType1Font.COURIER_BOLD_OBLIQUE, 28);
+                contentStream.showText("Certificate of Completion");
+                contentStream.newLineAtOffset(55, -80);
+                contentStream.setFont(PDType1Font.COURIER_OBLIQUE, 20);
+                contentStream.showText("This is to certify that");
+                contentStream.newLineAtOffset(-65, -50);
+                contentStream.setFont(PDType1Font.TIMES_BOLD_ITALIC, 30);
+                contentStream.showText(certificateDTO.getStudentFullName());
+                contentStream.setFont(PDType1Font.COURIER_OBLIQUE, 15);
+                contentStream.showText(" has successfully completed ");
+                contentStream.newLineAtOffset(1, -70);
+                contentStream.setFont(PDType1Font.COURIER_OBLIQUE, 12);
+                contentStream.showText("the course  ");
+                contentStream.setFont(PDType1Font.TIMES_BOLD_ITALIC, 30);
+                contentStream.showText(certificateDTO.getCourseName());
+                contentStream.newLineAtOffset(-10, -400);
+                contentStream.setFont(PDType1Font.TIMES_BOLD_ITALIC, 15);
+                contentStream.showText("CEO  B.D.Ikramov:  __________________");
+                contentStream.newLineAtOffset(-10, -60);
+                contentStream.setFont(PDType1Font.TIMES_BOLD_ITALIC, 12);
+                contentStream.showText(date);
+                contentStream.newLineAtOffset(385, -1);
+                contentStream.setFont(PDType1Font.TIMES_BOLD_ITALIC, 12);
+                contentStream.showText("ID: " + certificateDTO.getCertificateId());
+                contentStream.endText();
+            }
+            document.save(folder + certificateDTO.getCertificateId());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            document.save(baos);
+            return baos.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pdp_esm.entity;
 
+import jakarta.persistence.Lob;
 import lombok.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -22,4 +23,8 @@ public class Certificate extends AbsEntity {
 
     @ManyToOne
     Student student;
+
+    @Lob
+    byte[] bytes;
+    String type;
 }

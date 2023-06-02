@@ -50,7 +50,7 @@ public class CertificateController {
     }
 
     @PreAuthorize(value = "hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-    @GetMapping("/getOne/{certificateId}")
+    @GetMapping("/getByCertificateId/{certificateId}")
     public ResponseEntity<?> getCertificate(@PathVariable String certificateId) {
         ApiResponse<?> response = certificateService.getCertificateById(certificateId);
 
