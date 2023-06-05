@@ -218,10 +218,9 @@ public class CertificateServiceImpl implements CertificateService {
                 createCertificate(completedStudentsId);
             }
         }
-
         List<Certificate> certificates =
                 completedStudentsIds.stream().map(certificateRepository::getById).toList();
 
-
+        return toResCertificateDTOList(certificates);
     }
 }
