@@ -33,7 +33,7 @@ public class DownloadController {
     }
 
     @GetMapping("/{certificateId}")
-    public ResponseEntity<byte[]> getCertificate(@PathVariable String certificateName) {
-        return certificateDownloader.downloadCertificate(certificateName);
+    public ResponseEntity<byte[]> getCertificate(@PathVariable String certificateId) {
+        return certificateDownloader.downloadCertificate(certificateId);
     }
 }
