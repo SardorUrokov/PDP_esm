@@ -23,11 +23,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ExamResultServiceImpl implements ExamResultService {
 
+    private final StudentRepository studentRepository;
+    private final QuestionServiceImpl questionService;
+    private final QuestionRepository questionRepository;
     private final ExamResultRepository examResultRepository;
     private final DeleteExamResultRepository deleteExamResultRepository;
-    private final StudentRepository studentRepository;
-    private final QuestionRepository questionRepository;
-    private final QuestionServiceImpl questionService;
 
     @Override
     public ApiResponse<?> createExamResult(ExamResultDTO examResultDTO) {

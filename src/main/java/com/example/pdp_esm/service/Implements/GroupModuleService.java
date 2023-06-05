@@ -1,6 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.EduModuleDTO;
+import com.example.pdp_esm.dto.GroupModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResGroupModule;
 import com.example.pdp_esm.entity.ExamResult;
@@ -29,7 +29,7 @@ public class GroupModuleService {
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
 
-    public ApiResponse<?> createModule(EduModuleDTO moduleDTO) {
+    public GroupModule createModule(GroupModuleDTO moduleDTO) {
 
         final var groupId = moduleDTO.getGroupId();
         final var exists = groupModuleRepository.existsByGroup_Id(groupId);
@@ -38,14 +38,17 @@ public class GroupModuleService {
             GroupModule module = new GroupModule();
             GroupModule save = settingValues(module, moduleDTO);
 
-            return ApiResponse.builder()
-                    .message("Module Created!")
-                    .success(true)
-                    .data(toResModuleDTO(save))
-                    .build();
-        } else return
-                new ApiResponse<>("Such a Module is already created with this group Id " + groupId, false);
+//            return ApiResponse.builder()
+//                    .message("Module Created!")
+//                    .success(true)
+//                    .data(toResModuleDTO(save))
+//                    .build();
+//        } else return
+//                new ApiResponse<>("Such a Module is already created with this group Id " + groupId, false);
+            return save;
+        } else return null;
     }
+
 
     public ApiResponse<?> getAllModules() {
         final var all = groupModuleRepository.findAll();
@@ -63,7 +66,7 @@ public class GroupModuleService {
                 .build();
     }
 
-    public ApiResponse<?> updateModule(Long id, EduModuleDTO moduleDTO) {
+    public ApiResponse<?> updateModule(Long id, GroupModuleDTO moduleDTO) {
 
         final var optionalModulePerGroup = groupModuleRepository.findById(id);
         final var module = settingValues(optionalModulePerGroup.get(), moduleDTO);
@@ -100,7 +103,7 @@ public class GroupModuleService {
         return eduModuleList.stream().map(this::toResModuleDTO).toList();
     }
 
-    public GroupModule settingValues(GroupModule module, EduModuleDTO moduleDTO) {
+    public GroupModule settingValues(GroupModule module, GroupModuleDTO moduleDTO) {
 
         final var group = groupRepository.findById(moduleDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));

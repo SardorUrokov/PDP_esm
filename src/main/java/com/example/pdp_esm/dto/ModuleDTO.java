@@ -12,6 +12,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ModuleDTO {
 
-    Long courseId, ordinalNumber;
-    List<Long> eduModulesIds;
+    Long ordinalNumber, groupId;
 }

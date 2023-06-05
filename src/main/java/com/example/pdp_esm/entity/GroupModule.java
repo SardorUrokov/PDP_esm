@@ -14,9 +14,8 @@ import com.example.pdp_esm.entity.template.AbsEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GroupModule extends AbsEntity
-//        implements Serializable
-{
+public class GroupModule extends AbsEntity {
+
     @OneToMany
     List<ExamResult> examResults;
 

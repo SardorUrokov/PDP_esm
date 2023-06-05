@@ -3,8 +3,14 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResCertificateDTO;
 import com.example.pdp_esm.entity.Certificate;
+import com.example.pdp_esm.entity.ExamResult;
+import com.example.pdp_esm.entity.Student;
+import com.example.pdp_esm.entity.Teacher;
+import com.example.pdp_esm.entity.enums.ResultType;
+import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CertificateRepository;
+import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +39,7 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
     private final FileStorageService fileStorageService;
+    private final ExamResultRepository examResultRepository;
 
     @Override
     public ApiResponse<?> createCertificate(Long student_id) {
@@ -64,8 +73,9 @@ public class CertificateServiceImpl implements CertificateService {
                     .data(toResCertificateDTO(save))
                     .build();
         } else {
+            Certificate byStudentId = certificateRepository.findByStudentId(student_id).orElseThrow();
             return
-                    new ApiResponse<>("Student with " + student_id + " id has already Certificated!", false);
+                    new ApiResponse<>("Student with " + student_id + " id has already Certificated!",false, toResCertificateDTO(byStudentId));
         }
     }
 
@@ -189,5 +199,29 @@ public class CertificateServiceImpl implements CertificateService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<ResCertificateDTO> automaticGenerateCertificates(){
+
+        final var allByStatus = studentRepository.findAllByStatus(Status.COMPLETED);
+        List<Long> completedStudentsIds = new ArrayList<>();
+
+        for (Student byStatus : allByStatus) {
+            final var examResult = examResultRepository.findByStudentId(byStatus.getId());
+            if (examResult.get().getResultType().equals(ResultType.SUCCESS)) {
+                completedStudentsIds.add(byStatus.getId());
+            }
+        }
+
+        if (!completedStudentsIds.isEmpty()){
+            for (Long completedStudentsId : completedStudentsIds) {
+                createCertificate(completedStudentsId);
+            }
+        }
+
+        List<Certificate> certificates =
+                completedStudentsIds.stream().map(certificateRepository::getById).toList();
+
+
     }
 }

@@ -1,12 +1,16 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.dto.GroupModuleDTO;
 import com.example.pdp_esm.dto.ModuleDTO;
 import com.example.pdp_esm.dto.result.ResGroupModule;
 import com.example.pdp_esm.dto.result.ResModule;
-import com.example.pdp_esm.entity.Modules;
+import com.example.pdp_esm.entity.Course;
+import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.GroupModule;
+import com.example.pdp_esm.entity.Modules;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.repository.GroupModuleRepository;
+import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.service.ModulesService;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.ModulesRepository;
@@ -14,24 +18,28 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ModuleServiceImpl implements ModulesService {
 
     private final ModulesRepository modulesRepository;
-    private final GroupModuleRepository eduModuleRepository;
+    private final GroupRepository groupRepository;
     private final GroupModuleService groupModuleService;
     private final CourseRepository courseRepository;
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
 
+        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
+        final var courseId = optionalGroup.get().getCourse().getId();
+
         final var exists = modulesRepository
-                .existsByCourseIdAndOrdinalNumber(moduleDTO.getCourseId(), moduleDTO.getOrdinalNumber());
+                .existsByCourseIdAndOrdinalNumber(courseId, moduleDTO.getOrdinalNumber());
 
         if (!exists) {
 
@@ -120,23 +128,20 @@ public class ModuleServiceImpl implements ModulesService {
 
     public Modules settingValues(Modules module, ModuleDTO moduleDTO) {
 
-        final var courseId = moduleDTO.getCourseId();
-        final var course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "CourseId", courseId));
+        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
+        final var course = optionalGroup.get().getCourse();
 
-        List<GroupModule> groupModules =
-                moduleDTO.getEduModulesIds().stream().map(eduModuleRepository::getById).collect(Collectors.toList());
+        List<GroupModule> groupModulesList = new ArrayList<>();
+        final var groupModule = groupModuleService.createModule(
+                GroupModuleDTO.builder()
+                        .groupId(moduleDTO.getGroupId())
+                        .build());
+        groupModulesList.add(groupModule);
 
         module.setCourse(course);
-        module.setGroupModules(groupModules);
+        module.setGroupModules(groupModulesList);
         module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
         return module;
-
-//        return Modules.builder()
-//                .course(course)
-//                .groupModules(groupModules)
-//                .ordinalNumber(moduleDTO.getOrdinalNumber())
-//                .build();
     }
 
     public ResModule toResModule(Modules module) {

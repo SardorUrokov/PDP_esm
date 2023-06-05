@@ -30,6 +30,7 @@ public class CertificateDownloader {
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(certificateBytes);
+
         } catch (Exception e) {
             e.printStackTrace();
             // Handle the exception and return an appropriate response
