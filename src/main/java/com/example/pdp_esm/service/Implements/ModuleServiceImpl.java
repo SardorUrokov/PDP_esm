@@ -26,12 +26,14 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
+        final var absModuleId = moduleDTO.getAbsModuleId();
         final var exists = modulesRepository
-                .existsByAbstractModule_IdAndOrdinalNumber(moduleDTO.getAbsModuleId(), moduleDTO.getOrdinalNumber());
+                .existsByAbstractModule_IdAndOrdinalNumber(absModuleId, moduleDTO.getOrdinalNumber());
 
-        final var byId = abstractModuleRepository.findById(moduleDTO.getAbsModuleId());
+        final var byId = abstractModuleRepository.findById(absModuleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
 
-        if (moduleDTO.getOrdinalNumber() > byId.get().getModules()) {
+        if (moduleDTO.getOrdinalNumber() > byId.getModules()) {
             return new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
         }
 

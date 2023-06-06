@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -113,7 +114,7 @@ public class GroupModuleService {
 //                    .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", student.getId()));
 //            examResultList.add(examResult);
 //        }
-
+/*
         List<ExamResult> examResultList = studentRepository
                 .findAllByGroupId(moduleDTO.getGroupId())
                 .stream()
@@ -121,6 +122,17 @@ public class GroupModuleService {
                 .map(studentId -> examResultRepository
                         .findByStudentId(studentId)
                         .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", studentId))
+                )
+                .collect(Collectors.toList());
+*/
+        List<ExamResult> examResultList = studentRepository
+                .findAllByGroupId(moduleDTO.getGroupId())
+                .stream()
+                .map(Student::getId)
+                .flatMap(studentId -> examResultRepository
+                        .findByStudentId(studentId)
+                        .map(Stream::of)
+                        .orElseGet(Stream::empty)
                 )
                 .collect(Collectors.toList());
 
