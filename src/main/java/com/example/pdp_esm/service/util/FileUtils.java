@@ -20,11 +20,9 @@ public class FileUtils {
         }
         try {
             outputStream.close();
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         return outputStream.toByteArray();
     }
-
 
     public static byte[] decompressFile(byte[] data) {
         Inflater inflater = new Inflater();
@@ -37,8 +35,7 @@ public class FileUtils {
                 outputStream.write(tmp, 0, count);
             }
             outputStream.close();
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         return outputStream.toByteArray();
     }
 }

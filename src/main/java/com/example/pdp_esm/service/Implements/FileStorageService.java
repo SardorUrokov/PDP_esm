@@ -2,13 +2,11 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.entity.Attachment;
-import com.example.pdp_esm.entity.Certificate;
-import com.example.pdp_esm.repository.AttachmentRepository;
-import com.example.pdp_esm.repository.CertificateRepository;
 import com.example.pdp_esm.service.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.pdp_esm.repository.AttachmentRepository;
 
 import java.io.IOException;
 import java.util.Optional;
