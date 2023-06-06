@@ -4,16 +4,10 @@ import com.example.pdp_esm.dto.GroupModuleDTO;
 import com.example.pdp_esm.dto.ModuleDTO;
 import com.example.pdp_esm.dto.result.ResGroupModule;
 import com.example.pdp_esm.dto.result.ResModule;
-import com.example.pdp_esm.entity.Course;
-import com.example.pdp_esm.entity.Group;
-import com.example.pdp_esm.entity.GroupModule;
-import com.example.pdp_esm.entity.Modules;
+import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.repository.GroupModuleRepository;
-import com.example.pdp_esm.repository.GroupRepository;
+import com.example.pdp_esm.repository.*;
 import com.example.pdp_esm.service.ModulesService;
-import com.example.pdp_esm.repository.CourseRepository;
-import com.example.pdp_esm.repository.ModulesRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,28 +15,27 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ModuleServiceImpl implements ModulesService {
 
     private final ModulesRepository modulesRepository;
-    private final GroupRepository groupRepository;
     private final GroupModuleService groupModuleService;
-    private final CourseRepository courseRepository;
+    private final AbstractModuleRepository abstractModuleRepository;
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
-
-        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
-        final var courseId = optionalGroup.get().getCourse().getId();
-
         final var exists = modulesRepository
-                .existsByCourseIdAndOrdinalNumber(courseId, moduleDTO.getOrdinalNumber());
+                .existsByAbstractModule_IdAndOrdinalNumber(moduleDTO.getAbsModuleId(), moduleDTO.getOrdinalNumber());
+
+        final var byId = abstractModuleRepository.findById(moduleDTO.getAbsModuleId());
+
+        if (moduleDTO.getOrdinalNumber() > byId.get().getModules()) {
+            return new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
+        }
 
         if (!exists) {
-
             Modules module = new Modules();
             Modules modules = settingValues(module, moduleDTO);
             modules.setCreatedAt(new Date());
@@ -60,6 +53,7 @@ public class ModuleServiceImpl implements ModulesService {
     @Override
     public ApiResponse<?> getAllModule() {
         List<Modules> allModules = modulesRepository.findAll();
+
         return ApiResponse.builder()
                 .message("All Modules List")
                 .success(true)
@@ -71,6 +65,7 @@ public class ModuleServiceImpl implements ModulesService {
     public ApiResponse<?> getByModuleId(Long id) {
         final var module = modulesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "id", id));
+
         return ApiResponse.builder()
                 .message("Module by " + id + " id")
                 .success(true)
@@ -82,6 +77,7 @@ public class ModuleServiceImpl implements ModulesService {
     public ApiResponse<?> getByOrdinalNumber(Long ordinalNumber) {
         final var module = modulesRepository.findByOrdinalNumber(ordinalNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "OrdinalNumber", ordinalNumber));
+
         return ApiResponse.builder()
                 .message("Module by " + ordinalNumber + " ordinalNumber")
                 .success(true)
@@ -91,8 +87,9 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> getByCourseId(Long id) {
-        final var module = modulesRepository.findByCourse_Id(id)
+        final var module = modulesRepository.findByAbstractModule_Course_Id(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "courseId", id));
+
         return ApiResponse.builder()
                 .message("Module by " + id + " courseId")
                 .success(true)
@@ -102,7 +99,6 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> updateModule(Long id, ModuleDTO moduleDTO) {
-
         Modules module = modulesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Module", "id", id));
 
@@ -119,6 +115,7 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> deleteModule(Long id) {
+
         if (modulesRepository.existsById(id)) {
             modulesRepository.deleteById(id);
             return new ApiResponse<>("Module Deleted!", true);
@@ -127,9 +124,8 @@ public class ModuleServiceImpl implements ModulesService {
     }
 
     public Modules settingValues(Modules module, ModuleDTO moduleDTO) {
-
-        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
-        final var course = optionalGroup.get().getCourse();
+        final var abstractModule = abstractModuleRepository.findById(moduleDTO.getAbsModuleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course Module", "id", moduleDTO.getAbsModuleId()));
 
         List<GroupModule> groupModulesList = new ArrayList<>();
         final var groupModule = groupModuleService.createModule(
@@ -138,20 +134,19 @@ public class ModuleServiceImpl implements ModulesService {
                         .build());
         groupModulesList.add(groupModule);
 
-        module.setCourse(course);
+        module.setAbstractModule(abstractModule);
         module.setGroupModules(groupModulesList);
         module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
         return module;
     }
 
     public ResModule toResModule(Modules module) {
-
         List<ResGroupModule> resModuleDTOList =
                 groupModuleService.toResModuleDTOList(module.getGroupModules());
 
         return ResModule.builder()
                 .ordinalNumber(module.getOrdinalNumber())
-                .courseName(module.getCourse().getName())
+                .courseName(module.getAbstractModule().getCourse().getName())
                 .groupModuleList(resModuleDTOList)
                 .build();
     }

@@ -3,9 +3,7 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResCertificateDTO;
 import com.example.pdp_esm.entity.Certificate;
-import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.Student;
-import com.example.pdp_esm.entity.Teacher;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
@@ -25,12 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
-    private final FileStorageService fileStorageService;
+//    private final FileStorageService fileStorageService;
     private final ExamResultRepository examResultRepository;
 
     @Override
@@ -61,12 +58,12 @@ public class CertificateServiceImpl implements CertificateService {
             Certificate save = certificateRepository.save(certificate);
 
             final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
-            try {
-                assert generatedCertificate != null;
-                fileStorageService.uploadFile(generatedCertificate);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                assert generatedCertificate != null;
+//                fileStorageService.uploadFile(generatedCertificate);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
             return ApiResponse.builder()
                     .message("Certificate Created!")
                     .success(true)

@@ -15,6 +15,7 @@ import com.example.pdp_esm.entity.template.AbsEntity;
 @AllArgsConstructor
 public class AbstractModule extends AbsEntity {
 
+    String name;
     Long modules;
 
     @OneToOne

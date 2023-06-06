@@ -12,5 +12,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ModuleDTO {
 
-    Long ordinalNumber, groupId;
+    Long ordinalNumber, groupId, absModuleId;
 }

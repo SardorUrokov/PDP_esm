@@ -17,8 +17,8 @@ public class Modules extends AbsEntity {
 
     Long ordinalNumber;
 
-    @ManyToOne
-    Course course;
+    @OneToOne
+    AbstractModule abstractModule;
 
     @OneToMany(fetch = FetchType.EAGER)
     List<GroupModule> groupModules;

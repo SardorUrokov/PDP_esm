@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface ModulesRepository extends JpaRepository<Modules, Long> {
 
-    Optional<Modules> findByCourse_Id(Long course_id);
+    Optional<Modules> findByAbstractModule_Course_Id(Long course_id);
 
     Optional<Modules> findByOrdinalNumber(Long ordinalNumber);
 
-    boolean existsByCourseIdAndOrdinalNumber(Long course_id, Long ordinalNumber);
+    boolean existsByAbstractModule_IdAndOrdinalNumber(Long course_id, Long ordinalNumber);
 }

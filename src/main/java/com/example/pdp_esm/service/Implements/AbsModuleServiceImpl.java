@@ -3,6 +3,7 @@ package com.example.pdp_esm.service.Implements;
 import com.example.pdp_esm.dto.AbsModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.entity.AbstractModule;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.AbstractModuleRepository;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.service.AbsModuleService;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +21,23 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     @Override
     public ApiResponse<?> createAbsModule(AbsModuleDTO absModuleDTO) {
-        AbstractModule abstractModule = new AbstractModule();
-        final var absModule = settingValues(abstractModule, absModuleDTO);
-        absModule.setCreatedAt(new Date());
-        abstractModuleRepository.save(absModule);
 
-        return ApiResponse.builder()
-                .message("Course Module created!")
-                .success(true)
-                .data(absModule)
-                .build();
+        final var exists = abstractModuleRepository
+                .existsByCourseIdAndModules(absModuleDTO.getCourseId(), absModuleDTO.getModules());
+
+        if (!exists) {
+            AbstractModule abstractModule = new AbstractModule();
+            final var absModule = settingValues(abstractModule, absModuleDTO);
+            absModule.setCreatedAt(new Date());
+            abstractModuleRepository.save(absModule);
+
+            return ApiResponse.builder()
+                    .message("Course Module created!")
+                    .success(true)
+                    .data(absModule)
+                    .build();
+        } else
+            return new ApiResponse<>("Such a Course Module is already created!", false);
     }
 
     @Override
@@ -45,7 +52,8 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     @Override
     public ApiResponse<?> getOneAbsModule(Long id) {
-        final var byId = abstractModuleRepository.findById(id);
+        final var byId = abstractModuleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course Module", "id", id));
 
         return ApiResponse.builder()
                 .message("Course Module by " + id + " id")
@@ -56,7 +64,8 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     @Override
     public ApiResponse<?> getByCourseId(Long id) {
-        final var byCourseId = abstractModuleRepository.findByCourse_Id(id);
+        final var byCourseId = abstractModuleRepository.findByCourse_Id(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course Module", "course_id", id));
 
         return ApiResponse.builder()
                 .message("Course Module by " + id + " course_id")
@@ -67,7 +76,8 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     @Override
     public ApiResponse<?> getByModule(Long module) {
-        final var byModules = abstractModuleRepository.findByModules(module);
+        final var byModules = abstractModuleRepository.findByModules(module)
+                .orElseThrow(() -> new ResourceNotFoundException("Course Module", "module", module));
 
         return ApiResponse.builder()
                 .message("Course Module by " + module + " modules")
@@ -93,7 +103,6 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     @Override
     public ApiResponse<?> deleteAbsModule(Long id) {
-
         final var exists = abstractModuleRepository.existsById(id);
         if (exists) {
             abstractModuleRepository.deleteById(id);
@@ -104,10 +113,13 @@ public class AbsModuleServiceImpl implements AbsModuleService {
 
     public AbstractModule settingValues(AbstractModule abstractModule, AbsModuleDTO absModuleDTO) {
 
-        final var optionalCourse = courseRepository.findById(absModuleDTO.getCourseId());
+        final var course = courseRepository.findById(absModuleDTO.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "course_id", absModuleDTO.getCourseId()));
+        final var modules = absModuleDTO.getModules();
 
-        abstractModule.setModules(absModuleDTO.getModules());
-        abstractModule.setCourse(optionalCourse.get());
+        abstractModule.setModules(modules);
+        abstractModule.setName(course.getName() + " " + modules + "ta modul");
+        abstractModule.setCourse(course);
 
         return abstractModule;
     }

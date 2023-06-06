@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +16,8 @@ public class Teacher extends User{
     @ManyToOne
     private Position position;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+//            (fetch = FetchType.EAGER)
     private List<Course> course;
 
     private String email, password;
