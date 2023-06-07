@@ -2,6 +2,8 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.GroupModuleDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.dto.result.ResExamResults;
+import com.example.pdp_esm.dto.result.ResGroupDTO;
 import com.example.pdp_esm.dto.result.ResGroupModule;
 import com.example.pdp_esm.entity.ExamResult;
 import com.example.pdp_esm.entity.GroupModule;
@@ -90,8 +92,8 @@ public class GroupModuleService {
 
     public ResGroupModule toResModuleDTO(GroupModule module) {
 
-        final var group = groupService.toResDTO(module.getGroup());
-        final var resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
+        ResGroupDTO group = groupService.toResDTO(module.getGroup());
+        List<ResExamResults> resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
 
         return ResGroupModule.builder()
                 .createdAt(module.getCreatedAt().toString())
@@ -125,6 +127,7 @@ public class GroupModuleService {
                 )
                 .collect(Collectors.toList());
 */
+
         List<ExamResult> examResultList = studentRepository
                 .findAllByGroupId(moduleDTO.getGroupId())
                 .stream()

@@ -23,6 +23,14 @@ public class PdpEsmApplication {
             AuthenticationService service
     ) {
         return args -> {
+            var admin = RegisterRequest.builder()
+                    .fullName("Admin Adminov")
+                    .email("admin@mail.com")
+                    .password("password123")
+                    .role(ADMIN)
+                    .build();
+            System.out.println("Admin token: " + service.register(admin).getAccessToken());
+
             var manager = RegisterRequest.builder()
                     .fullName("Manager Managerov")
                     .email("manager@mail.com")
@@ -31,13 +39,6 @@ public class PdpEsmApplication {
                     .build();
             System.out.println("Manager token: " + service.register(manager).getAccessToken());
 
-            var admin = RegisterRequest.builder()
-                    .fullName("Admin Adminov")
-                    .email("admin@mail.com")
-                    .password("password123")
-                    .role(ADMIN)
-                    .build();
-            System.out.println("Admin token: " + service.register(admin).getAccessToken());
         };
     }
 }

@@ -8,6 +8,7 @@ import com.example.pdp_esm.dto.result.ResExamResults;
 import com.example.pdp_esm.entity.Question;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.enums.ResultType;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,23 +39,26 @@ public class ExaminingService {
             String message = "Student Failed";
             boolean equals, equals1, equals2, equals3, equals4;
 
-            for (AttemptDTO attempt : attempts) {
-                final var byQuestion = questionRepository.findByQuestionText(attempt.getQuestion());
-                Question question = byQuestion.get();
-                questionsIdsList.add(question.getId());
+            for (AttemptDTO attempt : attempts)
+            {
+                final var attemptQuestion = attempt.getQuestion();
+                final var byQuestion = questionRepository.findByQuestionText(attemptQuestion)
+                        .orElseThrow(()-> new ResourceNotFoundException("Question", "question", attemptQuestion));
+
+                questionsIdsList.add(byQuestion.getId());
 
                 List<String> selectedAnswers = attempt.getSelectedAnswer();
-                if (!question.getQuestionType().equals(QuestionType.SEQUENCE)) {
-                    if (question.getAnswer().getTrue_answer()
+                if (!byQuestion.getQuestionType().equals(QuestionType.SEQUENCE)) {
+                    if (byQuestion.getAnswer().getTrue_answer()
                             .equals(
                                     selectedAnswers.get(0)))
                         score += 10;
                 } else {
-                    equals = selectedAnswers.get(0).equals(question.getAnswer().getTrue_answer());
-                    equals1 = selectedAnswers.get(1).equals(question.getAnswer().getAnswer1());
-                    equals2 = selectedAnswers.get(2).equals(question.getAnswer().getAnswer2());
-                    equals3 = selectedAnswers.get(3).equals(question.getAnswer().getAnswer3());
-                    equals4 = selectedAnswers.get(4).equals(question.getAnswer().getAnswer4());
+                    equals = selectedAnswers.get(0).equals(byQuestion.getAnswer().getTrue_answer());
+                    equals1 = selectedAnswers.get(1).equals(byQuestion.getAnswer().getAnswer1());
+                    equals2 = selectedAnswers.get(2).equals(byQuestion.getAnswer().getAnswer2());
+                    equals3 = selectedAnswers.get(3).equals(byQuestion.getAnswer().getAnswer3());
+                    equals4 = selectedAnswers.get(4).equals(byQuestion.getAnswer().getAnswer4());
 
                     if (equals && equals1 && equals2 && equals3 && equals4) {
                         score += 10;

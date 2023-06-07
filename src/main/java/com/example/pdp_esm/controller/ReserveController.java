@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/reserve")
 @PreAuthorize(value = "hasAnyAuthority('USER', 'ADMIN', 'MANAGER')")
-public class ReserveController {
+public class
+ReserveController {
 
     private final ReserveUsersService reserveUsersService;
 

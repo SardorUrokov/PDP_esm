@@ -9,6 +9,7 @@ import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CertificateRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
+import com.example.pdp_esm.repository.ModulesRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
-//    private final FileStorageService fileStorageService;
+    private final ModulesRepository modulesRepository;
     private final ExamResultRepository examResultRepository;
 
     @Override

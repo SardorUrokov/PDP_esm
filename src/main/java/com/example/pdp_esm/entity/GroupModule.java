@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
 import com.example.pdp_esm.entity.template.AbsEntity;
@@ -16,7 +17,7 @@ import com.example.pdp_esm.entity.template.AbsEntity;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GroupModule extends AbsEntity {
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     List<ExamResult> examResults;
 
     @OneToOne

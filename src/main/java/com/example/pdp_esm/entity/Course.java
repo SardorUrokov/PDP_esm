@@ -1,6 +1,7 @@
 package com.example.pdp_esm.entity;
 
 import com.example.pdp_esm.entity.enums.CourseType;
+import com.example.pdp_esm.entity.template.AbsEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Course {
+public class Course extends AbsEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     private String name;
     private double price;

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,8 @@ public class ModuleServiceImpl implements ModulesService {
         final var exists = modulesRepository
                 .existsByAbstractModule_IdAndOrdinalNumber(absModuleId, moduleDTO.getOrdinalNumber());
 
+        final var optionalModules = modulesRepository.findByCourseIdAndOrdinalNumberAndGroupId(absModuleId, moduleDTO.getOrdinalNumber(), moduleDTO.getGroupId());
+
         final var byId = abstractModuleRepository.findById(absModuleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
 
@@ -41,7 +44,7 @@ public class ModuleServiceImpl implements ModulesService {
             Modules module = new Modules();
             Modules modules = settingValues(module, moduleDTO);
             modules.setCreatedAt(new Date());
-            final var save = modulesRepository.save(modules);
+            Modules save = modulesRepository.save(modules);
 
             return ApiResponse.builder()
                     .message("Module Created! ")
@@ -130,7 +133,7 @@ public class ModuleServiceImpl implements ModulesService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course Module", "id", moduleDTO.getAbsModuleId()));
 
         List<GroupModule> groupModulesList = new ArrayList<>();
-        final var groupModule = groupModuleService.createModule(
+        GroupModule groupModule = groupModuleService.createModule(
                 GroupModuleDTO.builder()
                         .groupId(moduleDTO.getGroupId())
                         .build());
