@@ -24,6 +24,7 @@ public class ModuleServiceImpl implements ModulesService {
     private final ModulesRepository modulesRepository;
     private final GroupModuleService groupModuleService;
     private final AbstractModuleRepository abstractModuleRepository;
+    private final GroupRepository groupRepository;
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
@@ -35,6 +36,10 @@ public class ModuleServiceImpl implements ModulesService {
 
         final var byId = abstractModuleRepository.findById(absModuleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
+
+        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
+        final var courseIdByGroup = optionalGroup.get().getId();
+        final var courseId = byId.getCourse().getId();
 
         if (moduleDTO.getOrdinalNumber() > byId.getModules()) {
             return new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
@@ -51,6 +56,8 @@ public class ModuleServiceImpl implements ModulesService {
                     .success(true)
                     .data(toResModule(save))
                     .build();
+        } else if (!courseId.equals(courseIdByGroup)) {
+            return new ApiResponse<>("Module's Course and Groups Course doesn't match!", false);
         } else
             return new ApiResponse<>("Such a Module has already created!", false);
     }

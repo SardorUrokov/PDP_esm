@@ -40,14 +40,6 @@ public class GroupModuleService {
         if (!exists) {
             GroupModule module = new GroupModule();
             GroupModule save = settingValues(module, moduleDTO);
-
-//            return ApiResponse.builder()
-//                    .message("Module Created!")
-//                    .success(true)
-//                    .data(toResModuleDTO(save))
-//                    .build();
-//        } else return
-//                new ApiResponse<>("Such a Module is already created with this group Id " + groupId, false);
             return save;
         } else return null;
     }
@@ -110,6 +102,7 @@ public class GroupModuleService {
 
         final var group = groupRepository.findById(moduleDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
+
 //        List<ExamResult> examResultList = new ArrayList<>();
 //        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
 //            final var examResult = examResultRepository.findByStudentId(student.getId())
@@ -127,7 +120,6 @@ public class GroupModuleService {
                 )
                 .collect(Collectors.toList());
 */
-
         List<ExamResult> examResultList = studentRepository
                 .findAllByGroupId(moduleDTO.getGroupId())
                 .stream()
