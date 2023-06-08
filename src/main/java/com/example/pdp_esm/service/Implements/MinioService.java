@@ -22,17 +22,12 @@ public class MinioService {
     private static final String SECRET_KEY = "minioadmin";
     private static final String ENDPOINT = "http://localhost:9000";
     private static final String CERTIFICATES_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
-    private static final int CONNECTION_TIMEOUT_SECONDS = 15;
 
     public void uploadMinio(String objectName) {
         try {
-            OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                    .connectTimeout(CONNECTION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-
             MinioClient minioClient = MinioClient.builder()
                     .endpoint(ENDPOINT)
                     .credentials(ACCESS_KEY, SECRET_KEY)
-//                    .httpClient(clientBuilder.build())
                     .build();
 
             String bucketName = "my-bucket";

@@ -24,7 +24,7 @@ public class CertificateDownloader {
     private static final String CERTIFICATES_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates";
 
     public ResponseEntity<byte[]> downloadCertificate(String certificateName) {
-        String filePath = CERTIFICATES_PATH + File.separator + certificateName;
+        String filePath = CERTIFICATES_PATH + File.separator + certificateName + ".pdf";
 
         try {
             Path certificatePath = Paths.get(filePath);
