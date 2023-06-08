@@ -1,6 +1,8 @@
 package com.example.pdp_esm;
 
 import com.example.pdp_esm.auth.RegisterRequest;
+import com.example.pdp_esm.service.Implements.CertificateDownloader;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import static com.example.pdp_esm.entity.enums.Roles.MANAGER;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+//@RequiredArgsConstructor
 @ComponentScan(basePackages = {"com.example"})
 public class PdpEsmApplication {
 
@@ -18,7 +21,7 @@ public class PdpEsmApplication {
         SpringApplication.run(PdpEsmApplication.class, args);
     }
 
-    @Bean
+        @Bean
     public CommandLineRunner commandLineRunner(
             AuthenticationService service
     ) {
@@ -38,7 +41,6 @@ public class PdpEsmApplication {
                     .role(MANAGER)
                     .build();
             System.out.println("Manager token: " + service.register(manager).getAccessToken());
-
         };
     }
 }

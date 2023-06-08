@@ -36,7 +36,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
     private final StudentRepository studentRepository;
-    private final ModulesRepository modulesRepository;
+    private final MinioService minioService;
     private final ExamResultRepository examResultRepository;
 
     @Override
@@ -129,7 +129,7 @@ public class CertificateServiceImpl implements CertificateService {
         return certificates.stream().map(this::toResCertificateDTO).toList();
     }
 
-    public static MultipartFile generateCertificate(ResCertificateDTO certificateDTO) {
+    public MultipartFile generateCertificate(ResCertificateDTO certificateDTO) {
 
         String folder = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
         String contentType = "application/pdf";
@@ -187,12 +187,14 @@ public class CertificateServiceImpl implements CertificateService {
                 contentStream.showText("ID: " + certificateDTO.getCertificateId());
                 contentStream.endText();
             }
+
             document.save(folder + certificateDTO.getCertificateId());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             document.save(baos);
             final var byteArray = baos.toByteArray();
-            return new MockMultipartFile(fileName, fileName, contentType, byteArray);
+            minioService.uploadMinio(fileName);
 
+            return new MockMultipartFile(fileName, fileName, contentType, byteArray);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -216,6 +218,7 @@ public class CertificateServiceImpl implements CertificateService {
                 createCertificate(completedStudentsId);
             }
         }
+
         List<Certificate> certificates =
                 completedStudentsIds.stream().map(certificateRepository::getById).toList();
 

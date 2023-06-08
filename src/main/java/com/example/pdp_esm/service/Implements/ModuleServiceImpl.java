@@ -41,11 +41,11 @@ public class ModuleServiceImpl implements ModulesService {
         final var courseIdByGroup = optionalGroup.get().getId();
         final var courseId = byId.getCourse().getId();
 
-        if (moduleDTO.getOrdinalNumber() > byId.getModules()) {
+        if (moduleDTO.getOrdinalNumber() > byId.getModules())
             return new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
-        }
 
-        if (!exists) {
+
+        if (optionalModules.isEmpty()) {
             Modules module = new Modules();
             Modules modules = settingValues(module, moduleDTO);
             modules.setCreatedAt(new Date());

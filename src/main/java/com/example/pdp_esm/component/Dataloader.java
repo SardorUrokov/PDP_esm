@@ -5,6 +5,7 @@ import com.example.pdp_esm.auth.RegisterRequest;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.repository.*;
+import com.example.pdp_esm.service.Implements.CertificateDownloader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -30,6 +31,8 @@ public class Dataloader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ExamResultRepository resultRepository;
     private final AuthenticationService authenticationService;
+    private final CertificateDownloader certificateDownloader;
+
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -82,6 +85,8 @@ public class Dataloader implements CommandLineRunner {
             Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
             Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
 
+//            certificateDownloader.uploadToMinio();
+
             var aaa = RegisterRequest.builder()
                     .fullName("AAA")
                     .email("a@gmail.com")
@@ -89,6 +94,8 @@ public class Dataloader implements CommandLineRunner {
                     .role(USER)
                     .build();
             System.out.println("AAA user token: " + authenticationService.register(aaa).getAccessToken());
+
+
         }
     }
 }
