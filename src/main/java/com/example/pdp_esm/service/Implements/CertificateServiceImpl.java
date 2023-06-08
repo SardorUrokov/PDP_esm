@@ -133,7 +133,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         String folder = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
         String contentType = "application/pdf";
-        String fileName = certificateDTO.getCertificateId();
+        String fileName = certificateDTO.getCertificateId()+".pdf";
 
         final var createdAt = certificateDTO.getCreatedAt();
         String dayOfMonth = createdAt.substring(3, 10);
@@ -145,11 +145,6 @@ public class CertificateServiceImpl implements CertificateService {
             document.addPage(page);
 
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-
-                // Set background color for the list
-//                contentStream.setNonStrokingColor(Color.LIGHT_GRAY);
-//                contentStream.fillRect(0, 0, 800, 900);
-
                 // Set font color
                 contentStream.setNonStrokingColor(Color.BLACK);
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
@@ -188,7 +183,7 @@ public class CertificateServiceImpl implements CertificateService {
                 contentStream.endText();
             }
 
-            document.save(folder + certificateDTO.getCertificateId());
+            document.save(folder + fileName); //
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             document.save(baos);
             final var byteArray = baos.toByteArray();

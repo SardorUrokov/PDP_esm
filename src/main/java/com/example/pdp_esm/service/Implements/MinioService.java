@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class MinioService {
-    private static final String ACCESS_KEY = "j72FXldP0cTq6NxHAgiv";
-    private static final String SECRET_KEY = "sFOArkuN9ZSxnFZsPlBKhfBPK5muzHWsxwxwyfTJ";
-    private static final String ENDPOINT = "http://192.168.1.100:9000";
-    private static final String CERTIFICATES_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates";
+    private static final String ACCESS_KEY = "minioadmin";
+    private static final String SECRET_KEY = "minioadmin";
+    private static final String ENDPOINT = "http://localhost:9000";
+    private static final String CERTIFICATES_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
     private static final int CONNECTION_TIMEOUT_SECONDS = 15;
 
     public void uploadMinio(String objectName) {
