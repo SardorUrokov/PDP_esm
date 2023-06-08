@@ -5,6 +5,7 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MinioService {
@@ -54,7 +56,8 @@ public class MinioService {
                             .stream(inputStream, file.length(), -1)
                             .build());
 
-            System.out.println("File successfully uploaded to Minio!");
+            log.info("File successfully uploaded to Minio!, {}", objectName);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
