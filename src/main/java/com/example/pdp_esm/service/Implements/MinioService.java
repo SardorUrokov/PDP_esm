@@ -56,7 +56,7 @@ public class MinioService {
                             .stream(inputStream, file.length(), -1)
                             .build());
 
-            log.info("File successfully uploaded to Minio!, {}", objectName);
+            log.info("File successfully uploaded to Minio with name -> {}!", objectName);
 
         } catch (Exception e) {
             e.printStackTrace();
