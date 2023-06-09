@@ -2,11 +2,10 @@ package com.example.pdp_esm.entity;
 
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 
 import lombok.experimental.FieldDefaults;
 
@@ -24,10 +23,10 @@ public class ExamineInfo {
 
     Integer attemptsLimit;
 
-    LocalDateTime startsDate;
+    Date startsDate;
 
     @OneToMany
-    List<Course> course;
+    List<Course> courses;
 
     @OneToMany
     List<Group> groups;

@@ -27,4 +27,5 @@ public class ExamResult extends AbsEntity {
     @ManyToMany
     private List<Question> questionList;
 
+
 }

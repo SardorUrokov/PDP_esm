@@ -1,6 +1,5 @@
 package com.example.pdp_esm.dto.result;
 
-import com.example.pdp_esm.entity.Group;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
