@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,7 +39,10 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         ExamineInfo examineInfo = new ExamineInfo();
         final var save = settingValues(examineInfo, dto);
         final var exists = examineInfoRepository
-                .existsByStartsDateAndCoursesInAndGroupsIn(save.getStartsDate(), Collections.singleton(save.getCourses()), Collections.singleton(save.getGroups()));
+                .existsByStartsDateAndCoursesInAndGroupsIn(
+                        save.getStartsDate(),
+                        save.getCourses(),
+                        save.getGroups());
 
         if (!exists) {
             examineInfoRepository.save(save);
@@ -56,7 +60,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
 
         final var examineInfoList = examineInfoRepository.findAll();
         return ApiResponse.builder()
-                .message("Examine Infos List")
+                .message("Examine Info List")
                 .success(true)
                 .data(toResExamineInfoDTOList(examineInfoList))
                 .build();
@@ -121,11 +125,11 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         final var coursesIds = examineInfoDTO.getCoursesIds();
         final var groupsIds = examineInfoDTO.getGroupsIds();
 
-        List<Course> courses =
-                coursesIds.stream().map(courseRepository::getById).toList();
+        Set<Course> courses =
+                coursesIds.stream().map(courseRepository::getById).collect(Collectors.toSet());
 
-        List<Group> groups =
-                groupsIds.stream().map(groupRepository::getById).toList();
+        Set<Group> groups =
+                groupsIds.stream().map(groupRepository::getById).collect(Collectors.toSet());
 
         examineInfo.setAttemptsLimit(examineInfoDTO.getAttempts());
         examineInfo.setStartsDate(parsing(examineInfoDTO.getStartsDate()));
@@ -149,15 +153,15 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         return date;
     }
 
-    public ResExamineInfoDTO toResExamineInfoDTO (ExamineInfo examineInfo){
+    public ResExamineInfoDTO toResExamineInfoDTO(ExamineInfo examineInfo) {
         return ResExamineInfoDTO.builder()
                 .attempts(examineInfo.getAttemptsLimit())
                 .startsDate(examineInfo.getStartsDate().toString())
-                .coursesWithGroups(courseService.toDTOList(examineInfo.getCourses()))
+                .coursesWithGroups(courseService.toDTOSet(examineInfo.getCourses()))
                 .build();
     }
 
-    public List<ResExamineInfoDTO> toResExamineInfoDTOList (List<ExamineInfo> examineInfos){
+    public List<ResExamineInfoDTO> toResExamineInfoDTOList(List<ExamineInfo> examineInfos) {
         return examineInfos.stream().map(this::toResExamineInfoDTO).collect(Collectors.toList());
     }
 }

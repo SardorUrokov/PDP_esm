@@ -49,7 +49,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping("/infoById/{id}")
     public ResponseEntity<?> gettingExamineInfoById(@PathVariable Long id){
         ApiResponse<?> response = examineInfoService.readOne(id);
 
@@ -59,7 +59,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @GetMapping("/info/{date}")
+    @GetMapping("/infoByDate/{date}")
     public ResponseEntity<?> gettingExamineInfoByDate(@PathVariable String date){
         ApiResponse<?> response = examineInfoService.byStartsDate(date);
 

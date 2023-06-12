@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -164,5 +165,9 @@ public class CourseServiceImpl implements CourseService {
 
     public List<ResCourseDTOWithGroups> toDTOList(List<Course> courses) {
         return courses.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public Set<ResCourseDTOWithGroups> toDTOSet (Set<Course> courses){
+        return courses.stream().map(this::toDTO).collect(Collectors.toSet());
     }
 }

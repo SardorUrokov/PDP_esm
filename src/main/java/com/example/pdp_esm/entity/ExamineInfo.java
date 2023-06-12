@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -26,8 +27,8 @@ public class ExamineInfo {
     Date startsDate;
 
     @OneToMany
-    List<Course> courses;
+    Set<Course> courses;
 
     @OneToMany
-    List<Group> groups;
+    Set<Group> groups;
 }

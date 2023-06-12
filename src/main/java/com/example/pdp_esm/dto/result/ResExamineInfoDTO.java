@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -15,5 +16,5 @@ public class ResExamineInfoDTO{
 
     Integer attempts;
     String startsDate;
-    List<ResCourseDTOWithGroups> coursesWithGroups;
+    Set<ResCourseDTOWithGroups> coursesWithGroups;
 }
