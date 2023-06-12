@@ -2,7 +2,6 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.ExamineInfoDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.result.ResCourseDTOWithGroups;
 import com.example.pdp_esm.dto.result.ResExamineInfoDTO;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.ExamineInfo;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         ExamineInfo examineInfo = new ExamineInfo();
         final var save = settingValues(examineInfo, dto);
         final var exists = examineInfoRepository
-                .existsByStartsDateAndCoursesAndGroups(save.getStartsDate(), save.getCourses(), save.getGroups());
+                .existsByStartsDateAndCoursesInAndGroupsIn(save.getStartsDate(), Collections.singleton(save.getCourses()), Collections.singleton(save.getGroups()));
 
         if (!exists) {
             examineInfoRepository.save(save);
