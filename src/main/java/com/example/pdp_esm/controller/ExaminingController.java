@@ -83,7 +83,7 @@ public class ExaminingController {
     public ResponseEntity<?> deleteExamInfo (@PathVariable Long id){
         ApiResponse<?> response = examineInfoService.delete(id);
 
-        if (response.isSuccess()) log.warn("Deleted ExamInfo by {} id -> {}", id, response.getData());
+        if (response.isSuccess()) log.warn("Deleted ExamInfo by {} id ", id);
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

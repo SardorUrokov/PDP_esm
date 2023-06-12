@@ -57,10 +57,10 @@ public class Dataloader implements CommandLineRunner {
             Group A1 = groupRepository.save(new Group("A1", android_course, true, List.of(android_teacher, teacher_assistant), LocalDate.parse("2023-05-22")));
             Group F1 = groupRepository.save(new Group("F1", frontEnd_course, true, List.of(front_end_teacher), LocalDate.parse("2023-03-30")));
 
-            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "12@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1200000d, Status.STUDYING, J1));
-            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "998914525468", "11@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
-            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "998914525468", "21@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
-            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998914525468", "14@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1000000d, Status.COMPLETED, F1));
+            Student j1_student = studentRepository.save(new Student("Sardor Urokov", "998914525468", "urokovsardor04@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1200000d, Status.STUDYING, J1));
+            Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "998914525468", "urokovsardor15@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
+            Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "998914525468", "urokovsardorgpt@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
+            Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998914525468", "sardorurokov92@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1000000d, Status.COMPLETED, F1));
 
             Answer answer1 = answerRepository.save(new Answer("True", "False", true));
             Answer answer2 = answerRepository.save(new Answer("False", "True", true));

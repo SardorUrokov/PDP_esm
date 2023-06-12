@@ -8,6 +8,7 @@ import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResDeletePaymentDTO;
 import com.example.pdp_esm.dto.result.ResPaymentDTO;
 import com.example.pdp_esm.dto.result.ResPaymentStudentInfo;
+import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.Payment;
 import com.example.pdp_esm.entity.Student;
@@ -15,6 +16,7 @@ import com.example.pdp_esm.entity.enums.PayStatus;
 import com.example.pdp_esm.entity.enums.PayType;
 import com.example.pdp_esm.entity.requests.DeletePaymentRequest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
+import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.deleteRequests.DeletePaymentRequestsRepository;
 import com.example.pdp_esm.repository.PaymentRepository;
 import com.example.pdp_esm.repository.StudentRepository;
@@ -35,6 +37,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final DeletePaymentRequestsRepository deletePaymentRequestsRepository;
     private final PaymentRepository paymentRepository;
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
+    private final EmailService emailService;
 
     @Override
     public ApiResponse<?> createPayment(PaymentDTO paymentDTO) {
@@ -200,6 +204,21 @@ public class PaymentServiceImpl implements PaymentService {
                         .interval(interval)
                         .build())
                 .build();
+    }
+
+    public void checkStudentBalance (Long student_id) {
+        final var studentBalance = paymentRepository.getBalance(student_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student's Balance", "student_id", student_id));
+
+        final var courseId = studentRepository.findById(student_id).get().getGroup().getCourse().getId();
+        final var course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "courseId", courseId));
+        final var coursePrice = course.getPrice();
+
+        if (studentBalance < coursePrice){
+            Double lacking = (coursePrice - studentBalance);
+            emailService.sendInsufficientFundsNotification(student_id, lacking);
+        }
     }
 
     public ResPaymentDTO toResDTO(Payment payment) {

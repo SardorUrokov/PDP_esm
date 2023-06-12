@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,7 +30,6 @@ public class MinioService {
     private static final String ENDPOINT = "http://localhost:9000";
     private static final String CERTIFICATES_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates\\";
     private static final String BUCKET_NAME = "my-bucket";
-//    private static final String DESTINATION_PATH = "C:\\Users\\user\\Desktop\\PDP_Certificates\\DownloadedMinio";
 
     public void uploadMinio(String objectName) {
         try {
@@ -39,7 +37,6 @@ public class MinioService {
                     .endpoint(ENDPOINT)
                     .credentials(ACCESS_KEY, SECRET_KEY)
                     .build();
-
 
             boolean bucketExists = minioClient.bucketExists(
                     BucketExistsArgs.builder()
@@ -87,7 +84,6 @@ public class MinioService {
             } catch (InvalidKeyException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
-
             // Convert the input stream to byte array
             byte[] fileBytes = inputStream.readAllBytes();
 
@@ -100,7 +96,6 @@ public class MinioService {
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(fileBytes);
-
         } catch (MinioException | IOException e) {
             e.printStackTrace();
             return ResponseEntity

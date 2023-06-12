@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
@@ -17,6 +18,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @Query("SELECT p FROM Payment p WHERE p.createdAt >= :fromTime AND p.createdAt < :toTime")
     List<Payment> findPaymentsWithinInterval(@Param("fromTime") Date fromTime, @Param("toTime") Date toTime);
+
+    @Query("select s.balance from Student s where s.id = :student_id")
+    Optional<Double> getBalance (Long student_id);
 
     List<Payment> findAllByPayStatus(PayStatus payStatus);
 }

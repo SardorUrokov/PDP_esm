@@ -27,6 +27,7 @@ public class AuthServiceImpl {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
     private final ReserveUsersRepository reserveUsersRepository;
 
     @Value("${spring.mail.username}")
@@ -47,11 +48,11 @@ public class AuthServiceImpl {
         user.setEmail(registerDTO.getEmail());
         user.setPassword(registerDTO.getPassword());
 
-        String sent = verifyCode(user);
+        final var verifyCode = emailService.verifyCode(user);
         boolean isSuccess = true;
         String message = "Tasdiqlash kodi yuborildi";
 
-        if (sent.isEmpty()) {
+        if (verifyCode.isEmpty()) {
             message = "Tasdiqlash kodi yuborishda xatolik yuz berdi";
             isSuccess = false;
         }
@@ -92,23 +93,6 @@ public class AuthServiceImpl {
                 .success(true)
                 .data(user)
                 .build();
-    }
-
-    private String verifyCode(User user) {
-
-        //6-xonali email tasdiqlash kodi
-        String otpCode = String.valueOf(Math.random() * 899999 + 100000);
-
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(sender);
-        simpleMailMessage.setTo(user.getEmail());
-        simpleMailMessage.setSubject("Tasdiqlash kodi : " + otpCode);
-        simpleMailMessage.setText("Test Mail Sender");
-        user.setVerifyCode(otpCode);
-
-        javaMailSender.send(simpleMailMessage);
-        userRepository.save(user);
-        return otpCode;
     }
 
 }

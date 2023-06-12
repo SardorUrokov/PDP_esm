@@ -9,7 +9,6 @@ import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CertificateRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
-import com.example.pdp_esm.repository.ModulesRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +33,11 @@ import java.io.ByteArrayOutputStream;
 @RequiredArgsConstructor
 public class CertificateServiceImpl implements CertificateService {
 
-    private final CertificateRepository certificateRepository;
-    private final StudentRepository studentRepository;
+    private final EmailService mailService;
     private final MinioService minioService;
+    private final StudentRepository studentRepository;
     private final ExamResultRepository examResultRepository;
+    private final CertificateRepository certificateRepository;
 
     @Override
     public ApiResponse<?> createCertificate(Long student_id) {
@@ -57,7 +57,6 @@ public class CertificateServiceImpl implements CertificateService {
             String rndValue = String.valueOf(Math.random() * 89999 + 10000).substring(0, 5); //length 5
             certificate.setCertificateNumber("PDP-CER-" + rndValue);
             Certificate save = certificateRepository.save(certificate);
-
             final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
 //            try {
 //                assert generatedCertificate != null;
@@ -65,6 +64,8 @@ public class CertificateServiceImpl implements CertificateService {
 //            } catch (IOException e) {
 //                throw new RuntimeException(e);
 //            }
+            //send congratulation to student's email
+            mailService.sendCongratulationCompletedStudent(student_id, certificate.getCertificateNumber());
             return ApiResponse.builder()
                     .message("Certificate Created!")
                     .success(true)
