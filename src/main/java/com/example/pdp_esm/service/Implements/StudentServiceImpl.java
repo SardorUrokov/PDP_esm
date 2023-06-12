@@ -223,6 +223,7 @@ public class StudentServiceImpl implements StudentService {
 
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());
+
 //        student.setEmail(studentDTO.getEmail());
 //        student.setPassword(studentDTO.getPassword());
         student.setGroup(group);
