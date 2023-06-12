@@ -1,14 +1,14 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.ExamineInfoDTO;
-import com.example.pdp_esm.dto.ExaminingDTO;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
-import com.example.pdp_esm.service.Implements.ExaminingService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.pdp_esm.dto.ExaminingDTO;
+import com.example.pdp_esm.dto.ExamineInfoDTO;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.service.Implements.ExaminingService;
+import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
 
 @Slf4j
 @RestController
@@ -19,7 +19,7 @@ public class ExaminingController {
     private final ExaminingService examiningService;
     private final ExamineInfoServiceImpl examineInfoService;
 
-    @PostMapping("/createInfo")
+    @PostMapping("/info/create")
     public ResponseEntity<?> createExamInfo(@RequestBody ExamineInfoDTO examineInfoDTO){
         ApiResponse<?> response = examineInfoService.create(examineInfoDTO);
 
@@ -69,7 +69,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/info/update/{id}")
     public ResponseEntity<?> updateExamineInfo(@PathVariable Long id,@RequestBody ExamineInfoDTO infoDTO){
         ApiResponse<?> response = examineInfoService.update(id, infoDTO);
 
@@ -79,7 +79,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/info/delete/{id}")
     public ResponseEntity<?> deleteExamInfo (@PathVariable Long id){
         ApiResponse<?> response = examineInfoService.delete(id);
 
