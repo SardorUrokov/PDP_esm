@@ -27,20 +27,24 @@ public class ModuleServiceImpl implements ModulesService {
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
-        final var absModuleId = moduleDTO.getAbsModuleId();
 
-        final var optionalModules = modulesRepository.findByCourseIdAndOrdinalNumberAndGroupId(absModuleId, moduleDTO.getOrdinalNumber(), moduleDTO.getGroupId());
+        final var absModuleId = moduleDTO.getAbsModuleId();
+        final var groupId = moduleDTO.getGroupId();
+        final var ordinalNumber = moduleDTO.getOrdinalNumber();
+
+        final var optionalModules = modulesRepository
+                .findByCourseIdAndOrdinalNumberAndGroupId(absModuleId, ordinalNumber, groupId);
 
         final var abstractModule = abstractModuleRepository.findById(absModuleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
 
-        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId())
-                .orElseThrow(() -> new ResourceNotFoundException("Group", "group_id", absModuleId));
+        final var optionalGroup = groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "group_id", groupId));
 
         final var courseIdByGroup = optionalGroup.getCourse().getId();
         final var courseId = abstractModule.getCourse().getId();
 
-        if (moduleDTO.getOrdinalNumber() > abstractModule.getModules())
+        if (ordinalNumber > abstractModule.getModules())
             return
                     new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
 

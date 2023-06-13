@@ -1,22 +1,23 @@
-package com.example.pdp_esm.service.Implements;
-
-import lombok.RequiredArgsConstructor;
-import com.example.pdp_esm.dto.AnswerDTO;
-import com.example.pdp_esm.entity.Answer;
-import org.springframework.stereotype.Service;
-import com.example.pdp_esm.service.AnswerService;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.repository.AnswerRepository;
+package com.example.pdp_esm.service.test;
 
 import java.util.Optional;
 
+import com.example.pdp_esm.entity.test.Answer;
+import com.example.pdp_esm.dto.test.AnswerDTO;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.repository.QuestionRepository;
+import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
-public class AnswerServiceImpl implements AnswerService {
+public class AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
-    @Override
     public ApiResponse<?> createAnswer(AnswerDTO answerDTO) {
 
         Answer answer = new Answer();
@@ -29,7 +30,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
-    @Override
     public ApiResponse<?> getAllAnswers() {
         final var answerList = answerRepository.findAll();
         return ApiResponse.builder()
@@ -39,7 +39,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
-    @Override
     public ApiResponse<?> getOneAnswer(Long id) {
         final var optionalAnswer = answerRepository.findById(id);
         Answer answer = optionalAnswer.get();
@@ -50,7 +49,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
-    @Override
     public ApiResponse<?> updateAnswer(Long id, AnswerDTO answerDTO) {
         Optional<Answer> optionalAnswer = answerRepository.findById(id);
         Answer answer = optionalAnswer.get();
@@ -63,7 +61,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
-    @Override
     public ApiResponse<?> deleteAnswer(Long id) {
 
         final var byId = answerRepository.findById(id);
@@ -73,12 +70,14 @@ public class AnswerServiceImpl implements AnswerService {
 
     public Answer settingValues(Answer answer, AnswerDTO answerDTO) {
 
-        answer.setActive(true);
-        answer.setTrue_answer(answerDTO.getTrue_answer());
-        answer.setAnswer1(answerDTO.getAnswer1() == null ? "null": answerDTO.getAnswer1());
-        answer.setAnswer2(answerDTO.getAnswer2() == null ? "null": answerDTO.getAnswer2());
-        answer.setAnswer3(answerDTO.getAnswer3() == null ? "null": answerDTO.getAnswer3());
-        answer.setAnswer4(answerDTO.getAnswer4() == null ? "null": answerDTO.getAnswer4());
-        return answerRepository.save(answer);
+        final var questionId = answerDTO.getQuestion_id();
+        final var question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "question_id", questionId));
+
+        answer.setBody(answerDTO.getInput());
+        answer.setQuestion(question);
+        answer.setPosition(answerDTO.getPosition());
+        answer.setStatus(answerDTO.isStatus());
+        return answer;
     }
 }

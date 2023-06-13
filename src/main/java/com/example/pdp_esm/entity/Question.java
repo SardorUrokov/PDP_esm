@@ -1,30 +1,29 @@
 package com.example.pdp_esm.entity;
 
+import lombok.*;
+import jakarta.persistence.*;
+import lombok.experimental.FieldDefaults;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.template.AbsEntity;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
 
 @Data
 @Entity
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Question extends AbsEntity {
 
     @ManyToOne
-    private Course course;
+    Course course;
 
     @Enumerated(value = EnumType.STRING)
-    private QuestionType questionType;
+    QuestionType questionType;
 
-    private String questionText;
+    String questionText;
 
     @OneToOne
-    private Answer answer;
+    Answer answer;
 
-    private Boolean active;
+    Boolean active;
 }

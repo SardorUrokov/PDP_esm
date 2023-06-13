@@ -1,14 +1,15 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.entity.User;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.repository.UserRepository;
+import com.example.pdp_esm.repository.StudentRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,8 @@ public class EmailService {
         String text =
                 "Good Day " + student.getFullName() + "!\n" +
                         "\nWe inform you that you don't have enough funds in your balance to proceed to the next module.\n" +
-                        "Please top up your balance by " + lackingMoney + " uzs within 3 working days in order to proceed to the next module and continue the course " + courseName + ".\n" +
+                        "Please top up your balance by " + lackingMoney + " uzs within 3 working days " +
+                        "in order to proceed to the next module and continue the course " + courseName + ".\n" +
                         "\nBest regards,\n" +
                         "Team of PDP Finance Department.\n";
 

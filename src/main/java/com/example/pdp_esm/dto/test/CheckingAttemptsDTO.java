@@ -1,4 +1,4 @@
-package com.example.pdp_esm.dto.result;
+package com.example.pdp_esm.dto.test;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,8 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AttemptDTO {
+public class CheckingAttemptsDTO {
 
-    String question;
-    List<String> selectedAnswer;
+    Long student_id;
+    List<AnswerDTO> selectedAnswers;
 }
