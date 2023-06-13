@@ -66,6 +66,7 @@ public class MinioService {
     }
 
     public ResponseEntity<byte[]> downloadFile(String object_name) {
+        object_name = object_name + ".pdf";
         try {
             MinioClient minioClient = MinioClient.builder()
                     .endpoint(ENDPOINT)
@@ -96,6 +97,7 @@ public class MinioService {
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(fileBytes);
+
         } catch (MinioException | IOException e) {
             e.printStackTrace();
             return ResponseEntity

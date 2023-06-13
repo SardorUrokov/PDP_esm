@@ -20,16 +20,18 @@ public class DownloadController {
     @GetMapping("/{certificateId}")
     public ResponseEntity<byte[]> getCertificate(@PathVariable String certificateId) {
         final var response = certificateDownloader.downloadCertificate(certificateId);
-        return ResponseEntity
-                .status(response.getStatusCode())
-                .body(response.getBody());
+
+        log.warn("Certificate downloading! -> {}", certificateId);
+
+        return response;
     }
 
     @GetMapping("/minio/{certificateId}")
-    public ResponseEntity<byte[]> getCertificateFromMinio(@PathVariable String certificateId){
+    public ResponseEntity<byte[]> getCertificateFromMinio(@PathVariable String certificateId) {
         final var response = minioService.downloadFile(certificateId);
-        return ResponseEntity
-                .status(response.getStatusCode())
-                .body(response.getBody());
+
+        log.warn("Certificate downloading from Minio! -> {}", certificateId);
+
+        return response;
     }
 }

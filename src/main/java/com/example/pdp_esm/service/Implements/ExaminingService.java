@@ -9,11 +9,10 @@ import com.example.pdp_esm.dto.test.AnswerDTO;
 import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.enums.ResultType;
-import com.example.pdp_esm.entity.test.Answer;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
-import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExaminingService {
 
-    private final AnswerRepository answerRepository;
+    private final AnswerRepositoryTest answerRepository;
     private final QuestionRepository questionRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
