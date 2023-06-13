@@ -14,4 +14,6 @@ public class CheckingAttemptsDTO {
 
     Long student_id;
     List<AnswerDTO> selectedAnswers;
+//    List<AnswerDTOList> selectedAnswers;
+
 }

@@ -1,0 +1,16 @@
+package com.example.pdp_esm.dto.test;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AnswerDTOList {
+    List<AnswerDTO> answerDTOS;
+}

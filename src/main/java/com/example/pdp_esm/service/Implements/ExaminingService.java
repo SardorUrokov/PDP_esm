@@ -133,7 +133,6 @@ public class ExaminingService {
                     for (int i = 0; i < answers.size(); i++) {
                         //sequence bo'yicha
                         //listni aylanib answerlarni positioni boyicha check qilish
-
                     }
                 } else if (questionType.equals(QuestionType.WRITE_MISSING_WORD)) {
                     // answerni get bodysi b-n inputni equalsIgnoreCase qilish k-k
