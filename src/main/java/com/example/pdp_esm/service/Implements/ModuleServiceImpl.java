@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,23 +28,27 @@ public class ModuleServiceImpl implements ModulesService {
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
         final var absModuleId = moduleDTO.getAbsModuleId();
-        final var exists = modulesRepository
-                .existsByAbstractModule_IdAndOrdinalNumber(absModuleId, moduleDTO.getOrdinalNumber());
 
         final var optionalModules = modulesRepository.findByCourseIdAndOrdinalNumberAndGroupId(absModuleId, moduleDTO.getOrdinalNumber(), moduleDTO.getGroupId());
 
-        final var byId = abstractModuleRepository.findById(absModuleId)
+        final var abstractModule = abstractModuleRepository.findById(absModuleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
 
-        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId());
-        final var courseIdByGroup = optionalGroup.get().getId();
-        final var courseId = byId.getCourse().getId();
+        final var optionalGroup = groupRepository.findById(moduleDTO.getGroupId())
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "group_id", absModuleId));
 
-        if (moduleDTO.getOrdinalNumber() > byId.getModules())
-            return new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
+        final var courseIdByGroup = optionalGroup.getCourse().getId();
+        final var courseId = abstractModule.getCourse().getId();
 
+        if (moduleDTO.getOrdinalNumber() > abstractModule.getModules())
+            return
+                    new ApiResponse<>("Ordinal Number of Modul can't be bigger than moduls count", false);
 
-        if (optionalModules.isEmpty()) {
+        else if (!courseId.equals(courseIdByGroup))
+            return
+                    new ApiResponse<>("Module's Course and Groups Course doesn't match!", false);
+
+        else if (optionalModules.isEmpty()) {
             Modules module = new Modules();
             Modules modules = settingValues(module, moduleDTO);
             modules.setCreatedAt(new Date());
@@ -56,8 +59,6 @@ public class ModuleServiceImpl implements ModulesService {
                     .success(true)
                     .data(toResModule(save))
                     .build();
-        } else if (!courseId.equals(courseIdByGroup)) {
-            return new ApiResponse<>("Module's Course and Groups Course doesn't match!", false);
         } else
             return new ApiResponse<>("Such a Module has already created!", false);
     }

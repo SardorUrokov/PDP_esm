@@ -28,9 +28,9 @@ public class GroupModuleService {
     private final GroupServiceImpl groupService;
     private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
-    private final GroupModuleRepository groupModuleRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
+    private final GroupModuleRepository groupModuleRepository;
 
     public GroupModule createModule(GroupModuleDTO moduleDTO) {
 
@@ -43,8 +43,7 @@ public class GroupModuleService {
             return save;
         } else return null;
     }
-
-
+/*
     public ApiResponse<?> getAllModules() {
         final var all = groupModuleRepository.findAll();
         return new ApiResponse<>("All Modules List", true, toResModuleDTOList(all));
@@ -80,12 +79,12 @@ public class GroupModuleService {
         } else
             return new ApiResponse<>("Module not found!", false);
     }
-
-
+*/
     public ResGroupModule toResModuleDTO(GroupModule module) {
 
         ResGroupDTO group = groupService.toResDTO(module.getGroup());
-        List<ResExamResults> resExamResultDTOList = examResultService.toResExamResultDTOList(module.getExamResults());
+        List<ResExamResults> resExamResultDTOList =
+                examResultService.toResExamResultDTOList(module.getExamResults());
 
         return ResGroupModule.builder()
                 .createdAt(module.getCreatedAt().toString())
@@ -102,7 +101,6 @@ public class GroupModuleService {
 
         final var group = groupRepository.findById(moduleDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
-
 //        List<ExamResult> examResultList = new ArrayList<>();
 //        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
 //            final var examResult = examResultRepository.findByStudentId(student.getId())
@@ -125,12 +123,9 @@ public class GroupModuleService {
                 .stream()
                 .map(Student::getId)
                 .flatMap(studentId -> examResultRepository
-                        .findByStudentId(studentId)
-                        .map(Stream::of)
-                        .orElseGet(Stream::empty)
+                        .findByStudentId(studentId).stream()
                 )
                 .collect(Collectors.toList());
-
         module.setCreatedAt(new Date());
         module.setGroup(group);
         module.setExamResults(examResultList);

@@ -1,24 +1,25 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.CourseDTO;
-import com.example.pdp_esm.dto.result.ResCourseDTOWithGroups;
-import com.example.pdp_esm.dto.result.ResGroupDTO;
-import com.example.pdp_esm.entity.Course;
-import com.example.pdp_esm.entity.Group;
-import com.example.pdp_esm.entity.enums.CourseType;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.CourseRepository;
-import com.example.pdp_esm.repository.GroupRepository;
-import com.example.pdp_esm.service.CourseService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
+import java.util.Set;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import com.example.pdp_esm.entity.Group;
+import com.example.pdp_esm.entity.Course;
+import com.example.pdp_esm.dto.CourseDTO;
+import com.example.pdp_esm.service.CourseService;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.dto.result.ResGroupDTO;
+import com.example.pdp_esm.entity.enums.CourseType;
+import com.example.pdp_esm.repository.GroupRepository;
+import com.example.pdp_esm.repository.CourseRepository;
+import com.example.pdp_esm.dto.result.ResCourseDTOWithGroups;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 
 @Slf4j
 @Service
@@ -83,12 +84,12 @@ public class CourseServiceImpl implements CourseService {
         Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findByIdAndActiveTrue(course_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id)));
         Course course = optionalCourse.get();
-        Course save = settingValues(course, courseDTO);
+        Course updated = settingValues(course, courseDTO);
 
         return ApiResponse.builder()
                 .message("Course Updated!")
                 .success(true)
-                .data(toDTO(save))
+                .data(toDTO(updated))
                 .build();
     }
 
@@ -130,7 +131,6 @@ public class CourseServiceImpl implements CourseService {
 
         Optional<Course> courseById = Optional.ofNullable(courseRepository.findByIdAndActiveFalse(course_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Deleted Course", "id", course_id)));
-
         Course course = courseById.get();
 
         return ApiResponse.builder()
@@ -155,7 +155,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public Course settingValues(Course course, CourseDTO courseDTO) {
-
         course.setName(courseDTO.getCourseName());
         course.setPrice(courseDTO.getPrice());
         course.setActive(true);

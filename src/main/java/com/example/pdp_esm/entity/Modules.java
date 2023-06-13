@@ -4,7 +4,6 @@ import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
 import com.example.pdp_esm.entity.template.AbsEntity;
-
 import java.util.List;
 
 @Data

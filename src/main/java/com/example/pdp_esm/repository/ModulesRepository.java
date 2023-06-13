@@ -15,7 +15,8 @@ public interface ModulesRepository extends JpaRepository<Modules, Long> {
     @Query("select m from Modules m " +
             "inner join GroupModule gm " +
             "where gm.group.id = :groupId " +
-            "and m.ordinalNumber = :ordinalNumber and m.abstractModule.id = :absModuleId"
+            "and m.ordinalNumber = :ordinalNumber " +
+            "and m.abstractModule.id = :absModuleId"
     )
     Optional<Modules> findByCourseIdAndOrdinalNumberAndGroupId(Long absModuleId, Long ordinalNumber, Long groupId);
 

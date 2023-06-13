@@ -179,7 +179,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public ApiResponse<?> getAllStudentsByStatus(Status status) {
-
         List<Student> allByStatus = studentRepository.findAllByStatus(status);
         return ApiResponse.builder()
                 .message(status + " Students List")
