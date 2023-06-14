@@ -15,10 +15,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AnswerTest extends AbsEntity {
 
-    @OneToOne
-    Question question;
-
     String body;
     boolean status;
     Integer position;
+
+    @OneToOne
+    Question question;
 }

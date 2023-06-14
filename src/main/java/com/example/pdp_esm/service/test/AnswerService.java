@@ -1,15 +1,16 @@
 package com.example.pdp_esm.service.test;
 
+import java.util.Date;
+import java.util.Optional;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import com.example.pdp_esm.dto.test.AnswerDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.entity.test.AnswerTest;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,8 @@ public class AnswerService {
 
         AnswerTest answer = new AnswerTest();
         AnswerTest save = settingValues(answer, answerDTO);
+        save.setCreatedAt(new Date());
+        answerRepository.save(save);
 
         return ApiResponse.builder()
                 .message("AnswerTest Created")
@@ -50,10 +53,13 @@ public class AnswerService {
     }
 
     public ApiResponse<?> updateAnswer(Long id, AnswerDTO answerDTO) {
+
         Optional<AnswerTest> optionalAnswer = answerRepository.findById(id);
         AnswerTest answer = optionalAnswer.get();
 
-        final var save = settingValues(answer, answerDTO);
+        AnswerTest save = settingValues(answer, answerDTO);
+        save.setUpdatedAt(new Date());
+        answerRepository.save(save);
         return ApiResponse.builder()
                 .message("AnswerTest Updated!")
                 .success(true)
@@ -77,7 +83,7 @@ public class AnswerService {
         answer.setBody(answerDTO.getInput());
         answer.setQuestion(question);
         answer.setPosition(answerDTO.getPosition());
-        answer.setStatus(answerDTO.isStatus());
+        answer.setStatus(answerDTO.getStatus());
         return answer;
     }
 }

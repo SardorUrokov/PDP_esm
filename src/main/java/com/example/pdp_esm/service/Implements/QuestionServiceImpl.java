@@ -2,35 +2,33 @@ package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.QuestionDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.result.ResAnswer;
 import com.example.pdp_esm.dto.result.ResQuestionDTO;
-import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.entity.Course;
 import com.example.pdp_esm.entity.Question;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.AnswerRepository;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
     private final CourseRepository courseRepository;
 
     @Override
     public ApiResponse<?> createQuestion(QuestionDTO questionDTO) {
         Question question = new Question();
         Question save = settingValues(question, questionDTO);
+        save.setCreatedAt(new Date());
+        questionRepository.save(save);
 
         return ApiResponse.builder()
                 .message("Question Saved!")
@@ -63,21 +61,24 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public ApiResponse<?> getOneQuestion(Long question_id) {
-        Optional<Question> optionalQuestion = Optional.ofNullable(questionRepository.findById(question_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", question_id)));
+        Question question = questionRepository.findById(question_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", question_id));
 
         return ApiResponse.builder()
                 .message("Question with " + question_id + " id")
                 .success(true)
-                .data(toResQuestionDTO(optionalQuestion.get()))
+                .data(toResQuestionDTO(question))
                 .build();
     }
 
     @Override
     public ApiResponse<?> updateQuestion(Long question_id, QuestionDTO questionDTO) {
-        Optional<Question> optionalQuestion = questionRepository.findById(question_id);
-        Question question = optionalQuestion.get();
+
+        Question question = questionRepository.findById(question_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "question_id", question_id));
         Question save = settingValues(question, questionDTO);
+        save.setUpdatedAt(new Date());
+        questionRepository.save(save);
 
         return ApiResponse.builder()
                 .message("Question Updated!")
@@ -98,33 +99,22 @@ public class QuestionServiceImpl implements QuestionService {
 
     public Question settingValues(Question question, QuestionDTO questionDTO) {
 
-        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findById(questionDTO.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", questionDTO.getCourseId())));
+        Course course = courseRepository.findById(questionDTO.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", questionDTO.getCourseId()));
 
-        Optional<Answer> optionalAnswer = Optional.ofNullable(answerRepository.findById(questionDTO.getAnswerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Answer", "id", questionDTO.getCourseId())));
-
-        question.setCourse(optionalCourse.get());
+        question.setCourse(course);
         question.setQuestionType(QuestionType.valueOf(questionDTO.getQuestionType()));
         question.setQuestionText(questionDTO.getQuestionText());
-        question.setAnswer(optionalAnswer.get());
         question.setActive(true);
 
-        return questionRepository.save(question);
+        return question;
     }
 
-    public ResQuestionDTO toResQuestionDTO (Question question){
+    public ResQuestionDTO toResQuestionDTO(Question question) {
         return ResQuestionDTO.builder()
                 .courseName(question.getCourse().getName())
                 .questionType(String.valueOf(question.getQuestionType()))
                 .question(question.getQuestionText())
-                .resAnswer(ResAnswer.builder()
-                        .trueAnswer(question.getAnswer().getTrue_answer())
-                        .answer1(question.getAnswer().getAnswer1())
-                        .answer2(question.getAnswer().getAnswer2())
-                        .answer3(question.getAnswer().getAnswer3())
-                        .answer4(question.getAnswer().getAnswer4())
-                        .build())
                 .build();
     }
 

@@ -14,16 +14,13 @@ import com.example.pdp_esm.entity.template.AbsEntity;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Question extends AbsEntity {
 
-    @ManyToOne
-    Course course;
+    String questionText;
 
     @Enumerated(value = EnumType.STRING)
     QuestionType questionType;
 
-    String questionText;
-
-    @OneToOne
-    Answer answer;
-
     Boolean active;
+
+    @ManyToOne
+    Course course;
 }

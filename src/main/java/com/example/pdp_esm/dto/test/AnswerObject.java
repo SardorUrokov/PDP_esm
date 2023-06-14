@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerDTOList {
+public class AnswerObject {
+    String questionType;
     List<AnswerDTO> answerDTOS;
 }

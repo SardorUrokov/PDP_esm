@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class Dataloader implements CommandLineRunner {
     private final ExamResultRepository resultRepository;
     private final AuthenticationService authenticationService;
     private final CertificateDownloader certificateDownloader;
-
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -67,14 +67,14 @@ public class Dataloader implements CommandLineRunner {
             Answer answer3 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", true));
             Answer answer4 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
             Answer answer5 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence", "There's a 5th answer of the sequence", true));
-            Answer answer6 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence",  "null", true));
+            Answer answer6 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence", "null", true));
 
-            Question question1 = questionRepository.save(new Question(android_course, QuestionType.TRUE_FALSE, "There's a 1st question", answer1, true));
-            Question question2 = questionRepository.save(new Question(android_course, QuestionType.TRUE_FALSE, "There's a 2nd question", answer2, true));
-            Question question3 = questionRepository.save(new Question(java_backend_course, QuestionType.TEST, "There's a 3rd question", answer3, true));
-            Question question4 = questionRepository.save(new Question(java_backend_course, QuestionType.TEST, "There's a 4th question", answer4, true));
-            Question question5 = questionRepository.save(new Question(frontEnd_course, QuestionType.SEQUENCE, "There's a 5th question", answer5, true));
-            Question question6 = questionRepository.save(new Question(frontEnd_course, QuestionType.SEQUENCE, "There's a 6th question", answer6, true));
+            Question question1 = questionRepository.save(new Question("There's a 1st question", QuestionType.TRUE_FALSE, true, android_course));
+            Question question2 = questionRepository.save(new Question("There's a 2nd question", QuestionType.TRUE_FALSE, true, android_course));
+            Question question3 = questionRepository.save(new Question("There's a 3rd question", QuestionType.TEST, true, java_backend_course));
+            Question question4 = questionRepository.save(new Question("There's a 4th question", QuestionType.TEST, true, java_backend_course));
+            Question question5 = questionRepository.save(new Question("There's a 5th question", QuestionType.SEQUENCE, true, frontEnd_course));
+            Question question6 = questionRepository.save(new Question("There's a 6th question", QuestionType.SEQUENCE, true, frontEnd_course));
 
             ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
             ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
@@ -85,8 +85,6 @@ public class Dataloader implements CommandLineRunner {
             Payment payment2 = paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
             Payment payment3 = paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
 
-//            certificateDownloader.uploadToMinio();
-
             var aaa = RegisterRequest.builder()
                     .fullName("AAA")
                     .email("a@gmail.com")
@@ -94,7 +92,6 @@ public class Dataloader implements CommandLineRunner {
                     .role(USER)
                     .build();
             System.out.println("AAA user token: " + authenticationService.register(aaa).getAccessToken());
-
 
         }
     }

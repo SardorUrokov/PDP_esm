@@ -13,7 +13,6 @@ import java.util.List;
 public class CheckingAttemptsDTO {
 
     Long student_id;
-    List<AnswerDTO> selectedAnswers;
-//    List<AnswerDTOList> selectedAnswers;
-
+//    List<List<AnswerDTO>> selectedAnswers;
+    List<AnswerObject> selectedAnswers;
 }

@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class AnswerDTO {
 
     Long question_id;
-    boolean status;
+    Boolean status;
     Integer position;
     String input;
 }

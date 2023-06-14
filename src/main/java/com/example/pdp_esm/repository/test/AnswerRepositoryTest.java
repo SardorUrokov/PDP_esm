@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface AnswerRepositoryTest extends JpaRepository<AnswerTest, Long> {
 
     Optional<AnswerTest> findByQuestion_IdAndStatusTrue(Long question_id);
-    List<AnswerTest> findByQuestion_Id(Long question_id);
+    List<AnswerTest> findByQuestion_IdOrderByPosition(Long question_id);
 }
