@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ExamineInfoDTO {
 
-    Integer attempts;
+    Integer attempts, numOfQuestions;
     String startsDate;
     List<Long> coursesIds;
     List<Long> groupsIds;

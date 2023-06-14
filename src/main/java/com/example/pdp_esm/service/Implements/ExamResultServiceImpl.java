@@ -136,7 +136,6 @@ public class ExamResultServiceImpl implements ExamResultService {
         Student student = optionalStudent.get();
 
         List<Long> questionsIdList = resultDTO.getQuestionsIdList();
-//        List<Question> questionList = questionsIdList.stream().map(questionRepository::getById).collect(Collectors.toList());
         List<Question> questionList = questionsIdList.stream()
                 .map(questionId -> questionRepository.findById(questionId)
                         .orElseThrow(() -> new ResourceNotFoundException("Question", "id", questionId)))

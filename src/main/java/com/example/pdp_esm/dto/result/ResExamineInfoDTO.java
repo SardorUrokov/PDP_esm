@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ResExamineInfoDTO{
 
-    Integer attempts;
+    Integer attempts, numOfQuestions;
     String startsDate;
     Set<ResCourseDTOWithGroups> coursesWithGroups;
 }

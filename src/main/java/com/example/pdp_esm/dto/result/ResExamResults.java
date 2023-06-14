@@ -1,10 +1,9 @@
 package com.example.pdp_esm.dto.result;
 
-import com.example.pdp_esm.entity.Question;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 

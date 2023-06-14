@@ -132,6 +132,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                 groupsIds.stream().map(groupRepository::getById).collect(Collectors.toSet());
 
         examineInfo.setAttemptsLimit(examineInfoDTO.getAttempts());
+        examineInfo.setNumOfQuestions(examineInfoDTO.getNumOfQuestions());
         examineInfo.setStartsDate(parsing(examineInfoDTO.getStartsDate()));
         examineInfo.setCourses(courses);
         examineInfo.setGroups(groups);
@@ -156,6 +157,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     public ResExamineInfoDTO toResExamineInfoDTO(ExamineInfo examineInfo) {
         return ResExamineInfoDTO.builder()
                 .attempts(examineInfo.getAttemptsLimit())
+                .numOfQuestions(examineInfo.getNumOfQuestions())
                 .startsDate(examineInfo.getStartsDate().toString())
                 .coursesWithGroups(courseService.toDTOSet(examineInfo.getCourses()))
                 .build();

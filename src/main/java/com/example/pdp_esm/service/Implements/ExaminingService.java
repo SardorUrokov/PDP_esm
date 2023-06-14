@@ -1,19 +1,15 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.dto.ExamResultDTO;
-import com.example.pdp_esm.dto.ExaminingDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.result.AttemptDTO;
 import com.example.pdp_esm.dto.result.ResExamResults;
-import com.example.pdp_esm.dto.test.AnswerDTO;
+import com.example.pdp_esm.dto.result.ResExamineInfoDTO;
 import com.example.pdp_esm.dto.test.AnswerObject;
 import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.enums.ResultType;
-import com.example.pdp_esm.entity.test.AnswerTest;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.ExamResultRepository;
-import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +22,6 @@ import java.util.List;
 public class ExaminingService {
 
     private final AnswerRepositoryTest answerRepository;
-    private final QuestionRepository questionRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
 
@@ -98,7 +93,6 @@ public class ExaminingService {
 //                    .build();
 //        }
 //    }
-
 //    public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 //
 //        final var studentId = checkingAttemptsDTO.getStudent_id();
@@ -175,8 +169,7 @@ public class ExaminingService {
 //        }
 //    }
 
-
-    public ApiResponse<?> checking(CheckingAttemptsDTO checkingAttemptsDTO) {
+    public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 
         final var studentId = checkingAttemptsDTO.getStudent_id();
         final var existsByStudentId = examResultRepository.existsByStudentId(studentId);
@@ -191,7 +184,7 @@ public class ExaminingService {
             String message = "Student Failed";
             int score = 0;
 
-            for (int i = 0; i < selectedAnswers.size(); i++) {
+            for (int i = 1; i < selectedAnswers.size(); i++) {
 
                 final var answerObject = selectedAnswers.get(i);
                 final var questionType = answerObject.getQuestionType();
@@ -217,20 +210,48 @@ public class ExaminingService {
                     final var answerTestList = answerRepository.findByQuestion_IdOrderByPosition(questionId);
 
                     int k = 1;
-                    for (int j = 0; j < answerDTOList.size(); j++) {
-                        if (answerDTOList.get(k).getInput().equalsIgnoreCase(answerTestList.get(j + 1).getBody()))
+                    for (int j = 1; j < answerDTOList.size(); j++) {
+                        if (answerDTOList.get(k).getInput().equalsIgnoreCase(answerTestList.get(j).getBody()))
                             score += 10;
                     }
-                } else if (questionType.equals(String.valueOf(QuestionType.TEST))){
+                } else if ((questionType.equals(String.valueOf(QuestionType.TEST)))
+                        ||
+                        questionType.equals(String.valueOf(QuestionType.TRUE_FALSE))) {
 
+                    final var questionByStatusTrue = answerRepository.findByQuestion_IdAndStatusTrue(questionId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Status TRUE Question", "question_id", questionId));
 
+                    if (questionByStatusTrue.getBody().equalsIgnoreCase(answerDTO.getInput()))
+                        score += 10;
                 }
             }
+
+            ExamResultDTO examResultDTO = new ExamResultDTO();
+            examResultDTO.setScore(score);
+            examResultDTO.setStudentId(checkingAttemptsDTO.getStudent_id());
+            examResultDTO.setQuestionsIdList(questionsIdsList);
+
+            if (score >= 60) {
+                examResultDTO.setResultType(ResultType.SUCCESS);
+                message = "Student SUCCEED!";
+            } else
+                examResultDTO.setResultType(ResultType.FAIL);
+
+            ApiResponse<?> examResult = examResultService.createExamResult(examResultDTO);
+            ResExamResults data = (ResExamResults) examResult.getData();
+
+            ResExamResults resExamResults = new ResExamResults(
+                    data.getScore(),
+                    data.getStudentInfo(),
+                    data.getResultType(),
+                    data.getSubmitted_time(),
+                    data.getQuestionList()
+            );
 
             return ApiResponse.builder()
                     .message(message)
                     .success(true)
-                    .data(null) //resExamResults
+                    .data(resExamResults)
                     .build();
         }
     }

@@ -22,7 +22,7 @@ public class ExamineInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Integer attemptsLimit;
+    Integer attemptsLimit, numOfQuestions;
 
     Date startsDate;
 
