@@ -88,9 +88,8 @@ public class ExamResultServiceImpl implements ExamResultService {
 
 //         find examResult in examResultRepository through examResult_id
 //         then bring it to deleteExamResultRepository and examResultRepository.delete()
-        Optional<ExamResult> optionalExamResult = Optional.ofNullable(examResultRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "id", id)));
-        ExamResult examResult = optionalExamResult.get();
+        ExamResult examResult = examResultRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "id", id));
 
         deleteExamResultRepository.deleteByExamResult_Id(examResult.getId());
         examResultRepository.delete(examResult);
