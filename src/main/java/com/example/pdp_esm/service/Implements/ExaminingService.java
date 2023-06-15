@@ -93,6 +93,7 @@ public class ExaminingService {
 //                    .build();
 //        }
 //    }
+//
 //    public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 //
 //        final var studentId = checkingAttemptsDTO.getStudent_id();
@@ -139,27 +140,27 @@ public class ExaminingService {
 //                        score += 10;
 //                }
 //            }
-////            ExamResultDTO examResultDTO = new ExamResultDTO();
-////            examResultDTO.setScore(score);
-////            examResultDTO.setStudentId(checkingAttemptsDTO.getStudent_id());
-////            examResultDTO.setQuestionsIdList(questionsIdsList);
-////
-////            if (score >= 60) {
-////                examResultDTO.setResultType(ResultType.SUCCESS);
-////                message = "Student SUCCEED!";
-////            } else
-////                examResultDTO.setResultType(ResultType.FAIL);
-////
-////            ApiResponse<?> examResult = examResultService.createExamResult(examResultDTO);
-////            ResExamResults data = (ResExamResults) examResult.getData();
-////
-////            ResExamResults resExamResults = new ResExamResults(
-////                    data.getScore(),
-////                    data.getStudentInfo(),
-////                    data.getResultType(),
-////                    data.getSubmitted_time(),
-////                    data.getQuestionList()
-////            );
+//            ExamResultDTO examResultDTO = new ExamResultDTO();
+//            examResultDTO.setScore(score);
+//            examResultDTO.setStudentId(checkingAttemptsDTO.getStudent_id());
+//            examResultDTO.setQuestionsIdList(questionsIdsList);
+//
+//            if (score >= 60) {
+//                examResultDTO.setResultType(ResultType.SUCCESS);
+//                message = "Student SUCCEED!";
+//            } else
+//                examResultDTO.setResultType(ResultType.FAIL);
+//
+//            ApiResponse<?> examResult = examResultService.createExamResult(examResultDTO);
+//            ResExamResults data = (ResExamResults) examResult.getData();
+//
+//            ResExamResults resExamResults = new ResExamResults(
+//                    data.getScore(),
+//                    data.getStudentInfo(),
+//                    data.getResultType(),
+//                    data.getSubmitted_time(),
+//                    data.getQuestionList()
+//            );
 //            return ApiResponse.builder()
 //                    .message(message)
 //                    .success(true)

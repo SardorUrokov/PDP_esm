@@ -34,7 +34,6 @@ public class ExamResultServiceImpl implements ExamResultService {
 
         ExamResult result = new ExamResult();
         ExamResult save = settingValues(result, examResultDTO);
-
         return ApiResponse.builder()
                 .message("Result saved!")
                 .success(true)
@@ -85,7 +84,6 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     @Override
     public ApiResponse<?> deleteExamResult(Long id) {
-
 //         find examResult in examResultRepository through examResult_id
 //         then bring it to deleteExamResultRepository and examResultRepository.delete()
         ExamResult examResult = examResultRepository.findById(id)

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AttemptsRepository extends JpaRepository<Attempts, Long> {
 
-    Optional<Attempts> findByStudent_IdAndGroupModule_Id(Long student_id, Long groupModule_id);
+    Optional<Attempts> findByStudent_IdAndModules_Id(Long student_id, Long module_id);
 
     Optional<Attempts> findByStudent_Id(Long student_id);
 

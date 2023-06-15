@@ -22,5 +22,5 @@ public class Attempts {
     Student student;
 
     @OneToOne
-    GroupModule groupModule;
+    Modules modules;
 }

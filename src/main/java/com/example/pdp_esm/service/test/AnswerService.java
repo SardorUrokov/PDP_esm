@@ -43,8 +43,9 @@ public class AnswerService {
     }
 
     public ApiResponse<?> getOneAnswer(Long id) {
-        final var optionalAnswer = answerRepository.findById(id);
-        AnswerTest answer = optionalAnswer.get();
+        final var answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "answer_id", id));
+
         return ApiResponse.builder()
                 .message("Answers by " + id + " id! ")
                 .success(true)
@@ -54,8 +55,8 @@ public class AnswerService {
 
     public ApiResponse<?> updateAnswer(Long id, AnswerDTO answerDTO) {
 
-        Optional<AnswerTest> optionalAnswer = answerRepository.findById(id);
-        AnswerTest answer = optionalAnswer.get();
+        AnswerTest answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "answer_id", id));
 
         AnswerTest save = settingValues(answer, answerDTO);
         save.setUpdatedAt(new Date());
@@ -69,8 +70,10 @@ public class AnswerService {
 
     public ApiResponse<?> deleteAnswer(Long id) {
 
-        final var byId = answerRepository.findById(id);
-        byId.ifPresent(answerRepository::delete);
+        final var answerTest = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer", "answer_id", id));
+        answerRepository.delete(answerTest);
+
         return new ApiResponse<>("AnswerTest Deleted!", true);
     }
 

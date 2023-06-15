@@ -4,7 +4,9 @@ import com.example.pdp_esm.auth.AuthenticationService;
 import com.example.pdp_esm.auth.RegisterRequest;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
+import com.example.pdp_esm.entity.test.AnswerTest;
 import com.example.pdp_esm.repository.*;
+import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
 import com.example.pdp_esm.service.Implements.CertificateDownloader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +34,7 @@ public class Dataloader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final ExamResultRepository resultRepository;
     private final AuthenticationService authenticationService;
-    private final CertificateDownloader certificateDownloader;
+    private final AnswerRepositoryTest answerRepositoryTest;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -75,6 +77,21 @@ public class Dataloader implements CommandLineRunner {
             Question question4 = questionRepository.save(new Question("There's a 4th question", QuestionType.TEST, true, java_backend_course));
             Question question5 = questionRepository.save(new Question("There's a 5th question", QuestionType.SEQUENCE, true, frontEnd_course));
             Question question6 = questionRepository.save(new Question("There's a 6th question", QuestionType.SEQUENCE, true, frontEnd_course));
+            Question question7 = questionRepository.save(new Question("There's a 7th question", QuestionType.WRITE_MISSING_WORD, true, java_backend_course));
+
+            AnswerTest answerTest = answerRepositoryTest.save(new AnswerTest("TRUE", true, 1, question1));
+            AnswerTest answerTest1 = answerRepositoryTest.save(new AnswerTest("FALSE", false, 2, question1));
+
+            AnswerTest answerTest2 = answerRepositoryTest.save(new AnswerTest("bbb", false, 1, question3));
+            AnswerTest answerTest3 = answerRepositoryTest.save(new AnswerTest("aaa", true, 2, question3));
+            AnswerTest answerTest4 = answerRepositoryTest.save(new AnswerTest("ddd", false, 3, question3));
+            AnswerTest answerTest5 = answerRepositoryTest.save(new AnswerTest("ssss", false, 4, question3));
+
+            AnswerTest answerTest6 = answerRepositoryTest.save(new AnswerTest("a1", true, 1, question5));
+            AnswerTest answerTest7 = answerRepositoryTest.save(new AnswerTest("a2", true, 2, question5));
+            AnswerTest answerTest8 = answerRepositoryTest.save(new AnswerTest("a3", true, 3, question5));
+
+            AnswerTest answerTest9 = answerRepositoryTest.save(new AnswerTest("there's a missing word", true, 1, question7));
 
             ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
             ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
