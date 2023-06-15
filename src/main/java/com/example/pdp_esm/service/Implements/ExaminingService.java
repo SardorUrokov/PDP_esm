@@ -45,9 +45,8 @@ public class ExaminingService {
             String message = "Student Failed";
             int score = 0;
 
-            for (int i = 0; i < selectedAnswers.size(); i++) {
+            for (final AnswerObject answerObject : selectedAnswers) {
 
-                final var answerObject = selectedAnswers.get(i);
                 final var questionType = answerObject.getQuestionType();
                 final var answerDTOList = answerObject.getAnswerDTOS();
 
