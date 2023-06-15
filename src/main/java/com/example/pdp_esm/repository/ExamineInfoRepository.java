@@ -11,6 +11,8 @@ public interface ExamineInfoRepository extends JpaRepository<ExamineInfo, Long> 
 
     boolean existsByStartsDateAndCoursesInAndGroupsIn(Date startsDate, Set<Course> courses, Set<Group> groups);
 
+    Optional<ExamineInfo> findByGroupsIn(Set<Group> groups);
+
     Optional<ExamineInfo> findByStartsDate(Date startsDate);
 
 }

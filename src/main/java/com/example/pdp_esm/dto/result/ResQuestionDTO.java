@@ -1,7 +1,10 @@
 package com.example.pdp_esm.dto.result;
 
+import com.example.pdp_esm.dto.test.AnswerDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -11,5 +14,5 @@ import lombok.experimental.FieldDefaults;
 public class ResQuestionDTO {
 
     String courseName, questionType, question;
-    ResAnswer resAnswer;
+    List<AnswerDTO> answerDTOs;
 }

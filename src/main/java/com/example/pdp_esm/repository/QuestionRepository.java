@@ -13,4 +13,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Optional<Question> findByQuestionText(String question);
 
     List<Question> findAllByActive(Boolean active);
+
+    List<Question> findByCourse_IdAndActiveTrue(Long course_id);
 }

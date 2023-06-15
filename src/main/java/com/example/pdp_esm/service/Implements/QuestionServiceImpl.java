@@ -9,7 +9,9 @@ import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
+import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
 import com.example.pdp_esm.service.QuestionService;
+import com.example.pdp_esm.service.test.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final CourseRepository courseRepository;
+    private final AnswerRepositoryTest answerRepositoryTest;
+    private final AnswerService answerService;
 
     @Override
     public ApiResponse<?> createQuestion(QuestionDTO questionDTO) {
@@ -111,10 +115,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     public ResQuestionDTO toResQuestionDTO(Question question) {
+
+        final var answerTests = answerRepositoryTest.findByQuestion_IdOrderById(question.getId());
+        final var answerDTOList = answerService.toAnswerDTOList(answerTests);
+
         return ResQuestionDTO.builder()
                 .courseName(question.getCourse().getName())
                 .questionType(String.valueOf(question.getQuestionType()))
                 .question(question.getQuestionText())
+                .answerDTOs(answerDTOList)
                 .build();
     }
 

@@ -1,7 +1,7 @@
 package com.example.pdp_esm.service.test;
 
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -88,5 +88,18 @@ public class AnswerService {
         answer.setPosition(answerDTO.getPosition());
         answer.setStatus(answerDTO.getStatus());
         return answer;
+    }
+
+    public AnswerDTO toAnswerDTO (AnswerTest answerTest){
+        return AnswerDTO.builder()
+                .input(answerTest.getBody())
+                .position(answerTest.getPosition())
+                .question_id(answerTest.getQuestion().getId())
+                .status(answerTest.isStatus())
+                .build();
+    }
+
+    public List<AnswerDTO> toAnswerDTOList (List<AnswerTest> answerTests){
+        return answerTests.stream().map(this::toAnswerDTO).toList();
     }
 }

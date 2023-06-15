@@ -1,14 +1,12 @@
 package com.example.pdp_esm.controller;
 
-import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.DialectOverride;
+import com.example.pdp_esm.dto.ExamineInfoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.pdp_esm.dto.ExaminingDTO;
-import com.example.pdp_esm.dto.ExamineInfoDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
 import com.example.pdp_esm.service.Implements.ExaminingService;
 import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
 
@@ -36,6 +34,16 @@ public class ExaminingController {
         ApiResponse<?> response = examiningService.checkingAnswers(attemptsDTO);
 
         if (response.isSuccess()) log.warn("ExamResult Calculated! -> {}", response.getData());
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
+    @GetMapping("/getQuestions/{otp}")
+    public ResponseEntity<?> getExamQuestions(@PathVariable String otp){
+        final ApiResponse<?> response = examiningService.getExamQuestions(otp);
+
+        if (response.isSuccess()) log.warn("Getting Exam Questions! -> {}", response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
