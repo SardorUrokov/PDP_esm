@@ -5,8 +5,6 @@ import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResExamResults;
 import com.example.pdp_esm.dto.test.AnswerObject;
 import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
-import com.example.pdp_esm.entity.ExamineInfo;
-import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.Question;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.entity.enums.ResultType;
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
