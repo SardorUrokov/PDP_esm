@@ -1,6 +1,6 @@
 package com.example.pdp_esm.dto.result;
 
-import com.example.pdp_esm.dto.test.AnswerDTO;
+import com.example.pdp_esm.dto.AnswerDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

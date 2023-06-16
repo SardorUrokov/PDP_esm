@@ -1,9 +1,9 @@
-package com.example.pdp_esm.dto.test;
+package com.example.pdp_esm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerObject {
+
     String questionType;
     List<AnswerDTO> answerDTOS;
 }

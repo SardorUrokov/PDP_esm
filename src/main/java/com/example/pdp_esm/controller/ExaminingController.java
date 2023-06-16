@@ -6,7 +6,7 @@ import com.example.pdp_esm.dto.ExamineInfoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
+import com.example.pdp_esm.dto.CheckingAttemptsDTO;
 import com.example.pdp_esm.service.Implements.ExaminingService;
 import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
 

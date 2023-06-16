@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import com.example.pdp_esm.repository.*;
 import com.example.pdp_esm.entity.Question;
 import com.example.pdp_esm.dto.ExamResultDTO;
-import com.example.pdp_esm.dto.test.AnswerObject;
+import com.example.pdp_esm.dto.AnswerObject;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.dto.result.ResExamResults;
-import com.example.pdp_esm.dto.test.CheckingAttemptsDTO;
+import com.example.pdp_esm.dto.CheckingAttemptsDTO;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
 

@@ -1,4 +1,4 @@
-package com.example.pdp_esm.dto.test;
+package com.example.pdp_esm.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +13,5 @@ import java.util.List;
 public class CheckingAttemptsDTO {
 
     Long student_id;
-//    List<List<AnswerDTO>> selectedAnswers;
     List<AnswerObject> selectedAnswers;
 }
