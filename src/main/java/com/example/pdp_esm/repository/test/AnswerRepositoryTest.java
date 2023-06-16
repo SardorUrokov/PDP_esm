@@ -13,4 +13,6 @@ public interface AnswerRepositoryTest extends JpaRepository<AnswerTest, Long> {
     List<AnswerTest> findByQuestion_IdOrderByPosition(Long question_id);
 
     List<AnswerTest> findByQuestion_IdOrderById(Long question_id);
+
+    boolean existsByQuestion_IdAndPositionAndStatus(Long question_id, Integer position, boolean status);
 }

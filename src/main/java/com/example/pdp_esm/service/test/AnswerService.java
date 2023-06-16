@@ -21,16 +21,25 @@ public class AnswerService {
 
     public ApiResponse<?> createAnswer(AnswerDTO answerDTO) {
 
-        AnswerTest answer = new AnswerTest();
-        AnswerTest save = settingValues(answer, answerDTO);
-        save.setCreatedAt(new Date());
-        answerRepository.save(save);
+        final var exists = answerRepository.existsByQuestion_IdAndPositionAndStatus(
+                answerDTO.getQuestion_id(), answerDTO.getPosition(), answerDTO.getStatus()
+        );
 
-        return ApiResponse.builder()
-                .message("AnswerTest Created")
-                .success(true)
-                .data(save) //toResAnswer
-                .build();
+        if (exists)
+            return
+                    new ApiResponse<>("Such a answer is already saved!", false);
+        else {
+
+            AnswerTest answer = new AnswerTest();
+            AnswerTest save = settingValues(answer, answerDTO);
+            answerRepository.save(save);
+
+            return ApiResponse.builder()
+                    .message("AnswerTest Created")
+                    .success(true)
+                    .data(save) //toResAnswer
+                    .build();
+        }
     }
 
     public ApiResponse<?> getAllAnswers() {
@@ -90,7 +99,7 @@ public class AnswerService {
         return answer;
     }
 
-    public AnswerDTO toAnswerDTO (AnswerTest answerTest){
+    public AnswerDTO toAnswerDTO(AnswerTest answerTest) {
         return AnswerDTO.builder()
                 .input(answerTest.getBody())
                 .position(answerTest.getPosition())
@@ -99,7 +108,7 @@ public class AnswerService {
                 .build();
     }
 
-    public List<AnswerDTO> toAnswerDTOList (List<AnswerTest> answerTests){
+    public List<AnswerDTO> toAnswerDTOList(List<AnswerTest> answerTests) {
         return answerTests.stream().map(this::toAnswerDTO).toList();
     }
 }
