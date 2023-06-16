@@ -11,16 +11,15 @@ import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.ExamineInfoRepository;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.service.ExamineInfoService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
+import java.util.Set;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,6 +30,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     private final CourseRepository courseRepository;
     private final CourseServiceImpl courseService;
     private final GroupRepository groupRepository;
+    private final GroupServiceImpl groupService;
     private final ExamineInfoRepository examineInfoRepository;
 
     @Override
@@ -51,8 +51,11 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                     .success(true)
                     .data(toResExamineInfoDTO(examineInfo))
                     .build();
-        } else
-            return new ApiResponse<>("Such a Examine Info Object is already saved!", false);
+        } else return
+                new ApiResponse<>(
+                        "Such a Examine Info Object is already saved!",
+                        false
+                );
     }
 
     @Override
@@ -155,11 +158,15 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     }
 
     public ResExamineInfoDTO toResExamineInfoDTO(ExamineInfo examineInfo) {
+
+        List<Group> groupList = examineInfo.getGroups().stream().toList();
+
         return ResExamineInfoDTO.builder()
                 .attempts(examineInfo.getAttemptsLimit())
                 .numOfQuestions(examineInfo.getNumOfQuestions())
                 .startsDate(examineInfo.getStartsDate().toString())
                 .coursesWithGroups(courseService.toDTOSet(examineInfo.getCourses()))
+                .groupDTOS(groupService.toDTOList(groupList))
                 .build();
     }
 

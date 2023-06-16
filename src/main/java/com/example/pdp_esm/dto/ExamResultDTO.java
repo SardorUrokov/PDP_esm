@@ -18,5 +18,4 @@ public class ExamResultDTO {
     private Long studentId;
     private ResultType resultType;
     private List<Long> questionsIdList;
-
 }

@@ -17,4 +17,6 @@ public class ResExamineInfoDTO{
     Integer attempts, numOfQuestions;
     String startsDate;
     Set<ResCourseDTOWithGroups> coursesWithGroups;
+    List<ResGroupDTO> groupDTOS;
+
 }

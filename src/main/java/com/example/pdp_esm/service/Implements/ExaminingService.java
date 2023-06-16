@@ -5,15 +5,15 @@ import org.springframework.stereotype.Service;
 
 import com.example.pdp_esm.repository.*;
 import com.example.pdp_esm.entity.Question;
-import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.AnswerObject;
+import com.example.pdp_esm.dto.ExamResultDTO;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.entity.enums.ResultType;
+import com.example.pdp_esm.dto.CheckingAttemptsDTO;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.dto.result.ResExamResults;
-import com.example.pdp_esm.dto.CheckingAttemptsDTO;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.Random;
@@ -23,8 +23,8 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class ExaminingService {
 
-    private final StudentRepository studentRepository;
     private final AnswerRepository answerRepository;
+    private final StudentRepository studentRepository;
     private final QuestionRepository questionRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
@@ -37,8 +37,10 @@ public class ExaminingService {
         final var existsByStudentId = examResultRepository.existsByStudentId(studentId);
 
         if (existsByStudentId)
-            return
-                    new ApiResponse<>("Exam Result with this " + studentId + " student_id is Already saved! ", false);
+            return new ApiResponse<>(
+                    "Exam Result with this " + studentId + " student_id is Already saved! ",
+                    false);
+
         else {
 
             List<AnswerObject> selectedAnswers = checkingAttemptsDTO.getSelectedAnswers();
@@ -72,6 +74,7 @@ public class ExaminingService {
 
                     int k = 1;
                     for (int j = 1; j < answerDTOList.size(); j++) {
+
                         if (answerDTOList.get(k).getInput().equalsIgnoreCase(answerTestList.get(j).getBody()))
                             score += 10;
                     }
@@ -163,7 +166,6 @@ public class ExaminingService {
             return questionList;
 
         else {
-
             for (int i = 0; i < count; i++) {
                 int rndNum = random.nextInt(maximum - minimum + 1) + minimum;
                 rndQuestions.add(questionList.get(rndNum));
