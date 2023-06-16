@@ -1,8 +1,8 @@
 package com.example.pdp_esm.controller.demo;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/v1/admin")
@@ -14,18 +14,21 @@ public class AdminController {
     public String get() {
         return "GET:: admin controller";
     }
+
     @PostMapping
     @PreAuthorize("hasAuthority('admin:create')")
     @Hidden
     public String post() {
         return "POST:: admin controller";
     }
+
     @PutMapping
     @PreAuthorize("hasAuthority('admin:update')")
     @Hidden
     public String put() {
         return "PUT:: admin controller";
     }
+
     @DeleteMapping
     @PreAuthorize("hasAuthority('admin:delete')")
     @Hidden

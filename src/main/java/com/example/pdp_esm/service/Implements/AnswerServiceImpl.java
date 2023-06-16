@@ -3,21 +3,22 @@ package com.example.pdp_esm.service.Implements;
 import java.util.Date;
 import java.util.List;
 
-import com.example.pdp_esm.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import com.example.pdp_esm.dto.AnswerDTO;
+import com.example.pdp_esm.entity.test.Answer;
+import com.example.pdp_esm.service.AnswerService;
 import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.entity.test.AnswerTest;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
+import com.example.pdp_esm.repository.test.AnswerRepository;
 
 @Service
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
 
-    private final AnswerRepositoryTest answerRepository;
+    private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
     @Override
@@ -32,12 +33,12 @@ public class AnswerServiceImpl implements AnswerService {
                     new ApiResponse<>("Such a answer is already saved!", false);
         else {
 
-            AnswerTest answer = new AnswerTest();
-            AnswerTest save = settingValues(answer, answerDTO);
+            Answer answer = new Answer();
+            Answer save = settingValues(answer, answerDTO);
             answerRepository.save(save);
 
             return ApiResponse.builder()
-                    .message("AnswerTest Created")
+                    .message("Answer Created")
                     .success(true)
                     .data(save) //toResAnswer
                     .build();
@@ -69,14 +70,14 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public ApiResponse<?> updateAnswer(Long id, AnswerDTO answerDTO) {
 
-        AnswerTest answer = answerRepository.findById(id)
+        Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "answer_id", id));
 
-        AnswerTest save = settingValues(answer, answerDTO);
+        Answer save = settingValues(answer, answerDTO);
         save.setUpdatedAt(new Date());
         answerRepository.save(save);
         return ApiResponse.builder()
-                .message("AnswerTest Updated!")
+                .message("Answer Updated!")
                 .success(true)
                 .data(save)
                 .build();
@@ -89,10 +90,10 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Answer", "answer_id", id));
         answerRepository.delete(answerTest);
 
-        return new ApiResponse<>("AnswerTest Deleted!", true);
+        return new ApiResponse<>("Answer Deleted!", true);
     }
 
-    public AnswerTest settingValues(AnswerTest answer, AnswerDTO answerDTO) {
+    public Answer settingValues(Answer answer, AnswerDTO answerDTO) {
 
         final var questionId = answerDTO.getQuestion_id();
         final var question = questionRepository.findById(questionId)
@@ -105,7 +106,7 @@ public class AnswerServiceImpl implements AnswerService {
         return answer;
     }
 
-    public AnswerDTO toAnswerDTO(AnswerTest answerTest) {
+    public AnswerDTO toAnswerDTO(Answer answerTest) {
         return AnswerDTO.builder()
                 .input(answerTest.getBody())
                 .position(answerTest.getPosition())
@@ -114,7 +115,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
-    public List<AnswerDTO> toAnswerDTOList(List<AnswerTest> answerTests) {
+    public List<AnswerDTO> toAnswerDTOList(List<Answer> answerTests) {
         return answerTests.stream().map(this::toAnswerDTO).toList();
     }
 }

@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AnswerTest extends AbsEntity {
+public class Answer extends AbsEntity {
 
     String body;
     boolean status;

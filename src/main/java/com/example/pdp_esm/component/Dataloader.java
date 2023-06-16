@@ -4,9 +4,9 @@ import com.example.pdp_esm.auth.AuthenticationService;
 import com.example.pdp_esm.auth.RegisterRequest;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.*;
-import com.example.pdp_esm.entity.test.AnswerTest;
+import com.example.pdp_esm.entity.test.Answer;
 import com.example.pdp_esm.repository.*;
-import com.example.pdp_esm.repository.test.AnswerRepositoryTest;
+import com.example.pdp_esm.repository.test.AnswerRepository;
 import com.example.pdp_esm.service.Implements.CertificateDownloader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +29,11 @@ public class Dataloader implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final PaymentRepository paymentRepository;
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
     private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
     private final ExamResultRepository resultRepository;
     private final AuthenticationService authenticationService;
-    private final AnswerRepositoryTest answerRepositoryTest;
+    private final AnswerRepository answerRepository;
 
     @Value("${spring.sql.init.mode}")
     private String mode;
@@ -63,14 +62,7 @@ public class Dataloader implements CommandLineRunner {
             Student a1_student = studentRepository.save(new Student("Usmon Saidiy", "998914525468", "urokovsardor15@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
             Student a1_student1 = studentRepository.save(new Student("Anvar Anvarov", "998914525468", "urokovsardorgpt@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1100000d, Status.WAITING, A1));
             Student f1_student = studentRepository.save(new Student("MuhammadAziz Zayniddinov", "998914525468", "sardorurokov92@gmail.com", passwordEncoder.encode("password123"), "Male", USER, true, 1000000d, Status.COMPLETED, F1));
-
-            Answer answer1 = answerRepository.save(new Answer("True", "False", true));
-            Answer answer2 = answerRepository.save(new Answer("False", "True", true));
-            Answer answer3 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", true));
-            Answer answer4 = answerRepository.save(new Answer("There's a true answer", "There's a 1st wrong answer", "There's a 2nd wrong answer", "There's a 3rd wrong answer", true));
-            Answer answer5 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence", "There's a 5th answer of the sequence", true));
-            Answer answer6 = answerRepository.save(new Answer("There's a 1st answer of the sequence", "There's a 2nd answer of the sequence", "There's a 3rd answer of the sequence", "There's a 4th answer of the sequence", "null", true));
-
+            
             Question question1 = questionRepository.save(new Question("There's a 1st question", QuestionType.TRUE_FALSE, true, android_course));
             Question question2 = questionRepository.save(new Question("There's a 2nd question", QuestionType.TRUE_FALSE, true, android_course));
             Question question3 = questionRepository.save(new Question("There's a 3rd question", QuestionType.TEST, true, java_backend_course));
@@ -79,19 +71,19 @@ public class Dataloader implements CommandLineRunner {
             Question question6 = questionRepository.save(new Question("There's a 6th question", QuestionType.SEQUENCE, true, frontEnd_course));
             Question question7 = questionRepository.save(new Question("There's a 7th question", QuestionType.WRITE_MISSING_WORD, true, java_backend_course));
 
-            AnswerTest answerTest = answerRepositoryTest.save(new AnswerTest("TRUE", true, 1, question1));
-            AnswerTest answerTest1 = answerRepositoryTest.save(new AnswerTest("FALSE", false, 2, question1));
+            Answer answerTest = answerRepository.save(new Answer("TRUE", true, 1, question1));
+            Answer answerTest1 = answerRepository.save(new Answer("FALSE", false, 2, question1));
+ 
+            Answer answerTest2 = answerRepository.save(new Answer("bbb", false, 1, question3));
+            Answer answerTest3 = answerRepository.save(new Answer("aaa", true, 2, question3));
+            Answer answerTest4 = answerRepository.save(new Answer("ddd", false, 3, question3));
+            Answer answerTest5 = answerRepository.save(new Answer("ssss", false, 4, question3));
 
-            AnswerTest answerTest2 = answerRepositoryTest.save(new AnswerTest("bbb", false, 1, question3));
-            AnswerTest answerTest3 = answerRepositoryTest.save(new AnswerTest("aaa", true, 2, question3));
-            AnswerTest answerTest4 = answerRepositoryTest.save(new AnswerTest("ddd", false, 3, question3));
-            AnswerTest answerTest5 = answerRepositoryTest.save(new AnswerTest("ssss", false, 4, question3));
+            Answer answerTest6 = answerRepository.save(new Answer("a1", true, 1, question5));
+            Answer answerTest7 = answerRepository.save(new Answer("a2", true, 2, question5));
+            Answer answerTest8 = answerRepository.save(new Answer("a3", true, 3, question5));
 
-            AnswerTest answerTest6 = answerRepositoryTest.save(new AnswerTest("a1", true, 1, question5));
-            AnswerTest answerTest7 = answerRepositoryTest.save(new AnswerTest("a2", true, 2, question5));
-            AnswerTest answerTest8 = answerRepositoryTest.save(new AnswerTest("a3", true, 3, question5));
-
-            AnswerTest answerTest9 = answerRepositoryTest.save(new AnswerTest("there's a missing word", true, 1, question7));
+            Answer answerTest9 = answerRepository.save(new Answer("there's a missing word", true, 1, question7));
 
             ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
             ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
