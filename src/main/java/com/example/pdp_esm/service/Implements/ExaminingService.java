@@ -1,8 +1,5 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.entity.ExamineInfo;
-import com.example.pdp_esm.entity.Group;
-import com.example.pdp_esm.entity.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -96,18 +93,23 @@ public class ExaminingService {
                     .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", studentId));
 
             LocalDateTime localDateTime = LocalDateTime.now();
-            Date startsDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+            Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
             final var studentGroup = student.getGroup();
-
-            final var examineInfo = examineInfoRepository.findByGroupsInAndStartsDateIsAfter(Collections.singleton(studentGroup), startsDate)
-                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student group_id", studentGroup.getId()));
+            final var examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
+                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
 
             ExamResultDTO examResultDTO = new ExamResultDTO();
-            examResultDTO.setScore(score);
-            examResultDTO.setStudentId(studentId);
-            examResultDTO.setExamineInfoId(examineInfo.getId());  //need to set examine_info_id
-            examResultDTO.setQuestionsIdList(questionsIdsList);
+
+            if (now.after(examineInfo.getStartsDate())) {
+
+                examResultDTO.setScore(score);
+                examResultDTO.setStudentId(studentId);
+                examResultDTO.setExamineInfoId(examineInfo.getId());  //need to set examine_info_id
+                examResultDTO.setQuestionsIdList(questionsIdsList);
+
+            } else return
+                    new ApiResponse<>("The Examine time has not started yet", false);
 
             if (score >= 60) {
                 examResultDTO.setResultType(ResultType.SUCCESS);
@@ -120,7 +122,7 @@ public class ExaminingService {
 
             ResExamResults resExamResults = new ResExamResults(
                     data.getScore(),
-                    data.getResExamineInfoDTO(),
+//                    data.getResExamineInfoDTO(),
                     data.getStudentInfo(),
                     data.getResultType(),
                     data.getSubmitted_time(),

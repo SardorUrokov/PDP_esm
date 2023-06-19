@@ -164,7 +164,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
         return ResExamResults.builder()
                 .score(examResult.getScore())
-                .resExamineInfoDTO(resExamineInfoDTO)
+//                .resExamineInfoDTO(resExamineInfoDTO)
                 .resultType(String.valueOf(examResult.getResultType()))
                 .submitted_time(examResult.getCreatedAt().toString())
                 .studentInfo(ResPaymentStudentInfo.builder()

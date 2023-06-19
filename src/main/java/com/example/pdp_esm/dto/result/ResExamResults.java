@@ -14,7 +14,7 @@ import java.util.List;
 public class ResExamResults {
 
     private float score;
-    private ResExamineInfoDTO resExamineInfoDTO;
+//    private ResExamineInfoDTO resExamineInfoDTO;
     private ResPaymentStudentInfo studentInfo;
     private String resultType, submitted_time;
     private List<ResQuestionDTO> questionList;

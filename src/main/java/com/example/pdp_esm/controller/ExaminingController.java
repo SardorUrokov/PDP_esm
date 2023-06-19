@@ -15,7 +15,7 @@ import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/examining")
-@PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
+@PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER', 'USER')")
 public class ExaminingController {
 
     private final ExaminingService examiningService;
@@ -31,6 +31,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping("/calculate")
     public ResponseEntity<?> calculate(@RequestBody CheckingAttemptsDTO attemptsDTO) {
         ApiResponse<?> response = examiningService.checkingAnswers(attemptsDTO);
