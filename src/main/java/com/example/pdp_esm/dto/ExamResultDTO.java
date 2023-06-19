@@ -15,7 +15,7 @@ import java.util.List;
 public class ExamResultDTO {
 
     private float score;
-    private Long studentId;
+    private Long studentId, examineInfoId;
     private ResultType resultType;
     private List<Long> questionsIdList;
 }

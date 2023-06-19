@@ -15,7 +15,7 @@ import java.util.Set;
 public class ResExamineInfoDTO{
 
     Integer attempts, numOfQuestions;
-    String startsDate;
+    String examName, startsDate, examType;
     Set<ResCourseDTOWithGroups> coursesWithGroups;
     List<ResGroupDTO> groupDTOS;
 

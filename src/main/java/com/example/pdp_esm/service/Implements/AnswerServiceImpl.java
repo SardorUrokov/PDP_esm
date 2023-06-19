@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.pdp_esm.dto.AnswerDTO;
-import com.example.pdp_esm.entity.test.Answer;
+import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.service.AnswerService;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.repository.QuestionRepository;

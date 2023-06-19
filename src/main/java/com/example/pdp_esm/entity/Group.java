@@ -1,18 +1,16 @@
 package com.example.pdp_esm.entity;
 
-import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
 import lombok.*;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
+import java.time.LocalDate;
 
 @Data
-@Entity(name = "groups")
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "groups")
 public class Group {
 
     @Id
@@ -28,9 +26,8 @@ public class Group {
     @ManyToMany
     private List<Teacher> teacher;
 
-//    @Timestamp
-//    @Temporal(value = TemporalType.TIMESTAMP)
     private LocalDate startDate;
+
     public Group(String groupName, Course course, boolean active, List<Teacher> teacher, LocalDate startDate) {
         this.groupName = groupName;
         this.course = course;
@@ -38,6 +35,7 @@ public class Group {
         this.teacher = teacher;
         this.startDate = startDate;
     }
+
     public Group(String groupName, Course course, List<Teacher> teacher) {
         this.groupName = groupName;
         this.course = course;

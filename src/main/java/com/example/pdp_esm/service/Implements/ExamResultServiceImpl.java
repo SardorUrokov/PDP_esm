@@ -15,6 +15,7 @@ import com.example.pdp_esm.service.ExamResultService;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
 import com.example.pdp_esm.repository.ExamResultRepository;
+import com.example.pdp_esm.repository.ExamineInfoRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.entity.requests.DeleteExamResultRequest;
 import com.example.pdp_esm.repository.deleteRequests.DeleteExamResultRepository;
@@ -27,6 +28,8 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final QuestionServiceImpl questionService;
     private final QuestionRepository questionRepository;
     private final ExamResultRepository examResultRepository;
+    private final ExamineInfoServiceImpl examineInfoService;
+    private final ExamineInfoRepository examineInfoRepository;
     private final DeleteExamResultRepository deleteExamResultRepository;
 
     @Override
@@ -139,8 +142,13 @@ public class ExamResultServiceImpl implements ExamResultService {
                 .filter(Objects::nonNull)
                 .toList();
 
+        final var examineInfoId = resultDTO.getExamineInfoId();
+        final var examineInfo = examineInfoRepository.findById(examineInfoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Examine Info ", "examineInfo_id", examineInfoId));
+
         result.setStudent(student);
         result.setScore(resultDTO.getScore());
+        result.setExamineInfo(examineInfo);
         result.setQuestionList(questionList);
         result.setResultType(resultDTO.getResultType());
         result.setCreatedAt(new Date());
@@ -152,8 +160,11 @@ public class ExamResultServiceImpl implements ExamResultService {
         Student student = examResult.getStudent();
         Group group = examResult.getStudent().getGroup();
 
+        final var resExamineInfoDTO = examineInfoService.toResExamineInfoDTO(examResult.getExamineInfo());
+
         return ResExamResults.builder()
                 .score(examResult.getScore())
+                .resExamineInfoDTO(resExamineInfoDTO)
                 .resultType(String.valueOf(examResult.getResultType()))
                 .submitted_time(examResult.getCreatedAt().toString())
                 .studentInfo(ResPaymentStudentInfo.builder()
@@ -166,7 +177,7 @@ public class ExamResultServiceImpl implements ExamResultService {
                 .build();
     }
 
-    public ResDeleteExamResultDTO toResDeleteExamResultDTO(DeleteExamResultRequest deleteExamResultRequest){
+    public ResDeleteExamResultDTO toResDeleteExamResultDTO(DeleteExamResultRequest deleteExamResultRequest) {
         return ResDeleteExamResultDTO.builder()
                 .description(deleteExamResultRequest.getDescription())
                 .requestCreated_time(deleteExamResultRequest.getCreatedAt().toString())

@@ -1,21 +1,22 @@
 package com.example.pdp_esm.component;
 
-import com.example.pdp_esm.auth.AuthenticationService;
-import com.example.pdp_esm.auth.RegisterRequest;
-import com.example.pdp_esm.entity.*;
-import com.example.pdp_esm.entity.enums.*;
-import com.example.pdp_esm.entity.test.Answer;
-import com.example.pdp_esm.repository.*;
-import com.example.pdp_esm.repository.test.AnswerRepository;
-import com.example.pdp_esm.service.Implements.CertificateDownloader;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
+
+import lombok.RequiredArgsConstructor;
+
+import com.example.pdp_esm.entity.*;
+import com.example.pdp_esm.repository.*;
+import com.example.pdp_esm.entity.Answer;
+import com.example.pdp_esm.entity.enums.*;
+import com.example.pdp_esm.auth.RegisterRequest;
+import com.example.pdp_esm.auth.AuthenticationService;
+import com.example.pdp_esm.repository.test.AnswerRepository;
+
+import org.springframework.stereotype.Component;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.example.pdp_esm.entity.enums.Roles.*;
 
@@ -85,9 +86,9 @@ public class Dataloader implements CommandLineRunner {
 
             Answer answerTest9 = answerRepository.save(new Answer("there's a missing word", true, 1, question7));
 
-            ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
-            ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
-            ExamResult examResult3 = resultRepository.save(new ExamResult(50f, a1_student, ResultType.FAIL, List.of(question2, question1)));
+//            ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
+//            ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
+//            ExamResult examResult3 = resultRepository.save(new ExamResult(50f, a1_student, ResultType.FAIL, List.of(question2, question1)));
 //            ExamResult examResult4 = resultRepository.save(new ExamResult(70f, j1_student, ResultType.SUCCESS, List.of(question3, question4)));
 
             Payment payment1 = paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH, PayStatus.RECEIVED));

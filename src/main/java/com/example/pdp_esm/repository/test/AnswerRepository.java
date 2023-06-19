@@ -1,6 +1,6 @@
 package com.example.pdp_esm.repository.test;
 
-import com.example.pdp_esm.entity.test.Answer;
+import com.example.pdp_esm.entity.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

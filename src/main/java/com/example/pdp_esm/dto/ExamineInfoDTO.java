@@ -14,7 +14,7 @@ import java.util.List;
 public class ExamineInfoDTO {
 
     Integer attempts, numOfQuestions;
-    String startsDate;
+    String startsDate, examType;
     List<Long> coursesIds;
     List<Long> groupsIds;
 }

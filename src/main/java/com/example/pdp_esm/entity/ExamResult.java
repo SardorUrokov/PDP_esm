@@ -3,10 +3,9 @@ package com.example.pdp_esm.entity;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.entity.template.AbsEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.List;
 
 @Data
@@ -14,9 +13,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ExamResult extends AbsEntity {
 
     private float score;
+
+    @OneToOne
+    ExamineInfo examineInfo;
 
     @OneToOne
     private Student student;
@@ -26,6 +29,4 @@ public class ExamResult extends AbsEntity {
 
     @ManyToMany
     private List<Question> questionList;
-
-
 }

@@ -1,20 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.ExamineInfoDTO;
-import com.example.pdp_esm.dto.result.ApiResponse;
-import com.example.pdp_esm.dto.result.ResExamineInfoDTO;
-import com.example.pdp_esm.entity.Course;
-import com.example.pdp_esm.entity.ExamineInfo;
-import com.example.pdp_esm.entity.Group;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.CourseRepository;
-import com.example.pdp_esm.repository.ExamineInfoRepository;
-import com.example.pdp_esm.repository.GroupRepository;
-import com.example.pdp_esm.service.ExamineInfoService;
-import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
+import java.util.Objects;
 import java.util.Set;
 import java.util.Date;
 import java.util.List;
@@ -22,15 +8,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import com.example.pdp_esm.entity.Group;
+import com.example.pdp_esm.entity.Course;
+import com.example.pdp_esm.dto.ExamineInfoDTO;
+import com.example.pdp_esm.entity.ExamineInfo;
+import com.example.pdp_esm.entity.enums.ExamType;
+import com.example.pdp_esm.dto.result.ApiResponse;
+import com.example.pdp_esm.service.ExamineInfoService;
+import com.example.pdp_esm.repository.GroupRepository;
+import com.example.pdp_esm.repository.CourseRepository;
+import com.example.pdp_esm.dto.result.ResExamineInfoDTO;
+import com.example.pdp_esm.repository.ExamineInfoRepository;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExamineInfoServiceImpl implements ExamineInfoService {
 
-    private final CourseRepository courseRepository;
+    private final GroupServiceImpl groupService;
     private final CourseServiceImpl courseService;
     private final GroupRepository groupRepository;
-    private final GroupServiceImpl groupService;
+    private final CourseRepository courseRepository;
     private final ExamineInfoRepository examineInfoRepository;
 
     @Override
@@ -97,6 +100,19 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     }
 
     @Override
+    public ApiResponse<?> byExamType(String type){
+
+        final var examType = ExamType.valueOf(type);
+        final var examineInfos = examineInfoRepository.findByExamType(examType);
+
+        return ApiResponse.builder()
+                .message("Examine Info by " + type + " Type")
+                .success(true)
+                .data(toResExamineInfoDTOList(examineInfos))
+                .build();
+    }
+
+    @Override
     public ApiResponse<?> update(Long id, ExamineInfoDTO dto) {
 
         final var byId = examineInfoRepository.findById(id)
@@ -131,16 +147,36 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         Set<Course> courses =
                 coursesIds.stream().map(courseRepository::getById).collect(Collectors.toSet());
 
-        Set<Group> groups =
-                groupsIds.stream().map(groupRepository::getById).collect(Collectors.toSet());
+        Set<Group> groups = groupsIds.stream()
+                .map(groupId -> groupRepository.findById(groupId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
+        String examName = createExamName(examineInfoDTO.getExamType(), groups);
+
+        examineInfo.setExamName(examName);
         examineInfo.setAttemptsLimit(examineInfoDTO.getAttempts());
         examineInfo.setNumOfQuestions(examineInfoDTO.getNumOfQuestions());
         examineInfo.setStartsDate(parsing(examineInfoDTO.getStartsDate()));
+        examineInfo.setExamType(ExamType.valueOf(examineInfoDTO.getExamType()));
         examineInfo.setCourses(courses);
         examineInfo.setGroups(groups);
 
         return examineInfo;
+    }
+
+    private static String createExamName(String examType, Set<Group> groups) {
+        StringBuilder examNameBuilder = new StringBuilder();
+        examNameBuilder.append(examType).append("-");
+
+        for (Group group : groups) {
+            examNameBuilder.append(group.getGroupName()).append("_");
+        }
+
+        examNameBuilder.setLength(examNameBuilder.length() - 1);
+
+        return examNameBuilder.toString();
     }
 
     public Date parsing(String dateTime) {
@@ -158,13 +194,14 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     }
 
     public ResExamineInfoDTO toResExamineInfoDTO(ExamineInfo examineInfo) {
-
         List<Group> groupList = examineInfo.getGroups().stream().toList();
 
         return ResExamineInfoDTO.builder()
                 .attempts(examineInfo.getAttemptsLimit())
                 .numOfQuestions(examineInfo.getNumOfQuestions())
+                .examName(examineInfo.getExamName())
                 .startsDate(examineInfo.getStartsDate().toString())
+                .examType(examineInfo.getExamType().toString())
                 .coursesWithGroups(courseService.toDTOSet(examineInfo.getCourses()))
                 .groupDTOS(groupService.toDTOList(groupList))
                 .build();

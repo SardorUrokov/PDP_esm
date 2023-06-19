@@ -12,6 +12,8 @@ public interface ExamineInfoService {
 
     ApiResponse<?> byStartsDate(String date);
 
+    ApiResponse<?> byExamType(String type);
+
     ApiResponse<?> update(Long id, ExamineInfoDTO dto);
 
     ApiResponse<?> delete(Long id);

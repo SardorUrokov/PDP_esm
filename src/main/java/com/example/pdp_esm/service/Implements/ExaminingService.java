@@ -1,5 +1,8 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.entity.ExamineInfo;
+import com.example.pdp_esm.entity.Group;
+import com.example.pdp_esm.entity.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,9 @@ import com.example.pdp_esm.dto.result.ResExamResults;
 import com.example.pdp_esm.repository.test.AnswerRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 
-import java.util.List;
-import java.util.Random;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +43,6 @@ public class ExaminingService {
             return new ApiResponse<>(
                     "Exam Result with this " + studentId + " student_id is Already saved! ",
                     false);
-
         else {
 
             List<AnswerObject> selectedAnswers = checkingAttemptsDTO.getSelectedAnswers();
@@ -90,9 +92,21 @@ public class ExaminingService {
                 }
             }
 
+            final var student = studentRepository.findById(studentId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", studentId));
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            Date startsDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+            final var studentGroup = student.getGroup();
+
+            final var examineInfo = examineInfoRepository.findByGroupsInAndStartsDateIsAfter(Collections.singleton(studentGroup), startsDate)
+                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student group_id", studentGroup.getId()));
+
             ExamResultDTO examResultDTO = new ExamResultDTO();
             examResultDTO.setScore(score);
-            examResultDTO.setStudentId(checkingAttemptsDTO.getStudent_id());
+            examResultDTO.setStudentId(studentId);
+            examResultDTO.setExamineInfoId(examineInfo.getId());  //need to set examine_info_id
             examResultDTO.setQuestionsIdList(questionsIdsList);
 
             if (score >= 60) {
@@ -106,6 +120,7 @@ public class ExaminingService {
 
             ResExamResults resExamResults = new ResExamResults(
                     data.getScore(),
+                    data.getResExamineInfoDTO(),
                     data.getStudentInfo(),
                     data.getResultType(),
                     data.getSubmitted_time(),
@@ -133,13 +148,13 @@ public class ExaminingService {
                     .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", user.getPhoneNumber()));
             final var studentGroup = student.getGroup();
 
-//            final var examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
-//                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "group", studentGroup));
-//            final var numOfQuestions = examineInfo.getNumOfQuestions();
+            final var examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
+                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "group", studentGroup.getId()));
+            final var numOfQuestions = examineInfo.getNumOfQuestions();
 
             final var courseId = studentGroup.getCourse().getId();
 
-            questionList = rndQuestions(courseId, 10); // it returns the number of questions set in numOfQuestions field
+            questionList = rndQuestions(courseId, numOfQuestions); // it returns the number of questions set in numOfQuestions field
 
         } else {
             return new ApiResponse<>("User is not a Student", false);

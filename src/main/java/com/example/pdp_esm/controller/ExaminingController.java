@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import com.example.pdp_esm.dto.ExamineInfoDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.CheckingAttemptsDTO;
@@ -14,6 +15,7 @@ import com.example.pdp_esm.service.Implements.ExamineInfoServiceImpl;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/examining")
+@PreAuthorize(value = "hasAnyAuthority('ADMIN', 'MANAGER')")
 public class ExaminingController {
 
     private final ExaminingService examiningService;
@@ -39,6 +41,7 @@ public class ExaminingController {
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER')")
     @GetMapping("/getQuestions/{otp}")
     public ResponseEntity<?> getExamQuestions(@PathVariable String otp){
         final ApiResponse<?> response = examiningService.getExamQuestions(otp);
@@ -74,6 +77,16 @@ public class ExaminingController {
         ApiResponse<?> response = examineInfoService.byStartsDate(date);
 
         if (response.isSuccess()) log.warn("Getting ExamInfo by date {} -> {}", date, response.getData());
+        else log.error(response.getMessage());
+
+        return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);
+    }
+
+    @GetMapping("/infoByExamType/{type}")
+    public ResponseEntity<?> gettingExamineInfoByExamType(@PathVariable String type){
+        ApiResponse<?> response = examineInfoService.byExamType(type);
+
+        if (response.isSuccess()) log.warn("Getting ExamInfo by {} Exam Type -> {}", type, response.getData());
         else log.error(response.getMessage());
 
         return ResponseEntity.status(response.isSuccess() ? 200 : 409).body(response);

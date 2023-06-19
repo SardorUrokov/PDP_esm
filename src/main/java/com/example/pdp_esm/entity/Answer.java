@@ -1,4 +1,4 @@
-package com.example.pdp_esm.entity.test;
+package com.example.pdp_esm.entity;
 
 import jakarta.persistence.*;
 import com.example.pdp_esm.entity.Question;
