@@ -1,5 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.dto.result.ResQuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class ExaminingService {
 
     private final AnswerRepository answerRepository;
     private final StudentRepository studentRepository;
+    private final QuestionServiceImpl questionService;
     private final QuestionRepository questionRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
@@ -162,10 +164,12 @@ public class ExaminingService {
             return new ApiResponse<>("User is not a Student", false);
         }
 
+        final var resQuestionDTOList = questionService.toResQuestionDTOList(questionList);
+
         return ApiResponse.builder()
                 .message("Exam Questions!")
                 .success(true)
-                .data(questionList)
+                .data(resQuestionDTOList)
                 .build();
     }
 

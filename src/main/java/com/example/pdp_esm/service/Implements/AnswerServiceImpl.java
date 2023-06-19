@@ -3,6 +3,7 @@ package com.example.pdp_esm.service.Implements;
 import java.util.Date;
 import java.util.List;
 
+import com.example.pdp_esm.entity.enums.QuestionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -115,7 +116,30 @@ public class AnswerServiceImpl implements AnswerService {
                 .build();
     }
 
+    public AnswerDTO toExamQuestionsAnswer(Answer answer){
+
+        final var questionType = answer.getQuestion().getQuestionType();
+
+        if (!(questionType.equals(QuestionType.WRITE_MISSING_WORD)) && !(questionType.equals(QuestionType.TRUE_FALSE))){
+            return AnswerDTO.builder()
+                    .input(answer.getBody())
+//                    .position(answer.getPosition())
+                    .question_id(answer.getQuestion().getId())
+//                    .status(answer.isStatus())
+                    .build();
+        } else {
+            return AnswerDTO.builder()
+                    .question_id(answer.getQuestion().getId())
+                    .input(answer.getBody())
+                    .build();
+        }
+    }
+
     public List<AnswerDTO> toAnswerDTOList(List<Answer> answerTests) {
         return answerTests.stream().map(this::toAnswerDTO).toList();
+    }
+
+    public List<AnswerDTO> toExamQuestionsAnswerList(List<Answer> answerTests) {
+        return answerTests.stream().map(this::toExamQuestionsAnswer).toList();
     }
 }

@@ -116,7 +116,8 @@ public class QuestionServiceImpl implements QuestionService {
     public ResQuestionDTO toResQuestionDTO(Question question) {
 
         final var answerTests = answerRepositoryTest.findByQuestion_IdOrderById(question.getId());
-        final var answerDTOList = answerService.toAnswerDTOList(answerTests);
+        final var answerDTOList = answerService.toExamQuestionsAnswerList(answerTests);
+//        final var answerDTOList = answerService.toAnswerDTOList(answerTests); // var-2
 
         return ResQuestionDTO.builder()
                 .courseName(question.getCourse().getName())
