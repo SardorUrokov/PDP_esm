@@ -58,12 +58,7 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setCertificateNumber("PDP-CER-" + rndValue);
             Certificate save = certificateRepository.save(certificate);
             final var generatedCertificate = generateCertificate(toResCertificateDTO(save));
-//            try {
-//                assert generatedCertificate != null;
-//                fileStorageService.uploadFile(generatedCertificate);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
+
             //send congratulation to student's email
             mailService.sendCongratulationCompletedStudent(student_id, certificate.getCertificateNumber());
             return ApiResponse.builder()

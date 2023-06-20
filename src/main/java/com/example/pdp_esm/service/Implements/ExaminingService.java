@@ -1,5 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
+import com.example.pdp_esm.entity.ExamineInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class ExaminingService {
     private final ExamResultRepository examResultRepository;
     private final ExamineInfoRepository examineInfoRepository;
     private final ReserveUsersRepository reserveUsersRepository;
+
+    private final CertificateServiceImpl certificateService;
 
     public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 
@@ -98,7 +101,7 @@ public class ExaminingService {
             Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
             final var studentGroup = student.getGroup();
-            final var examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
+            final ExamineInfo examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
                     .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
 
             ExamResultDTO examResultDTO = new ExamResultDTO();
@@ -200,5 +203,11 @@ public class ExaminingService {
             }
         }
         return rndQuestions;
+    }
+
+    private boolean createStudentCertificate (Long student_id){
+        final ApiResponse<?> response = certificateService.createCertificate(student_id);
+
+        return response.isSuccess();
     }
 }

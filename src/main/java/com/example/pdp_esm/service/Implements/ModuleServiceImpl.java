@@ -170,14 +170,15 @@ public class ModuleServiceImpl implements ModulesService {
             for (GroupModule groupModule : groupModules) {
                 examNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
             }
-            examNameBuilder.setLength(examNameBuilder.length() - 1);
 
+            examNameBuilder.setLength(examNameBuilder.length() - 1);
             String groupNames =  examNameBuilder.toString();
 
         return courseName + " " + ordinalNumber + "-modul_" + groupNames;
     }
 
     public ResModule toResModule(Modules module) {
+
         List<ResGroupModule> resModuleDTOList =
                 groupModuleService.toResModuleDTOList(module.getGroupModules());
 

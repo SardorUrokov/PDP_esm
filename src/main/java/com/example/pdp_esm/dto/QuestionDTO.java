@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class QuestionDTO {
 
-     Long courseId, answerId;
+     Long courseId;
      String questionType, questionText;
 }
