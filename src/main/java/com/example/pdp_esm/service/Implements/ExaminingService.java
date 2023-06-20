@@ -1,6 +1,5 @@
 package com.example.pdp_esm.service.Implements;
 
-import com.example.pdp_esm.dto.result.ResQuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ExaminingService {
 
+    private final AttemptsService attemptsService;
     private final AnswerRepository answerRepository;
     private final StudentRepository studentRepository;
     private final QuestionServiceImpl questionService;
@@ -151,19 +151,26 @@ public class ExaminingService {
             final var student = studentRepository.findByPhoneNumber(user.getPhoneNumber())
                     .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", user.getPhoneNumber()));
             final var studentGroup = student.getGroup();
+            final var studentId = student.getId();
 
             final var examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
                     .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "group", studentGroup.getId()));
-            final var numOfQuestions = examineInfo.getNumOfQuestions();
 
-            final var courseId = studentGroup.getCourse().getId();
+            final boolean studentAttempts = attemptsService.checkStudentAttempts(studentId, examineInfo.getModule().getId());
 
-            questionList = rndQuestions(courseId, numOfQuestions); // it returns the number of questions set in numOfQuestions field
+            if (studentAttempts) {
 
+                final var numOfQuestions = examineInfo.getNumOfQuestions();
+                final var courseId = studentGroup.getCourse().getId();
+                questionList = rndQuestions(courseId, numOfQuestions); // it returns the number of questions set in numOfQuestions field
+
+            } else
+                return
+                        new ApiResponse<>("The Student has used all attempts", false);
         } else {
-            return new ApiResponse<>("User is not a Student", false);
+            return
+                    new ApiResponse<>("User is not a Student", false);
         }
-
         final var resQuestionDTOList = questionService.toResQuestionDTOList(questionList);
 
         return ApiResponse.builder()

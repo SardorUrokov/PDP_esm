@@ -16,6 +16,8 @@ public class Modules extends AbsEntity {
 
     Long ordinalNumber;
 
+    String name;
+
     @OneToOne
     AbstractModule abstractModule;
 

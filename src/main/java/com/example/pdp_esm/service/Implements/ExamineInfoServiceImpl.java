@@ -1,9 +1,6 @@
 package com.example.pdp_esm.service.Implements;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
@@ -11,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.example.pdp_esm.repository.ModulesRepository;
 
 import com.example.pdp_esm.entity.Group;
 import com.example.pdp_esm.entity.Course;
@@ -34,6 +32,8 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     private final CourseServiceImpl courseService;
     private final GroupRepository groupRepository;
     private final CourseRepository courseRepository;
+    private final ModulesRepository modulesRepository;
+    private final ModuleServiceImpl moduleService;
     private final ExamineInfoRepository examineInfoRepository;
 
     @Override
@@ -153,6 +153,10 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
+        final var moduleId = examineInfoDTO.getModuleId();
+        final var modules = modulesRepository.findById(moduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Module", "module_id", moduleId));
+
         String examName = createExamName(examineInfoDTO.getExamType(), groups);
 
         examineInfo.setExamName(examName);
@@ -160,6 +164,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         examineInfo.setNumOfQuestions(examineInfoDTO.getNumOfQuestions());
         examineInfo.setStartsDate(parsing(examineInfoDTO.getStartsDate()));
         examineInfo.setExamType(ExamType.valueOf(examineInfoDTO.getExamType()));
+        examineInfo.setModule(modules);
         examineInfo.setCourses(courses);
         examineInfo.setGroups(groups);
 
@@ -194,7 +199,9 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     }
 
     public ResExamineInfoDTO toResExamineInfoDTO(ExamineInfo examineInfo) {
+
         List<Group> groupList = examineInfo.getGroups().stream().toList();
+        final var resModule = moduleService.toResModule(examineInfo.getModule());
 
         return ResExamineInfoDTO.builder()
                 .attempts(examineInfo.getAttemptsLimit())
@@ -202,6 +209,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                 .examName(examineInfo.getExamName())
                 .startsDate(examineInfo.getStartsDate().toString())
                 .examType(examineInfo.getExamType().toString())
+                .module(resModule)
                 .coursesWithGroups(courseService.toDTOSet(examineInfo.getCourses()))
                 .groupDTOS(groupService.toDTOList(groupList))
                 .build();

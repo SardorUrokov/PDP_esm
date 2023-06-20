@@ -1,12 +1,12 @@
 package com.example.pdp_esm.entity;
 
+import java.util.List;
+import jakarta.persistence.*;
 import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.entity.template.AbsEntity;
-import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @Entity

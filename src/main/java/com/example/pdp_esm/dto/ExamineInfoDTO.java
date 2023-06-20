@@ -15,6 +15,7 @@ public class ExamineInfoDTO {
 
     Integer attempts, numOfQuestions;
     String startsDate, examType;
+    Long moduleId;
     List<Long> coursesIds;
     List<Long> groupsIds;
 }

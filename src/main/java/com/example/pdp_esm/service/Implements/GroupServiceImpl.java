@@ -33,7 +33,6 @@ public class GroupServiceImpl implements GroupService {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
-
     private final StudentServiceImpl studentService;
     private final TeacherServiceImpl teacherService;
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -151,10 +152,29 @@ public class ModuleServiceImpl implements ModulesService {
                         .build());
         groupModulesList.add(groupModule);
 
+        final var moduleName = createModuleName(
+                abstractModule.getCourse().getName(),
+                moduleDTO.getOrdinalNumber(),
+                groupModulesList);
+
         module.setAbstractModule(abstractModule);
+        module.setName(moduleName);
         module.setGroupModules(groupModulesList);
         module.setOrdinalNumber(moduleDTO.getOrdinalNumber());
         return module;
+    }
+
+    private static String createModuleName(String courseName, Long ordinalNumber, List<GroupModule> groupModules) {
+
+            StringBuilder examNameBuilder = new StringBuilder();
+            for (GroupModule groupModule : groupModules) {
+                examNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
+            }
+            examNameBuilder.setLength(examNameBuilder.length() - 1);
+
+            String groupNames =  examNameBuilder.toString();
+
+        return courseName + " " + ordinalNumber + "-modul_" + groupNames;
     }
 
     public ResModule toResModule(Modules module) {
@@ -163,6 +183,7 @@ public class ModuleServiceImpl implements ModulesService {
 
         return ResModule.builder()
                 .ordinalNumber(module.getOrdinalNumber())
+                .name(module.getName())
                 .courseName(module.getAbstractModule().getCourse().getName())
                 .groupModuleList(resModuleDTOList)
                 .build();

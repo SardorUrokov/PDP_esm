@@ -28,7 +28,7 @@ public class ExamResultServiceImpl implements ExamResultService {
     private final QuestionServiceImpl questionService;
     private final QuestionRepository questionRepository;
     private final ExamResultRepository examResultRepository;
-    private final ExamineInfoServiceImpl examineInfoService;
+//    private final ExamineInfoServiceImpl examineInfoService;
     private final ExamineInfoRepository examineInfoRepository;
     private final DeleteExamResultRepository deleteExamResultRepository;
 
@@ -160,7 +160,7 @@ public class ExamResultServiceImpl implements ExamResultService {
         Student student = examResult.getStudent();
         Group group = examResult.getStudent().getGroup();
 
-        final var resExamineInfoDTO = examineInfoService.toResExamineInfoDTO(examResult.getExamineInfo());
+//        final var resExamineInfoDTO = examineInfoService.toResExamineInfoDTO(examResult.getExamineInfo());
 
         return ResExamResults.builder()
                 .score(examResult.getScore())

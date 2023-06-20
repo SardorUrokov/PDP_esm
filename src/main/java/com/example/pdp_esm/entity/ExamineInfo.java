@@ -27,6 +27,9 @@ public class ExamineInfo {
 
     Date startsDate;
 
+    @OneToOne
+    Modules module;
+
     @Enumerated(value = EnumType.STRING)
     ExamType examType;
 

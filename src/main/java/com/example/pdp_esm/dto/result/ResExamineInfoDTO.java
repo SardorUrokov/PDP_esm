@@ -16,6 +16,7 @@ public class ResExamineInfoDTO{
 
     Integer attempts, numOfQuestions;
     String examName, startsDate, examType;
+    ResModule module;
     Set<ResCourseDTOWithGroups> coursesWithGroups;
     List<ResGroupDTO> groupDTOS;
 
