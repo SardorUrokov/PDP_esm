@@ -12,19 +12,17 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ModuleServiceImpl implements ModulesService {
 
+    private final AttemptsService attemptsService;
+    private final GroupRepository groupRepository;
     private final ModulesRepository modulesRepository;
     private final GroupModuleService groupModuleService;
     private final AbstractModuleRepository abstractModuleRepository;
-    private final GroupRepository groupRepository;
 
     @Override
     public ApiResponse<?> createModule(ModuleDTO moduleDTO) {
@@ -34,7 +32,7 @@ public class ModuleServiceImpl implements ModulesService {
         final var ordinalNumber = moduleDTO.getOrdinalNumber();
 
         final var optionalModules = modulesRepository
-                .findByCourseIdAndOrdinalNumberAndGroupId(absModuleId, ordinalNumber, groupId);
+                .findByAbsModuleIdAndOrdinalNumberAndGroupId(absModuleId, ordinalNumber, groupId);
 
         final var abstractModule = abstractModuleRepository.findById(absModuleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Abstract Module", "absModuleId", absModuleId));
@@ -58,6 +56,9 @@ public class ModuleServiceImpl implements ModulesService {
             Modules modules = settingValues(module, moduleDTO);
             modules.setCreatedAt(new Date());
             Modules save = modulesRepository.save(modules);
+
+            //set attempts to Students
+            attemptsService.setAttemptsWithModule(save);
 
             return ApiResponse.builder()
                     .message("Module Created! ")
@@ -166,13 +167,13 @@ public class ModuleServiceImpl implements ModulesService {
 
     private static String createModuleName(String courseName, Long ordinalNumber, List<GroupModule> groupModules) {
 
-            StringBuilder examNameBuilder = new StringBuilder();
-            for (GroupModule groupModule : groupModules) {
-                examNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
-            }
+        StringBuilder examNameBuilder = new StringBuilder();
+        for (GroupModule groupModule : groupModules) {
+            examNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
+        }
 
-            examNameBuilder.setLength(examNameBuilder.length() - 1);
-            String groupNames =  examNameBuilder.toString();
+        examNameBuilder.setLength(examNameBuilder.length() - 1);
+        String groupNames = examNameBuilder.toString();
 
         return courseName + " " + ordinalNumber + "-modul_" + groupNames;
     }

@@ -1,6 +1,7 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.entity.ExamineInfo;
+import com.example.pdp_esm.entity.enums.ExamType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +32,9 @@ public class ExaminingService {
     private final QuestionRepository questionRepository;
     private final ExamResultServiceImpl examResultService;
     private final ExamResultRepository examResultRepository;
+    private final CertificateServiceImpl certificateService;
     private final ExamineInfoRepository examineInfoRepository;
     private final ReserveUsersRepository reserveUsersRepository;
-
-    private final CertificateServiceImpl certificateService;
 
     public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 
@@ -104,6 +104,7 @@ public class ExaminingService {
             final ExamineInfo examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
                     .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
 
+            attemptsService.updateAttempts(studentId, examineInfo.getId());
             ExamResultDTO examResultDTO = new ExamResultDTO();
 
             if (now.after(examineInfo.getStartsDate())) {
@@ -133,6 +134,9 @@ public class ExaminingService {
                     data.getSubmitted_time(),
                     data.getQuestionList()
             );
+
+            if (examineInfo.getExamType().equals(ExamType.TOTAL_EXAM) &&  data.getResultType().equals("SUCCESS"))
+                certificateService.createCertificate(studentId);
 
             return ApiResponse.builder()
                     .message(message)
@@ -203,11 +207,5 @@ public class ExaminingService {
             }
         }
         return rndQuestions;
-    }
-
-    private boolean createStudentCertificate (Long student_id){
-        final ApiResponse<?> response = certificateService.createCertificate(student_id);
-
-        return response.isSuccess();
     }
 }

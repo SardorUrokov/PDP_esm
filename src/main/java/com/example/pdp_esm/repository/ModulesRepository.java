@@ -4,6 +4,7 @@ import com.example.pdp_esm.entity.Modules;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ModulesRepository extends JpaRepository<Modules, Long> {
@@ -18,7 +19,14 @@ public interface ModulesRepository extends JpaRepository<Modules, Long> {
             "and m.ordinalNumber = :ordinalNumber " +
             "and m.abstractModule.id = :absModuleId"
     )
-    Optional<Modules> findByCourseIdAndOrdinalNumberAndGroupId(Long absModuleId, Long ordinalNumber, Long groupId);
+    Optional<Modules> findByAbsModuleIdAndOrdinalNumberAndGroupId(Long absModuleId, Long ordinalNumber, Long groupId);
+
+    @Query("select m from Modules m " +
+            "inner join GroupModule gm " +
+            "where gm.group.id = :groupId " +
+            "and m.abstractModule.course.id = :courseId"
+    )
+    List<Modules> findByCourseIdAndGroupIdOrderByOrdinalNumberDesc(Long courseId, Long groupId);
 
     boolean existsByAbstractModule_IdAndOrdinalNumber(Long course_id, Long ordinalNumber);
 }

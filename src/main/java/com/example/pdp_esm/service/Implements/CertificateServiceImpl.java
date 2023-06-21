@@ -61,12 +61,14 @@ public class CertificateServiceImpl implements CertificateService {
 
             //send congratulation to student's email
             mailService.sendCongratulationCompletedStudent(student_id, certificate.getCertificateNumber());
+
             return ApiResponse.builder()
                     .message("Certificate Created!")
                     .success(true)
                     .data(toResCertificateDTO(save))
                     .build();
         } else {
+            
             Certificate byStudentId = certificateRepository.findByStudentId(student_id).orElseThrow();
             return
                     new ApiResponse<>("Student with " + student_id + " id has already Certificated!",false, toResCertificateDTO(byStudentId));

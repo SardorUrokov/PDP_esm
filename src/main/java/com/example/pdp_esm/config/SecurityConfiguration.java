@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/authenticate", "/api/auth/register", "/swagger-ui.html")
+                .requestMatchers("/api/auth/authenticate", "/api/auth/register", "/swagger-ui.html", "/api/reserve/register")
 //                .requestMatchers(accessUrls)
                 .permitAll()
                 .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
