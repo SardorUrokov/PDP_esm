@@ -2,6 +2,7 @@ package com.example.pdp_esm.auth;
 
 import com.example.pdp_esm.config.JwtService;
 import com.example.pdp_esm.entity.User;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.UserRepository;
 import com.example.pdp_esm.entity.Token;
 import com.example.pdp_esm.repository.TokenRepository;
@@ -52,11 +53,14 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        final var userEmail = request.getEmail();
 
-        Optional<User> byEmail = repository.findByEmail(request.getEmail());
-        User user = byEmail.get();
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userEmail, request.getPassword()));
+
+        User user = repository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "user_email", userEmail));
+
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);

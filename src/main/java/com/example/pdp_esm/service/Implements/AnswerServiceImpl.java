@@ -123,9 +123,9 @@ public class AnswerServiceImpl implements AnswerService {
         if (!(questionType.equals(QuestionType.WRITE_MISSING_WORD)) && !(questionType.equals(QuestionType.TRUE_FALSE))){
             return AnswerDTO.builder()
                     .input(answer.getBody())
-//                    .position(answer.getPosition())
+                    .status(answer.isStatus())
+                    .position(answer.getPosition())
                     .question_id(answer.getQuestion().getId())
-//                    .status(answer.isStatus())
                     .build();
         } else {
             return AnswerDTO.builder()

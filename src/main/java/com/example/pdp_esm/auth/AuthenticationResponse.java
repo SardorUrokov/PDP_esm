@@ -1,9 +1,8 @@
 package com.example.pdp_esm.auth;
 
-import com.example.pdp_esm.entity.enums.Roles;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Builder
