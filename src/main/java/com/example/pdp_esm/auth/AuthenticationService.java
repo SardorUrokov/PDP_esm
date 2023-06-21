@@ -85,6 +85,7 @@ public class AuthenticationService {
     }
 
     private void revokeAllUserTokens(User user) {
+
         List<Token> validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
 
         if (validUserTokens.isEmpty())
