@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static com.example.pdp_esm.entity.enums.Roles.*;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -47,20 +48,9 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers(POST,"/**").permitAll()
-//                .requestMatchers(POST, "/api/reserve/register").hasAnyAuthority(ADMIN.name(), MANAGER.name(), USER.name())
-//                .requestMatchers(POST, "/api/auth/authenticate").hasAnyAuthority(ADMIN.name(), MANAGER.name(), USER.name())
-//                .requestMatchers(accessUrls)
-//                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
-//                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
-//                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
-//                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
-//                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
-//                .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
-//                .requestMatchers(GET, "/api/v1/admin/**").hasAuthority(ADMIN_READ.name())
-//                .requestMatchers(POST, "/api/v1/admin/**").hasAuthority(ADMIN_CREATE.name())
-//                .requestMatchers(PUT, "/api/v1/admin/**").hasAuthority(ADMIN_UPDATE.name())
-//                .requestMatchers(DELETE, "/api/v1/admin/**").hasAuthority(ADMIN_DELETE.name())
+                .requestMatchers(POST, "/auth/register", "/auth/authenticate", "/auth/refresh-token", "/reserve/register")
+//                .requestMatchers(GET, "/examining/getQuestions/{otp}")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
