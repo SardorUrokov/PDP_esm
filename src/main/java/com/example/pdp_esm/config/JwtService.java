@@ -31,7 +31,7 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        long jwtExpiration = 86400000;
+        long jwtExpiration = 8640000000L;
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

@@ -61,7 +61,8 @@ public class GroupServiceImpl implements GroupService {
                 .success(false)
                 .build();
 
-        else if (date.isBefore(LocalDate.now())) return ApiResponse.builder()
+        else if (date.isBefore(LocalDate.now()))
+            return ApiResponse.builder()
                 .message("Groups Starts Date can't be Past")
                 .success(false)
                 .build();

@@ -1,5 +1,7 @@
 package com.example.pdp_esm.service.Implements;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,11 +56,18 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                     .success(true)
                     .data(toResExamineInfoDTO(examineInfo))
                     .build();
-        } else return
-                new ApiResponse<>(
+
+        } else if (save.getStartsDate().toInstant().isBefore(Instant.from(LocalDate.now()))) {
+            return ApiResponse.builder()
+                    .message("Groups Starts Date can't be Past")
+                    .success(false)
+                    .build();
+
+        } else
+            return new ApiResponse<>(
                         "Such a Examine Info Object is already saved!",
                         false
-                );
+            );
     }
 
     @Override
@@ -100,7 +109,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
     }
 
     @Override
-    public ApiResponse<?> byExamType(String type){
+    public ApiResponse<?> byExamType(String type) {
 
         final var examType = ExamType.valueOf(type);
         final var examineInfos = examineInfoRepository.findByExamType(examType);

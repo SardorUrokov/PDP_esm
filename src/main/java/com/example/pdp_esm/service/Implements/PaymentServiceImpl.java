@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.example.pdp_esm.entity.enums.PayStatus.CANCELLED;
 import static com.example.pdp_esm.entity.enums.PayStatus.RECEIVED;
 
 @Service
@@ -164,13 +165,17 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ApiResponse<?> getAllPaymentsByStatus(String status) {
 
-        List<Payment> allPaymentsByStatus = paymentRepository.findAllByPayStatus(PayStatus.valueOf(status));
+        if (status.equals("CANCELLED") || status.equals("RECEIVED")) {
+            List<Payment> allPaymentsByStatus =
+                    paymentRepository.findAllByPayStatus(PayStatus.valueOf(status));
 
-        return ApiResponse.builder()
-                .message("All Payments List by " + status + " status")
-                .success(true)
-                .data(toResDTOList(allPaymentsByStatus))
-                .build();
+            return ApiResponse.builder()
+                    .message("All Payments List by " + status + " status")
+                    .success(true)
+                    .data(toResDTOList(allPaymentsByStatus))
+                    .build();
+        } else
+            return new ApiResponse<>("Not Such a Payment Status", false);
     }
 
     @Override
@@ -206,7 +211,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
     }
 
-    public void checkStudentBalance (Long student_id) {
+    public void checkStudentBalance(Long student_id) {
         final var studentBalance = paymentRepository.getBalance(student_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student's Balance", "student_id", student_id));
 
@@ -215,7 +220,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "courseId", courseId));
         final var coursePrice = course.getPrice();
 
-        if (studentBalance < coursePrice){
+        if (studentBalance < coursePrice) {
             Double lacking = (coursePrice - studentBalance);
             emailService.sendInsufficientFundsNotification(student_id, lacking);
         }
