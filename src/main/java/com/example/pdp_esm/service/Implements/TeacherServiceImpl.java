@@ -162,13 +162,6 @@ public class TeacherServiceImpl implements TeacherService {
         List<Long> coursesIds = teacherDTO.getCoursesIds();
         List<Course> courses = coursesIds.stream().map(courseRepository::getById).collect(Collectors.toList());
 
-//        boolean matches = teacherDTO.getPhoneNumber().matches("[7-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}");
-//        if (!matches)
-//            return new ApiResponse<>("Phone number is not valid!", false);
-
-//        teacher.setEmail(teacherDTO.getEmail());
-//        teacher.setPassword(teacherDTO.getPassword());
-
         teacher.setFullName(teacherDTO.getFullName());
         teacher.setPhoneNumber(teacherDTO.getPhoneNumber());
         teacher.setPosition(position);

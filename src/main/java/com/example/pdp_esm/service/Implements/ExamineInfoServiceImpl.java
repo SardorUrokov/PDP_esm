@@ -49,21 +49,21 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
                         save.getCourses(),
                         save.getGroups());
 
-        final var isBefore = save.getStartsDate().toInstant().isBefore(Instant.from(LocalDate.now()));
 
-        if (!exists && !isBefore) {
-            examineInfoRepository.save(save);
+        examineInfoRepository.save(save);
+
+        if (!exists){
             return ApiResponse.builder()
                     .message("Examine Info Saved!")
                     .success(true)
                     .data(toResExamineInfoDTO(examineInfo))
                     .build();
 
-        } else if (isBefore) {
-            return ApiResponse.builder()
-                    .message("Groups Starts Date can't be Past")
-                    .success(false)
-                    .build();
+//        } else if (isBefore) {
+//            return ApiResponse.builder()
+//                    .message("Groups Starts Date can't be Past")
+//                    .success(false)
+//                    .build();
 
         } else
             return new ApiResponse<>(

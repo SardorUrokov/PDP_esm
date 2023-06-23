@@ -28,16 +28,21 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public ApiResponse<?> createQuestion(QuestionDTO questionDTO) {
-        Question question = new Question();
-        Question save = settingValues(question, questionDTO);
-        save.setCreatedAt(new Date());
-        questionRepository.save(save);
+        final var exists = questionRepository.existsByQuestionText(questionDTO.getQuestionText());
 
-        return ApiResponse.builder()
-                .message("Question Saved!")
-                .success(true)
-                .data(toResQuestionDTO(save))
-                .build();
+        if (!exists) {
+            Question question = new Question();
+            Question save = settingValues(question, questionDTO);
+            save.setCreatedAt(new Date());
+            questionRepository.save(save);
+
+            return ApiResponse.builder()
+                    .message("Question Saved!")
+                    .success(true)
+                    .data(toResQuestionDTO(save))
+                    .build();
+        } else
+            return new ApiResponse<>("Such a Question is Already Created!", false);
     }
 
     @Override

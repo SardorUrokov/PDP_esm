@@ -41,6 +41,19 @@ public class ExaminingService {
         final var studentId = checkingAttemptsDTO.getStudent_id();
         final var existsByStudentId = examResultRepository.existsByStudentId(studentId);
 
+        final var student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", studentId));
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        final var studentGroup = student.getGroup();
+        final ExamineInfo examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
+                .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
+
+        final var numOfQuestions = examineInfo.getNumOfQuestions();
+        int scorePerAnswer = 100 / numOfQuestions;
+
         if (existsByStudentId)
             return new ApiResponse<>(
                     "Exam Result with this " + studentId + " student_id is Already saved! ",
@@ -69,8 +82,9 @@ public class ExaminingService {
                     final var answerBody = answerTest.getBody();
                     final var answerDTOInput = answerDTO.getInput();
 
-                    if (answerBody.equalsIgnoreCase(answerDTOInput) && answerDTO.getStatus().equals(true))
-                        score += 10;
+                    if (answerBody.equalsIgnoreCase(answerDTOInput) && answerDTO.getStatus().equals(true)) {
+                        score += scorePerAnswer;
+                    }
 
                 } else if (questionType.equals(String.valueOf(QuestionType.SEQUENCE))) {
 
@@ -79,8 +93,9 @@ public class ExaminingService {
                     int k = 1;
                     for (int j = 1; j < answerDTOList.size(); j++) {
 
-                        if (answerDTOList.get(k).getInput().equalsIgnoreCase(answerTestList.get(j).getBody()))
-                            score += 10;
+                        if (answerDTOList.get(k).getInput().equalsIgnoreCase(answerTestList.get(j).getBody())) {
+                            score += scorePerAnswer;
+                        }
                     }
                 } else if ((questionType.equals(String.valueOf(QuestionType.TEST)))
                         ||
@@ -89,20 +104,11 @@ public class ExaminingService {
                     final var questionByStatusTrue = answerRepository.findByQuestion_IdAndStatusTrue(questionId)
                             .orElseThrow(() -> new ResourceNotFoundException("Status TRUE Question", "question_id", questionId));
 
-                    if (questionByStatusTrue.getBody().equalsIgnoreCase(answerDTO.getInput()))
-                        score += 10;
+                    if (questionByStatusTrue.getBody().equalsIgnoreCase(answerDTO.getInput())) {
+                        score += scorePerAnswer;
+                    }
                 }
             }
-
-            final var student = studentRepository.findById(studentId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", studentId));
-
-            LocalDateTime localDateTime = LocalDateTime.now();
-            Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-
-            final var studentGroup = student.getGroup();
-            final ExamineInfo examineInfo = examineInfoRepository.findByGroupsIn(Collections.singleton(studentGroup))
-                    .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
 
             attemptsService.updateAttempts(studentId, examineInfo.getId());
             ExamResultDTO examResultDTO = new ExamResultDTO();
@@ -128,14 +134,13 @@ public class ExaminingService {
 
             ResExamResults resExamResults = new ResExamResults(
                     data.getScore(),
-//                    data.getResExamineInfoDTO(),
                     data.getStudentInfo(),
                     data.getResultType(),
                     data.getSubmitted_time(),
                     data.getQuestionList()
             );
 
-            if (examineInfo.getExamType().equals(ExamType.TOTAL_EXAM) &&  data.getResultType().equals("SUCCESS"))
+            if (examineInfo.getExamType().equals(ExamType.TOTAL_EXAM) && data.getResultType().equals("SUCCESS"))
                 certificateService.createCertificate(studentId);
 
             return ApiResponse.builder()
