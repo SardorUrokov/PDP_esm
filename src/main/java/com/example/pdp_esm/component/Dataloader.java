@@ -103,11 +103,6 @@ public class Dataloader implements CommandLineRunner {
             paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
             paymentRepository.save(new Payment(1000000d, a1_student1, PayType.CASH, PayStatus.RECEIVED));
 
-//            ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
-//            ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
-//            ExamResult examResult3 = resultRepository.save(new ExamResult(50f, a1_student, ResultType.FAIL, List.of(question2, question1)));
-//            ExamResult examResult4 = resultRepository.save(new ExamResult(70f, j1_student, ResultType.SUCCESS, List.of(question3, question4)));
-
             var aaa = RegisterRequest.builder()
                     .fullName("AAA")
                     .email("a@gmail.com")
