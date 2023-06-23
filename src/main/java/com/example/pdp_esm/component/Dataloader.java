@@ -90,17 +90,18 @@ public class Dataloader implements CommandLineRunner {
             answerRepository.save(new Answer("a2", true, 2, question5));
             answerRepository.save(new Answer("a3", true, 3, question5));
 
-            answerRepository.save(new Answer("alt1", true, 1, question5));
-            answerRepository.save(new Answer("alt2", true, 2, question5));
-            answerRepository.save(new Answer("alt3", true, 3, question5));
-            answerRepository.save(new Answer("alt4", true, 4, question5));
-            answerRepository.save(new Answer("alt5", true, 5, question5));
+            answerRepository.save(new Answer("alt1", true, 1, question6));
+            answerRepository.save(new Answer("alt2", true, 2, question6));
+            answerRepository.save(new Answer("alt3", true, 3, question6));
+            answerRepository.save(new Answer("alt4", true, 4, question6));
+            answerRepository.save(new Answer("alt5", true, 5, question6));
 
             answerRepository.save(new Answer("there's a missing word", true, 1, question7));
 
             paymentRepository.save(new Payment(1100000d, a1_student, PayType.CASH, PayStatus.RECEIVED));
             paymentRepository.save(new Payment(1000000d, f1_student, PayType.BY_PAYMENT_APP, PayStatus.RECEIVED));
             paymentRepository.save(new Payment(1200000d, j1_student, PayType.BY_CARD, PayStatus.RECEIVED));
+            paymentRepository.save(new Payment(1000000d, a1_student1, PayType.CASH, PayStatus.RECEIVED));
 
 //            ExamResult examResult1 = resultRepository.save(new ExamResult(80f, f1_student, ResultType.SUCCESS, List.of(question5, question6)));
 //            ExamResult examResult2 = resultRepository.save(new ExamResult(60f, a1_student1, ResultType.SUCCESS, List.of(question1, question2)));
