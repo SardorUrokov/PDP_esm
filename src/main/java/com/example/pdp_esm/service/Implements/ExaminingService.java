@@ -14,7 +14,7 @@ import com.example.pdp_esm.entity.enums.ResultType;
 import com.example.pdp_esm.dto.CheckingAttemptsDTO;
 import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.dto.result.ResExamResults;
-import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.repository.AnswerRepository;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;

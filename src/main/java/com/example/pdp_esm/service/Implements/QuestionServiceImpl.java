@@ -9,7 +9,7 @@ import com.example.pdp_esm.entity.enums.QuestionType;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.QuestionRepository;
-import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.repository.AnswerRepository;
 import com.example.pdp_esm.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

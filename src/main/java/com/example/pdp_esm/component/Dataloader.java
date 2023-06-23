@@ -11,7 +11,7 @@ import com.example.pdp_esm.entity.Answer;
 import com.example.pdp_esm.entity.enums.*;
 import com.example.pdp_esm.auth.RegisterRequest;
 import com.example.pdp_esm.auth.AuthenticationService;
-import com.example.pdp_esm.repository.test.AnswerRepository;
+import com.example.pdp_esm.repository.AnswerRepository;
 
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
