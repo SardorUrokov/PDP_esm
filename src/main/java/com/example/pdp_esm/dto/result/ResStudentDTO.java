@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResStudentDTO {
+    Long id;
     private String fullName, phoneNumber, email;
     private Double balance;
     private String gender, status, groupName;

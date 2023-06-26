@@ -4,13 +4,13 @@ import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResStudentDTO;
 import com.example.pdp_esm.dto.StudentDTO;
 import com.example.pdp_esm.entity.*;
+import lombok.RequiredArgsConstructor;
 import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
 import com.example.pdp_esm.repository.AttemptsRepository;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.StudentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,7 +39,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
         Group group = optionalGroup.get();
 
-//        final boolean existedByEmail = userRepository.existsByEmail(studentDTO.getEmail());
         boolean exists = studentRepository.existsByPhoneNumberAndGroup(studentDTO.getPhoneNumber(), group);
 
         if (exists) {
@@ -47,12 +46,6 @@ public class StudentServiceImpl implements StudentService {
                     .message("Such a Student is already saved!")
                     .success(false)
                     .build();
-//        } else if (existedByEmail) {
-//            return ApiResponse.builder()
-//                    .message("User with this email is already created!")
-//                    .data(studentDTO.getEmail())
-//                    .success(false)
-//                    .build();
         } else {
 
             Student student = new Student();
@@ -60,11 +53,11 @@ public class StudentServiceImpl implements StudentService {
             final var studentApiResponseData = studentApiResponse.getData();
             final var otp = reserveUsersService.returnOTP(studentApiResponseData);
 
-//            final var existsByStudentId = attemptsRepository.existsByStudentId(studentApiResponseData.getId());
-//
-//            if (!existsByStudentId){
-//                attemptsService.setAttempts(Collections.singletonList(studentApiResponseData), 3);
-//            }
+            final var existsByStudentId = attemptsRepository.existsByStudentId(studentApiResponseData.getId());
+
+            if (!existsByStudentId){
+                attemptsService.setAttempts(Collections.singletonList(studentApiResponseData), 3);
+            }
 
             return ApiResponse.builder()
                     .message("Student Saved! otp: "  + otp)
@@ -202,6 +195,7 @@ public class StudentServiceImpl implements StudentService {
     public List<ResStudentDTO> toResStudentDTO(List<Student> students) {
         return students.stream()
                 .map(student -> ResStudentDTO.builder()
+                        .id(student.getId())
                         .fullName(student.getFullName())
                         .phoneNumber(student.getPhoneNumber())
                         .email(student.getEmail())
@@ -215,6 +209,7 @@ public class StudentServiceImpl implements StudentService {
 
     public ResStudentDTO resStudentDTO(Student student){
         return ResStudentDTO.builder()
+                .id(student.getId())
                 .fullName(student.getFullName())
                 .phoneNumber(student.getPhoneNumber())
                 .email(student.getEmail())
@@ -234,8 +229,6 @@ public class StudentServiceImpl implements StudentService {
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());
 
-//        student.setEmail(studentDTO.getEmail());
-//        student.setPassword(studentDTO.getPassword());
         student.setGroup(group);
         student.setGender(studentDTO.getGender());
         student.setBalance(studentDTO.getBalance());

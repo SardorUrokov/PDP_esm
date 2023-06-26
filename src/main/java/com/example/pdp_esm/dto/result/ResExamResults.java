@@ -1,9 +1,7 @@
 package com.example.pdp_esm.dto.result;
 
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -11,11 +9,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResExamResults {
 
-    private float score;
-//    private ResExamineInfoDTO resExamineInfoDTO;
-    private ResPaymentStudentInfo studentInfo;
-    private String resultType, submitted_time;
-    private List<ResQuestionDTO> questionList;
+    Long examResult_id;
+    float score;
+    ResPaymentStudentInfo studentInfo;
+    String resultType, submitted_time;
+    List<ResQuestionDTO> questionList;
 }

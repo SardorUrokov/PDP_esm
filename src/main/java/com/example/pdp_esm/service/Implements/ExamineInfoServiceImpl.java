@@ -219,6 +219,7 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         final var resModule = moduleService.toResModule(examineInfo.getModule());
 
         return ResExamineInfoDTO.builder()
+                .examineInfoId(examineInfo.getId())
                 .attempts(examineInfo.getAttemptsLimit())
                 .numOfQuestions(examineInfo.getNumOfQuestions())
                 .examName(examineInfo.getExamName())

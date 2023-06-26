@@ -193,6 +193,7 @@ public class GroupServiceImpl implements GroupService {
         List<ResTeacherDTO> resTeacherDTOList = teacherService.toResTeacherDTO(groupTeachers);
 
         return ResGroupDTO.builder()
+                .group_id(group.getId())
                 .groupName(group.getGroupName())
                 .courseName(group.getCourse().getName())
                 .courseType(group.getCourse().getCourseType().toString())

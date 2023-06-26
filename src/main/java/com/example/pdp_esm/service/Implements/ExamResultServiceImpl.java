@@ -163,6 +163,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 //        final var resExamineInfoDTO = examineInfoService.toResExamineInfoDTO(examResult.getExamineInfo());
 
         return ResExamResults.builder()
+                .examResult_id(examResult.getId())
                 .score(examResult.getScore())
 //                .resExamineInfoDTO(resExamineInfoDTO)
                 .resultType(String.valueOf(examResult.getResultType()))
@@ -179,6 +180,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     public ResDeleteExamResultDTO toResDeleteExamResultDTO(DeleteExamResultRequest deleteExamResultRequest) {
         return ResDeleteExamResultDTO.builder()
+                .id(deleteExamResultRequest.getId())
                 .description(deleteExamResultRequest.getDescription())
                 .requestCreated_time(deleteExamResultRequest.getCreatedAt().toString())
                 .active(deleteExamResultRequest.getActive())

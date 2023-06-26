@@ -125,6 +125,7 @@ public class QuestionServiceImpl implements QuestionService {
 //        final var answerDTOList = answerService.toAnswerDTOList(answerTests); // var-2
 
         return ResQuestionDTO.builder()
+                .id(question.getId())
                 .courseName(question.getCourse().getName())
                 .questionType(String.valueOf(question.getQuestionType()))
                 .question(question.getQuestionText())

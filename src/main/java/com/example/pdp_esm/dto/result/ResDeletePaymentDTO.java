@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResDeletePaymentDTO {
 
-    String description;
-    String requestCreated_time;
+    Long id;
+    String description, requestCreated_time;
     boolean active;
     ResPaymentDTO resPaymentDTO;
 }

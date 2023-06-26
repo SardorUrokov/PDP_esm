@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
 import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ResExamineInfoDTO{
 
+    Long examineInfoId;
     Integer attempts, numOfQuestions;
     String examName, startsDate, examType;
     ResModule module;

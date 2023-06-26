@@ -232,6 +232,7 @@ public class PaymentServiceImpl implements PaymentService {
         Group group = student.getGroup();
 
         ResPaymentDTO resPaymentDTO = new ResPaymentDTO();
+        resPaymentDTO.setPayment_id(payment.getId());
         resPaymentDTO.setAmount(payment.getAmount());
         resPaymentDTO.setPayType(String.valueOf(payment.getPayType()));
         resPaymentDTO.setPayStatus(payment.getPayStatus().toString());
@@ -250,6 +251,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     public ResDeletePaymentDTO toResDeletePaymentDTO(DeletePaymentRequest deletePaymentRequest) {
         return ResDeletePaymentDTO.builder()
+                .id(deletePaymentRequest.getId())
                 .description(deletePaymentRequest.getDescription())
                 .requestCreated_time(String.valueOf(deletePaymentRequest.getCreatedAt()))
                 .active(deletePaymentRequest.getActive())

@@ -1,9 +1,7 @@
 package com.example.pdp_esm.dto.result;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -11,13 +9,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResGroupDTO {
 
-    private String groupName;
-    private String courseName;
-    private String courseType;
-    private String startsDate;
-    private List<ResTeacherDTO> teachers;
-    private List<ResStudentDTO> students;
-    private boolean active;
+    Long group_id;
+    String groupName, courseName, courseType, startsDate;
+    List<ResTeacherDTO> teachers;
+    List<ResStudentDTO> students;
+    boolean active;
 }

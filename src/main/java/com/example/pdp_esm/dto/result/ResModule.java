@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ResModule {
 
-    Long ordinalNumber;
+    Long module_id, ordinalNumber;
     String name, courseName;
     List<ResGroupModule> groupModuleList;
 }

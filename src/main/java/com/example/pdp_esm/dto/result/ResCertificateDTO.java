@@ -10,5 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResCertificateDTO {
 
+    Long id;
     String createdAt, certificateId, courseName, studentFullName;
 }

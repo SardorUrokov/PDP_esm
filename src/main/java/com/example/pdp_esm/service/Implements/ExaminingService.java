@@ -133,6 +133,7 @@ public class ExaminingService {
             ResExamResults data = (ResExamResults) examResult.getData();
 
             ResExamResults resExamResults = new ResExamResults(
+                    data.getExamResult_id(),
                     data.getScore(),
                     data.getStudentInfo(),
                     data.getResultType(),

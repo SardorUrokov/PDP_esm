@@ -116,6 +116,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     public ResCertificateDTO toResCertificateDTO(Certificate certificate) {
         return ResCertificateDTO.builder()
+                .id(certificate.getId())
                 .certificateId(certificate.getCertificateNumber())
                 .courseName(certificate.getCourse().getName())
                 .studentFullName(certificate.getStudent().getFullName())

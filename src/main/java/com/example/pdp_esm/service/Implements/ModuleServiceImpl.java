@@ -184,6 +184,7 @@ public class ModuleServiceImpl implements ModulesService {
                 groupModuleService.toResModuleDTOList(module.getGroupModules());
 
         return ResModule.builder()
+                .module_id(module.getId())
                 .ordinalNumber(module.getOrdinalNumber())
                 .name(module.getName())
                 .courseName(module.getAbstractModule().getCourse().getName())

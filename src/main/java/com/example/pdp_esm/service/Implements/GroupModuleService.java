@@ -62,13 +62,13 @@ public class GroupModuleService {
 
         final var group = groupRepository.findById(moduleDTO.getGroupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", moduleDTO.getGroupId()));
-//        List<ExamResult> examResultList = new ArrayList<>();
-//        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
-//            final var examResult = examResultRepository.findByStudentId(student.getId())
-//                    .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", student.getId()));
-//            examResultList.add(examResult);
-//        }
-/*
+/*        List<ExamResult> examResultList = new ArrayList<>();
+        for (Student student : studentRepository.findAllByGroupId(group.getId())) {
+            final var examResult = examResultRepository.findByStudentId(student.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Exam Result", "Student id", student.getId()));
+            examResultList.add(examResult);
+        }
+
         List<ExamResult> examResultList = studentRepository
                 .findAllByGroupId(moduleDTO.getGroupId())
                 .stream()
@@ -79,7 +79,6 @@ public class GroupModuleService {
                 )
                 .collect(Collectors.toList());
 */
-
         List<ExamResult> examResultList = studentRepository
                 .findAllByGroupId(moduleDTO.getGroupId())
                 .stream()

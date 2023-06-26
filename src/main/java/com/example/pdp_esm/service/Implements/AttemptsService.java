@@ -2,7 +2,9 @@ package com.example.pdp_esm.service.Implements;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
+import com.example.pdp_esm.repository.GroupModuleRepository;
 import lombok.extern.slf4j.Slf4j;
 import com.example.pdp_esm.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class AttemptsService {
     private final AttemptsRepository attemptsRepository;
     private final StudentRepository studentRepository;
     private final ModulesRepository modulesRepository;
+
+    private final GroupModuleRepository groupModuleRepository;
 
     public boolean checkStudentAttempts(Long student_id, Long module_id) {
 
@@ -88,6 +92,35 @@ public class AttemptsService {
                 }
             }
             setAttempts(checkedStudents, 3);
+        }
+    }
+
+    public void setAttempts(Long student_id){
+
+        final var student = studentRepository.findById(student_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", student_id));
+
+        int attemptNum = 3;
+        final var studentGroup = student.getGroup();
+        final var studentGroupId = studentGroup.getId();
+
+        final List<GroupModule> groupModules = groupModuleRepository.findByGroup_Id(studentGroupId);
+        final var exists = modulesRepository.existsByGroupModulesIn(groupModules);
+
+        final var module = modulesRepository.findByGroupModulesIn(groupModules)
+                .orElseThrow(() -> new ResourceNotFoundException("MOdule", "groupMOdule", groupModules.iterator()));
+
+        final var existedByStudentIdAndModulesId = attemptsRepository.existsByStudentIdAndModules_Id(student_id, module.getId());
+
+        if (!existedByStudentIdAndModulesId){
+
+            Attempts attempts = new Attempts();
+            attempts.setAttempts(attemptNum);
+            attempts.setStudent(student);
+            attempts.setModules(module);
+            final var saved = attemptsRepository.save(attempts);
+
+            log.warn("Attempts saved to Student -> {}", saved.getStudent());
         }
     }
 }

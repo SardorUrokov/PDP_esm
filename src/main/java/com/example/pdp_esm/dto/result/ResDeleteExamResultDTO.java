@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResDeleteExamResultDTO {
 
-    String description;
-    String requestCreated_time;
+    Long id;
+    String description, requestCreated_time;
     boolean active;
     ResExamResults examResults;
 }

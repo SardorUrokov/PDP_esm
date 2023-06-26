@@ -176,6 +176,7 @@ public class TeacherServiceImpl implements TeacherService {
     public List<ResTeacherDTO> toResTeacherDTO(List<Teacher> teachers) {
         return teachers.stream()
                 .map(teacher -> ResTeacherDTO.builder()
+                        .id(teacher.getId())
                         .fullName(teacher.getFullName())
                         .phoneNumber(teacher.getPhoneNumber())
                         .email(teacher.getEmail())

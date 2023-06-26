@@ -146,6 +146,7 @@ public class CourseServiceImpl implements CourseService {
         List<ResGroupDTO> resGroupDTOList = groupService.toDTOList(allByCourseName);
 
         return ResCourseDTOWithGroups.builder()
+                .course_id(course.getId())
                 .courseName(course.getName())
                 .price(course.getPrice())
                 .active(course.isActive())
