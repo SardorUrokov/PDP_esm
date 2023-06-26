@@ -52,7 +52,7 @@ public class ExaminingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Examine Info", "student_group_id", studentGroup.getId()));
 
         final var numOfQuestions = examineInfo.getNumOfQuestions();
-        int scorePerAnswer = 100 / numOfQuestions;
+        float scorePerAnswer = 100f / numOfQuestions;
 
         if (existsByStudentId)
             return new ApiResponse<>(
