@@ -156,7 +156,11 @@ public class ExamineInfoServiceImpl implements ExamineInfoService {
         final var groupsIds = examineInfoDTO.getGroupsIds();
 
         Set<Course> courses =
-                coursesIds.stream().map(courseRepository::getById).collect(Collectors.toSet());
+                coursesIds.stream()
+                        .map(courseId -> courseRepository.findById(courseId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId)))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
 
         Set<Group> groups = groupsIds.stream()
                 .map(groupId -> groupRepository.findById(groupId)

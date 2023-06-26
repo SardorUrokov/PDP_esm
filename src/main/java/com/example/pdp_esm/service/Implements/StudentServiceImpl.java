@@ -6,6 +6,7 @@ import com.example.pdp_esm.dto.StudentDTO;
 import com.example.pdp_esm.entity.*;
 import com.example.pdp_esm.entity.enums.Status;
 import com.example.pdp_esm.exception.ResourceNotFoundException;
+import com.example.pdp_esm.repository.AttemptsRepository;
 import com.example.pdp_esm.repository.GroupRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.service.StudentService;
@@ -25,9 +26,11 @@ import static com.example.pdp_esm.entity.enums.Status.*;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository studentRepository;
-    private final ReserveUsersService reserveUsersService;
     private final GroupRepository groupRepository;
+    private final AttemptsService attemptsService;
+    private final StudentRepository studentRepository;
+    private final AttemptsRepository attemptsRepository;
+    private final ReserveUsersService reserveUsersService;
 
     @Override
     public ApiResponse<?> createStudent(StudentDTO studentDTO) {
@@ -51,14 +54,22 @@ public class StudentServiceImpl implements StudentService {
 //                    .success(false)
 //                    .build();
         } else {
+
             Student student = new Student();
             final var studentApiResponse = settingValues(student, studentDTO);
-            final var otp = reserveUsersService.returnOTP(studentApiResponse.getData());
+            final var studentApiResponseData = studentApiResponse.getData();
+            final var otp = reserveUsersService.returnOTP(studentApiResponseData);
+
+//            final var existsByStudentId = attemptsRepository.existsByStudentId(studentApiResponseData.getId());
+//
+//            if (!existsByStudentId){
+//                attemptsService.setAttempts(Collections.singletonList(studentApiResponseData), 3);
+//            }
 
             return ApiResponse.builder()
                     .message("Student Saved! otp: "  + otp)
                     .success(true)
-                    .data(toResStudentDTO(Collections.singletonList(studentApiResponse.getData())))
+                    .data(toResStudentDTO(Collections.singletonList(studentApiResponseData)))
                     .build();
         }
     }

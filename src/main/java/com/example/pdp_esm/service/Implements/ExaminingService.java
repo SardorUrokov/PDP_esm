@@ -117,7 +117,7 @@ public class ExaminingService {
 
                 examResultDTO.setScore(score);
                 examResultDTO.setStudentId(studentId);
-                examResultDTO.setExamineInfoId(examineInfo.getId());  //need to set examine_info_id
+                examResultDTO.setExamineInfoId(examineInfo.getId());
                 examResultDTO.setQuestionsIdList(questionsIdsList);
 
             } else return
