@@ -1,30 +1,29 @@
 package com.example.pdp_esm.service.Implements;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import com.example.pdp_esm.dto.*;
+import com.example.pdp_esm.entity.Group;
+import com.example.pdp_esm.entity.Course;
+import com.example.pdp_esm.entity.Student;
+import com.example.pdp_esm.entity.Teacher;
+import com.example.pdp_esm.service.GroupService;
 import com.example.pdp_esm.dto.result.ApiResponse;
 import com.example.pdp_esm.dto.result.ResGroupDTO;
 import com.example.pdp_esm.dto.result.ResStudentDTO;
 import com.example.pdp_esm.dto.result.ResTeacherDTO;
-import com.example.pdp_esm.entity.Course;
-import com.example.pdp_esm.entity.Group;
-import com.example.pdp_esm.entity.Student;
-import com.example.pdp_esm.entity.Teacher;
-import com.example.pdp_esm.exception.ResourceNotFoundException;
-import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.GroupRepository;
+import com.example.pdp_esm.repository.CourseRepository;
 import com.example.pdp_esm.repository.StudentRepository;
 import com.example.pdp_esm.repository.TeacherRepository;
-import com.example.pdp_esm.service.GroupService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.example.pdp_esm.exception.ResourceNotFoundException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -40,16 +39,18 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> createGroup(GroupDTO groupDTO) {
-        Course optionalCourse = courseRepository.findById(groupDTO.getCourseId())
+
+        Course course = courseRepository.findById(groupDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId()));
-        String courseName = optionalCourse.getName();
+        String courseName = course.getName();
 
         List<Long> teacherIds = groupDTO.getTeacherIds();
         List<Teacher> teachers =
                 teacherIds.stream().map(teacherRepository::getById).toList();
 
         boolean empty = teachers.isEmpty();
-        boolean existGroup = groupRepository.existsByGroupNameAndCourseNameAndActiveTrue(groupDTO.getGroupName(), courseName);
+        boolean existGroup = groupRepository
+                .existsByGroupNameAndCourseNameAndActiveTrue(groupDTO.getGroupName(), courseName);
         LocalDate date = LocalDate.parse(groupDTO.getStartsDate());
 
         if (existGroup) {
@@ -58,8 +59,9 @@ public class GroupServiceImpl implements GroupService {
                     .success(false)
                     .build();
 
-        } else if (empty) return ApiResponse.builder()
-                .message("Teachers not found with this " + groupDTO.getTeacherIds().toString() + " id")
+        } else if (empty)
+            return ApiResponse.builder()
+                .message("Teachers not found with this " + groupDTO.getTeacherIds() + " id")
                 .success(false)
                 .build();
 
@@ -106,9 +108,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> updateGroup(Long group_id, GroupDTO groupDTO) {
-        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(group_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", group_id)));
-        Group group = optionalGroup.get();
+
+        Group group = groupRepository.findById(group_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", group_id));
         Group save = settingValues(group, groupDTO);
 
         return ApiResponse.builder()
@@ -151,9 +153,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ApiResponse<?> getOneActiveFalseGroup(Long group_id) {
-        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findByIdAndActiveFalse(group_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Terminated Group", "id", group_id)));
-        Group group = optionalGroup.get();
+        Group group = groupRepository.findByIdAndActiveFalse(group_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Terminated Group", "id", group_id));
 
         return ApiResponse.builder()
                 .message("Terminated Group with " + group_id + " id")
@@ -163,6 +164,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     public Group settingValues(Group group, GroupDTO groupDTO) {
+
         Course course = courseRepository.findById(groupDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", groupDTO.getCourseId()));
 
@@ -178,9 +180,7 @@ public class GroupServiceImpl implements GroupService {
         group.setTeacher(teachers);
         group.setStartDate(LocalDate.parse(groupDTO.getStartsDate()));
         group.setActive(true);
-        final var saved = groupRepository.save(group);
-
-        return saved;
+        return groupRepository.save(group);
     }
 
     public ResGroupDTO toResDTO(Group group) {
