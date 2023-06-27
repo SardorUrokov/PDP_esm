@@ -148,6 +148,7 @@ public class ModuleServiceImpl implements ModulesService {
 
         List<GroupModule> groupModulesList = new ArrayList<>();
         GroupModule groupModule = groupModuleService.createModule(
+
                 GroupModuleDTO.builder()
                         .groupId(moduleDTO.getGroupId())
                         .build());
@@ -167,13 +168,14 @@ public class ModuleServiceImpl implements ModulesService {
 
     private static String createModuleName(String courseName, Long ordinalNumber, List<GroupModule> groupModules) {
 
-        StringBuilder examNameBuilder = new StringBuilder();
-        for (GroupModule groupModule : groupModules) {
-            examNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
+        StringBuilder moduleNameBuilder = new StringBuilder();
+        for (int i = 0; i < groupModules.size(); i++) {
+            GroupModule groupModule = groupModules.get(i);
+            moduleNameBuilder.append(groupModule.getGroup().getGroupName()).append("_");
         }
 
-        examNameBuilder.setLength(examNameBuilder.length() - 1);
-        String groupNames = examNameBuilder.toString();
+        moduleNameBuilder.setLength(moduleNameBuilder.length() - 1);
+        String groupNames = moduleNameBuilder.toString();
 
         return courseName + " " + ordinalNumber + "-modul_" + groupNames;
     }

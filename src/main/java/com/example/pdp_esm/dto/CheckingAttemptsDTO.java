@@ -12,6 +12,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CheckingAttemptsDTO {
 
-    Long student_id;
+    String student_otp;
     List<AnswerObject> selectedAnswers;
 }

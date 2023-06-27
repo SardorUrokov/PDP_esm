@@ -1,6 +1,7 @@
 package com.example.pdp_esm.service.Implements;
 
 import com.example.pdp_esm.entity.ExamineInfo;
+import com.example.pdp_esm.entity.User;
 import com.example.pdp_esm.entity.enums.ExamType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,26 @@ public class ExaminingService {
     private final CertificateServiceImpl certificateService;
     private final ExamineInfoRepository examineInfoRepository;
     private final ReserveUsersRepository reserveUsersRepository;
+    private final UserRepository userRepository;
 
     public ApiResponse<?> checkingAnswers(CheckingAttemptsDTO checkingAttemptsDTO) {
 
-        final var studentId = checkingAttemptsDTO.getStudent_id();
+        final var otp = checkingAttemptsDTO.getStudent_otp();
+        final var reserveUser = reserveUsersRepository.findByOtpCode(otp)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "otp", otp));
+        final var userPhoneNumber = reserveUser.getPhoneNumber();
+
+        final var user = userRepository.findUserByPhoneNumber(userPhoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "phone_number", userPhoneNumber));
+
+        final var usersDType = userRepository.getUsersDType(userPhoneNumber);
+
+        Long studentId;
+        if (usersDType.equals("Student"))
+            studentId = user.getId();
+        else
+            return new ApiResponse<>("User Not a Student!", false);
+
         final var existsByStudentId = examResultRepository.existsByStudentId(studentId);
 
         final var student = studentRepository.findById(studentId)

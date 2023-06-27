@@ -67,11 +67,14 @@ public class AttemptsService {
                             studentGroup.getId()
                     );
 
-            final var module = modulesList.get(0);
-
+            Modules module;
+            if (!modulesList.isEmpty()) {
+                module = modulesList.get(0);
+                attempts.setModules(module);
+            }
             attempts.setAttempts(attempt);
             attempts.setStudent(student);
-            attempts.setModules(module);
+
             final var saved = attemptsRepository.save(attempts);
             log.warn("Attempts saved to Student -> {}", saved.getStudent());
         }
@@ -95,7 +98,7 @@ public class AttemptsService {
         }
     }
 
-    public void setAttempts(Long student_id){
+    public void setAttempts(Long student_id) {
 
         final var student = studentRepository.findById(student_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student", "student_id", student_id));
@@ -112,7 +115,7 @@ public class AttemptsService {
 
         final var existedByStudentIdAndModulesId = attemptsRepository.existsByStudentIdAndModules_Id(student_id, module.getId());
 
-        if (!existedByStudentIdAndModulesId){
+        if (!existedByStudentIdAndModulesId) {
 
             Attempts attempts = new Attempts();
             attempts.setAttempts(attemptNum);
