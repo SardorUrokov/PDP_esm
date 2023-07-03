@@ -1,16 +1,16 @@
 package com.example.pdp_esm.entity;
 
-import com.example.pdp_esm.entity.enums.PayStatus;
-import com.example.pdp_esm.entity.enums.PayType;
-import com.example.pdp_esm.entity.template.AbsEntity;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.pdp_esm.entity.enums.PayType;
+import com.example.pdp_esm.entity.enums.PayStatus;
+import com.example.pdp_esm.entity.template.AbsEntity;
 
 @Data
 @Entity

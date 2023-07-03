@@ -1,15 +1,14 @@
 package com.example.pdp_esm.entity;
 
+import lombok.*;
+import jakarta.persistence.*;
 import com.example.pdp_esm.entity.enums.Roles;
 import com.example.pdp_esm.entity.enums.Status;
-import jakarta.persistence.*;
-import lombok.*;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-//@Builder
 public class Student extends User{
 
     private double balance;

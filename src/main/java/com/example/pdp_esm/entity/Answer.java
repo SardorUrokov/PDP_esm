@@ -1,11 +1,9 @@
 package com.example.pdp_esm.entity;
 
-import jakarta.persistence.*;
-import com.example.pdp_esm.entity.Question;
-import com.example.pdp_esm.entity.template.AbsEntity;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import jakarta.persistence.*;
+import com.example.pdp_esm.entity.template.AbsEntity;
 
 @Data
 @Entity

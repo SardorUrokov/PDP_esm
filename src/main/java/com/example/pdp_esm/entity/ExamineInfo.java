@@ -1,10 +1,8 @@
 package com.example.pdp_esm.entity;
 
 import lombok.*;
-
 import java.util.Set;
 import java.util.Date;
-
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
 import com.example.pdp_esm.entity.enums.ExamType;
@@ -22,9 +20,7 @@ public class ExamineInfo {
     Long id;
 
     Integer attemptsLimit, numOfQuestions;
-
     String examName;
-
     Date startsDate;
 
     @OneToOne

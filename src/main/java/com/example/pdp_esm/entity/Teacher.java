@@ -1,23 +1,20 @@
 package com.example.pdp_esm.entity;
 
+import lombok.*;
+import java.util.List;
 import jakarta.persistence.*;
 import com.example.pdp_esm.entity.enums.Roles;
-import lombok.*;
-
-import java.util.List;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-//@Builder
 public class Teacher extends User{
 
     @ManyToOne
     private Position position;
 
     @ManyToMany
-//            (fetch = FetchType.EAGER)
     private List<Course> course;
 
     private String email, password;
