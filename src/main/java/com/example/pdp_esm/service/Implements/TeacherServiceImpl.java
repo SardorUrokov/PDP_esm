@@ -36,21 +36,11 @@ public class TeacherServiceImpl implements TeacherService {
         boolean exists = teacherRepository
                 .existsByFullNameAndPhoneNumber(teacherDTO.getFullName(), teacherDTO.getPhoneNumber());
 
-//        final boolean existedByEmail = userRepository.existsByEmail(teacherDTO.getEmail());
-
         if (exists) {
             return ApiResponse.builder()
                     .message("Such a Teacher is already created!")
                     .success(false)
                     .build();
-
-//        } else if (existedByEmail) {
-//            return ApiResponse.builder()
-//                    .message("User with this email is already created!")
-//                    .data(teacherDTO.getEmail())
-//                    .success(false)
-//                    .build();
-
         } else {
             Teacher teacher = new Teacher();
             final var teacherApiResponse = settingValues(teacher, teacherDTO);

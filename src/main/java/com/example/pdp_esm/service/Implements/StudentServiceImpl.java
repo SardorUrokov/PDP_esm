@@ -35,9 +35,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ApiResponse<?> createStudent(StudentDTO studentDTO) {
 
-        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
-                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
-        Group group = optionalGroup.get();
+        Group group = groupRepository.findById(studentDTO.getGroupId())
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId()));
 
         boolean exists = studentRepository.existsByPhoneNumberAndGroup(studentDTO.getPhoneNumber(), group);
 
@@ -47,7 +46,6 @@ public class StudentServiceImpl implements StudentService {
                     .success(false)
                     .build();
         } else {
-
             Student student = new Student();
             final var studentApiResponse = settingValues(student, studentDTO);
             final var studentApiResponseData = studentApiResponse.getData();
@@ -55,9 +53,8 @@ public class StudentServiceImpl implements StudentService {
 
             final var existsByStudentId = attemptsRepository.existsByStudentId(studentApiResponseData.getId());
 
-            if (!existsByStudentId){
+            if (!existsByStudentId)
                 attemptsService.setAttempts(Collections.singletonList(studentApiResponseData), 3);
-            }
 
             return ApiResponse.builder()
                     .message("Student Saved! otp: "  + otp)
@@ -85,9 +82,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ApiResponse<?> getOneStudent(Long student_id) {
-        Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(student_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id)));
-        Student student = optionalStudent.get();
+
+        Student student = studentRepository.findById(student_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id));
 
         return ApiResponse.builder()
                 .message("Student with " + student_id + " id")
@@ -99,9 +96,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ApiResponse<?> updateStudent(Long student_id, StudentDTO studentDTO) {
 
-        Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findById(student_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id)));
-        Student student = optionalStudent.get();
+        Student student = studentRepository.findById(student_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", student_id));
         final var studentApiResponse = settingValues(student, studentDTO);
 
         return ApiResponse.builder()
@@ -120,6 +116,7 @@ public class StudentServiceImpl implements StudentService {
                 .success(false)
                 .build();
         else {
+
             Optional<Student> optionalStudent = studentRepository.findById(student_id);
             Student student = optionalStudent.get();
             student.setActive(false);
@@ -150,9 +147,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ApiResponse<?> getOneActiveFalseStudent(Long student_id) {
-        Optional<Student> optionalStudent = Optional.ofNullable(studentRepository.findByIdAndActiveFalse(student_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Removed Student", "id", student_id)));
-        Student student = optionalStudent.get();
+
+        Student student = studentRepository.findByIdAndActiveFalse(student_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Removed Student", "id", student_id));
 
         return ApiResponse.builder()
                 .message("Removed Student with " + student_id + " id")
@@ -183,13 +180,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public ApiResponse<?> getAllStudentsByStatus(Status status) {
+
         List<Student> allByStatus = studentRepository.findAllByStatus(status);
         return ApiResponse.builder()
                 .message(status + " Students List")
                 .success(true)
                 .data(toResStudentDTO(allByStatus))
                 .build();
-
     }
 
     public List<ResStudentDTO> toResStudentDTO(List<Student> students) {
@@ -221,10 +218,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public ApiResponse<Student> settingValues(Student student, StudentDTO studentDTO) {
-        Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findById(studentDTO.getGroupId())
-                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId())));
-        Group group = optionalGroup.get();
-        LocalDate now = LocalDate.now();
+
+        Group group = groupRepository.findById(studentDTO.getGroupId())
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", studentDTO.getGroupId()));
+
+         LocalDate now = LocalDate.now();
 
         student.setFullName(studentDTO.getFullName());
         student.setPhoneNumber(studentDTO.getPhoneNumber());
