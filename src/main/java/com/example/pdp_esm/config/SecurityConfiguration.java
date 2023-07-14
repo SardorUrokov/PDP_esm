@@ -23,9 +23,9 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
+    private final LogoutHandler logoutHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final LogoutHandler logoutHandler;
 
     private final String[] accessUrls = {
             "/api/auth/authenticate",
@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                 .logoutUrl("/api/v1/auth/logout")
                 .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+
         return http.build();
     }
 }

@@ -31,4 +31,5 @@ public class Student extends User{
         this.status = status;
         this.group = group;
     }
+
 }
