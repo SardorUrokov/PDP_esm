@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
+import java.util.List;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static com.example.pdp_esm.entity.enums.Permission.*;
@@ -16,6 +16,7 @@ import static com.example.pdp_esm.entity.enums.Permission.*;
 public enum Roles {
 
     USER(Collections.emptySet()),
+
     ADMIN(
             Set.of(
                     ADMIN_READ,
@@ -28,6 +29,7 @@ public enum Roles {
                     MANAGER_CREATE
             )
     ),
+
     MANAGER(
             Set.of(
                     MANAGER_READ,
@@ -35,9 +37,7 @@ public enum Roles {
                     MANAGER_DELETE,
                     MANAGER_CREATE
             )
-    )
-
-    ;
+    );
 
     @Getter
     private final Set<Permission> permissions;
@@ -51,4 +51,3 @@ public enum Roles {
         return authorities;
     }
 }
-

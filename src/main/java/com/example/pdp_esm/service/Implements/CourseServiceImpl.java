@@ -26,9 +26,9 @@ import com.example.pdp_esm.exception.ResourceNotFoundException;
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
-    private final CourseRepository courseRepository;
-    private final GroupRepository groupRepository;
     private final GroupServiceImpl groupService;
+    private final GroupRepository groupRepository;
+    private final CourseRepository courseRepository;
 
     @Override
     public ApiResponse<?> createCourse(CourseDTO courseDTO) {
@@ -65,10 +65,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ApiResponse<?> getOneCourse(Long course_id) {
-        Optional<Course> courseById = Optional.ofNullable(courseRepository.findByIdAndActiveTrue(course_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id)));
-
-        Course course = courseById.get();
+        Course course = courseRepository.findByIdAndActiveTrue(course_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id));
         String message = "Course with " + course_id + " id";
 
         return ApiResponse.builder()
@@ -81,9 +79,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ApiResponse<?> updateCourse(Long course_id, CourseDTO courseDTO) {
 
-        Optional<Course> optionalCourse = Optional.ofNullable(courseRepository.findByIdAndActiveTrue(course_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id)));
-        Course course = optionalCourse.get();
+        Course course = courseRepository.findByIdAndActiveTrue(course_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", course_id));
         Course updated = settingValues(course, courseDTO);
 
         return ApiResponse.builder()
@@ -167,7 +164,7 @@ public class CourseServiceImpl implements CourseService {
         return courses.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public Set<ResCourseDTOWithGroups> toDTOSet (Set<Course> courses){
+    public Set<ResCourseDTOWithGroups> toDTOSet(Set<Course> courses) {
         return courses.stream().map(this::toDTO).collect(Collectors.toSet());
     }
 }
