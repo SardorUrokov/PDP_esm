@@ -2,7 +2,6 @@ package com.example.pdp_esm.service.Implements;
 
 import java.util.Set;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -100,8 +99,8 @@ public class CourseServiceImpl implements CourseService {
                 .success(false)
                 .build();
         else {
-            Optional<Course> optionalCourse = courseRepository.findById(course_id);
-            Course course = optionalCourse.get();
+            Course course = courseRepository.findById(course_id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course", "course_id", course_id));
             course.setActive(false);
             courseRepository.save(course);
 
@@ -126,9 +125,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ApiResponse<?> getOneActiveFalseCourse(Long course_id) {
 
-        Optional<Course> courseById = Optional.ofNullable(courseRepository.findByIdAndActiveFalse(course_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Deleted Course", "id", course_id)));
-        Course course = courseById.get();
+        Course course = courseRepository.findByIdAndActiveFalse(course_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Deleted Course", "id", course_id));
 
         return ApiResponse.builder()
                 .message("Terminated Course with " + course_id + " id")
